@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <!-- Apple touch icon — larger canvas, same mark, more padding.
+       iOS applies its own rounding, so the underlying square is filled edge-to-edge. -->
+  <rect width="180" height="180" fill="#BA0013"/>
+  <g fill="#FFFFFF" transform="translate(48,42)">
+    <rect x="0"  y="0"  width="20" height="96"/>
+    <rect x="0"  y="0"  width="72" height="20"/>
+    <rect x="0"  y="38" width="54" height="20"/>
+    <rect x="0"  y="76" width="72" height="20"/>
+  </g>
+</svg>
