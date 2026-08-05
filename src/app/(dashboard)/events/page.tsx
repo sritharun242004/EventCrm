@@ -72,7 +72,8 @@ export default async function EventsPage({ searchParams }: { searchParams: Searc
         ))}
       </div>
 
-      <EventsKanban cards={cards} />
+      {/* Remount per filter so optimistic kanban state never leaks between URLs. */}
+      <EventsKanban key={activeType ?? "all"} cards={cards} />
     </>
   );
 }

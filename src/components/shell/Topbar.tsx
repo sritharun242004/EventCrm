@@ -2,8 +2,9 @@
 
 import { ThemeToggle } from "./ThemeToggle";
 import { RoleToggle } from "./RoleToggle";
+import { logout } from "@/app/login/actions";
 
-export function Topbar() {
+export function Topbar({ email }: { email: string }) {
   return (
     <header className="topbar">
       <div className="brand">
@@ -25,7 +26,9 @@ export function Topbar() {
       <div className="top-actions">
         <RoleToggle />
         <ThemeToggle />
-        <div className="avatar" title="Nikhil Bansal · Head Producer">NB</div>
+        <form action={logout}>
+          <button className="avatar avatar-button" type="submit" title={`${email} · Sign out`} aria-label={`Sign out ${email}`}>TK</button>
+        </form>
       </div>
     </header>
   );

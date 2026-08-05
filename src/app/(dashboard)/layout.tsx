@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/shell/Sidebar";
 import { Topbar } from "@/components/shell/Topbar";
 import { RunSheet } from "@/components/shell/RunSheet";
 import { db } from "@/lib/db";
+import { requireUser } from "@/lib/auth";
 
 /**
  * Sidebar count badges are cached for 60s. They only need to be roughly
@@ -57,7 +58,8 @@ const getRunsheetContext = unstable_cache(
 );
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [counts, { live, todayCount }] = await Promise.all([
+  const [user, counts, { live, todayCount }] = await Promise.all([
+    requireUser(),
     getSidebarCounts(),
     getRunsheetContext(),
   ]);
@@ -78,7 +80,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="app">
       <RunSheet liveEvent={liveEvent} totalToday={todayCount} />
-      <Topbar />
+      <Topbar email={user.email} />
       <Sidebar counts={counts} />
       <main className="main">{children}</main>
     </div>

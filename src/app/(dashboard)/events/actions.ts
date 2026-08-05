@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import type { EventStatus } from "@prisma/client";
+import { requireUser } from "@/lib/auth";
 
 const VALID: EventStatus[] = [
   "lead", "proposed", "confirmed", "in_production", "live", "wrap_up", "completed", "cancelled",
@@ -13,6 +14,7 @@ const VALID: EventStatus[] = [
  * Optimistic — the UI moves the card before this returns.
  */
 export async function updateEventStatus(id: number, next: EventStatus) {
+  await requireUser();
   if (!VALID.includes(next)) {
     return { ok: false as const, error: `Invalid status: ${next}` };
   }

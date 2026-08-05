@@ -12,10 +12,12 @@ test.describe("Events pipeline", () => {
     await expect(page).toHaveURL(/\/events\?type=concert$/);
     // Re-fetch chip since navigation triggered rerender
     await expect(page.locator("a.chip.on", { hasText: "Concerts" })).toBeVisible();
-    // Only concerts show — pipeline should have fewer cards than the unfiltered view
+    // Only concerts show — the card count must match the server-rendered subtitle.
     const cardCount = await page.locator("a.k-card").count();
+    const subtitle = await page.locator(".page-head p").textContent();
+    const expected = Number(subtitle?.match(/^(\d+) events/)?.[1]);
     expect(cardCount).toBeGreaterThan(0);
-    expect(cardCount).toBeLessThan(15);
+    expect(cardCount).toBe(expected);
   });
 
   test("clicking a kanban card routes to event brief", async ({ page }) => {

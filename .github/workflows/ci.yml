@@ -18,6 +18,10 @@ concurrency:
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   DIRECT_URL:   ${{ secrets.DATABASE_URL }}
+  # Isolated credentials used only by the CI server and browser suite.
+  AUTH_EMAIL: ci-eventbot@example.invalid
+  AUTH_PASSWORD: ci-only-eventbot-password
+  AUTH_SECRET: ci-only-eventbot-session-secret-32-characters-minimum
 
 jobs:
   # ---------------------------------------------------------------

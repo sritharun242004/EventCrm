@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { addPaise, money, moneyShort, pct, sumPaise } from "@/lib/money";
+import { addPaise, moneyShort, pct, sumPaise } from "@/lib/money";
 import { daysFrom, fmtDate, nf } from "@/lib/dates";
 import { statusClass, statusLabel, typeLabel } from "@/lib/format";
 import { PageHead } from "@/components/ui/PageHead";
-import { Kpi, KpiRow } from "@/components/ui/Kpi";
+import { KpiRow } from "@/components/ui/Kpi";
 import { LinkKpi } from "@/components/ui/LinkKpi";
 import { Card } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";

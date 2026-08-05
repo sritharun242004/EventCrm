@@ -969,3 +969,15 @@ tbody tr.clickable { cursor: pointer; }
 .sidebar::-webkit-scrollbar-thumb, .table-wrap::-webkit-scrollbar-thumb {
   background: var(--rule-strong); border-radius: 0;
 }
+
+/* Authentication */
+.login-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--paper); }
+.login-panel { width: min(420px, 100%); padding: 40px; background: var(--surface); border: 1px solid var(--rule-strong); }
+.login-brand { margin-bottom: 28px; }
+.login-panel h1 { margin: 8px 0 6px; font-family: var(--font-display); font-size: 38px; font-weight: 500; letter-spacing: -0.025em; }
+.login-panel > p { margin: 0 0 28px; color: var(--ink-2); line-height: 1.5; }
+.login-form .field { margin-bottom: 18px; }
+.login-error { color: var(--brand); font-size: 13px; margin: -4px 0 16px; }
+.login-submit { width: 100%; justify-content: center; margin-top: 4px; }
+.avatar-button { border: 0; cursor: pointer; font: inherit; }
+@media (max-width: 480px) { .login-panel { padding: 28px 22px; } }

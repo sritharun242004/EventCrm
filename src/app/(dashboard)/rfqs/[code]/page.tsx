@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { moneyShort, pct } from "@/lib/money";
+import { moneyShort } from "@/lib/money";
 import { fmtDate, nf } from "@/lib/dates";
 import { categoryLabel, rfqStatusLabel, quoteStatusLabel } from "@/lib/format";
 import { PageHead } from "@/components/ui/PageHead";

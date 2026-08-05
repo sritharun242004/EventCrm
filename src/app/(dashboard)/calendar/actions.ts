@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import type { EventType } from "@prisma/client";
+import { requireUser } from "@/lib/auth";
 
 const VALID_TYPES: EventType[] = [
   "concert", "conference", "tech_summit", "tedx",
@@ -25,6 +26,7 @@ export async function createEvent(input: {
   expected?: string;
   notes?: string;
 }) {
+  await requireUser();
   const name = input.name?.trim();
   if (!name) return { ok: false as const, error: "Event name is required" };
 

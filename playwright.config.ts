@@ -10,6 +10,7 @@ const BASE_URL = process.env.BASE_URL ?? "http://localhost:3003";
 
 export default defineConfig({
   testDir: "./tests/e2e",
+  globalSetup: "./tests/e2e/global-setup.ts",
   fullyParallel: false, // Sequence dialogue tests + reduce Neon churn
   workers: 1,
   reporter: [["list"], ["html", { open: "never", outputFolder: "playwright-report" }]],
@@ -18,6 +19,7 @@ export default defineConfig({
 
   use: {
     baseURL: BASE_URL,
+    storageState: "test-results/.auth/user.json",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "off",

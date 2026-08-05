@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { fmtDate, fmtDateFull, nf } from "@/lib/dates";
+import { fmtDateFull, nf } from "@/lib/dates";
 import { statusClass, statusLabel } from "@/lib/format";
 import { Pill } from "@/components/ui/Pill";
 import { CalendarClient } from "./CalendarClient";
