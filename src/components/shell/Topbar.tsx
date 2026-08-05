@@ -2,12 +2,28 @@
 
 import { ThemeToggle } from "./ThemeToggle";
 import { RoleToggle } from "./RoleToggle";
+import { MobileNav } from "./MobileNav";
 import { logout } from "@/app/login/actions";
 
-export function Topbar({ email }: { email: string }) {
+export function Topbar({
+  email,
+  mobileNavChildren,
+}: {
+  email: string;
+  mobileNavChildren: React.ReactNode;
+}) {
+  const initials = email
+    .split("@")[0]
+    .split(/[.\-_]/)
+    .map((p) => p[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "U";
+
   return (
     <header className="topbar">
       <div className="brand">
+        <MobileNav>{mobileNavChildren}</MobileNav>
         <div className="brand-name">
           Event<em>bot</em>
         </div>
@@ -27,7 +43,14 @@ export function Topbar({ email }: { email: string }) {
         <RoleToggle />
         <ThemeToggle />
         <form action={logout}>
-          <button className="avatar avatar-button" type="submit" title={`${email} · Sign out`} aria-label={`Sign out ${email}`}>TK</button>
+          <button
+            className="avatar avatar-button"
+            type="submit"
+            title={`${email} · Sign out`}
+            aria-label={`Sign out ${email}`}
+          >
+            {initials}
+          </button>
         </form>
       </div>
     </header>

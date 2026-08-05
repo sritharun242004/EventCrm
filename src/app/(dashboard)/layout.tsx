@@ -77,11 +77,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
       }
     : null;
 
+  const sidebar = <Sidebar counts={counts} />;
+
   return (
     <div className="app">
       <RunSheet liveEvent={liveEvent} totalToday={todayCount} />
-      <Topbar email={user.email} />
-      <Sidebar counts={counts} />
+      <Topbar email={user.email} mobileNavChildren={sidebar} />
+      {sidebar}
       <main className="main">{children}</main>
     </div>
   );
