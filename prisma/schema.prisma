@@ -1,0 +1,410 @@
+// Eventbot — Event Management CRM
+// Prisma 7 schema mirroring the Neon Postgres source of truth.
+// All money is stored in the smallest currency unit (paise for INR) as BigInt.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ================= ENUMS =================
+
+enum EventStatus {
+  lead
+  proposed
+  confirmed
+  in_production
+  live
+  wrap_up
+  completed
+  cancelled
+
+  @@map("event_status")
+}
+
+enum EventType {
+  concert
+  conference
+  tech_summit
+  tedx
+  private_party
+  product_launch
+  wedding
+  festival
+  corporate
+  gala
+
+  @@map("event_type")
+}
+
+enum VendorCategory {
+  sound_av
+  stage
+  decor
+  carpet_flooring
+  lighting
+  fnb
+  water
+  catering
+  contractor
+  security
+  ticketing
+  photography
+  videography
+  transport
+  printing
+  logistics
+
+  @@map("vendor_category")
+}
+
+enum RfqStatus {
+  draft
+  sent
+  collecting
+  comparing
+  awarded
+  cancelled
+
+  @@map("rfq_status")
+}
+
+enum QuoteStatus {
+  pending
+  submitted
+  declined
+  shortlisted
+  awarded
+
+  @@map("quote_status")
+}
+
+// ================= CORE =================
+
+model Client {
+  id                 Int      @id @default(autoincrement())
+  name               String
+  company            String?
+  contactEmail       String?  @map("contact_email")
+  contactPhone       String?  @map("contact_phone")
+  industry           String?
+  lifetimeValueCents BigInt   @default(0) @map("lifetime_value_cents")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  events Event[]
+
+  @@map("clients")
+}
+
+model Venue {
+  id           Int     @id @default(autoincrement())
+  name         String
+  city         String?
+  capacity     Int?
+  dayRateCents BigInt? @map("day_rate_cents")
+  contact      String?
+  notes        String?
+
+  events Event[]
+
+  @@map("venues")
+}
+
+model Team {
+  id        Int     @id @default(autoincrement())
+  name      String
+  focus     String?
+  leadName  String? @map("lead_name")
+  headcount Int     @default(0)
+
+  members TeamMember[]
+  events  Event[]
+
+  @@map("teams")
+}
+
+model TeamMember {
+  id             Int      @id @default(autoincrement())
+  teamId         Int?     @map("team_id")
+  name           String
+  role           String?
+  skillTags      String[] @map("skill_tags")
+  utilizationPct Int      @default(0) @map("utilization_pct")
+  ratingAvg      Decimal  @default(4.5) @map("rating_avg") @db.Decimal(3, 2)
+
+  team        Team?             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  assignments EventAssignment[]
+
+  @@map("team_members")
+}
+
+model Event {
+  id                    Int         @id @default(autoincrement())
+  code                  String?     @unique
+  name                  String
+  type                  EventType
+  status                EventStatus @default(lead)
+  clientId              Int?        @map("client_id")
+  venueId               Int?        @map("venue_id")
+  leadTeamId            Int?        @map("lead_team_id")
+  startsOn              DateTime    @map("starts_on") @db.Date
+  endsOn                DateTime    @map("ends_on") @db.Date
+  startsAt              DateTime?   @map("starts_at") @db.Timestamptz(6)
+  endsAt                DateTime?   @map("ends_at") @db.Timestamptz(6)
+  expectedAttendees     Int         @default(0) @map("expected_attendees")
+  confirmedAttendees    Int         @default(0) @map("confirmed_attendees")
+  projectedRevenueCents BigInt      @default(0) @map("projected_revenue_cents")
+  bookedRevenueCents    BigInt      @default(0) @map("booked_revenue_cents")
+  totalBudgetCents      BigInt      @default(0) @map("total_budget_cents")
+  spentCents            BigInt      @default(0) @map("spent_cents")
+  reputationScore       Decimal?    @map("reputation_score") @db.Decimal(3, 2)
+  highlight             String?
+  createdAt             DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  client      Client?           @relation(fields: [clientId], references: [id])
+  venue       Venue?            @relation(fields: [venueId], references: [id])
+  leadTeam    Team?             @relation(fields: [leadTeamId], references: [id])
+  vendors     EventVendor[]
+  budgets     BudgetLine[]
+  tiers       TicketTier[]
+  sponsors    Sponsor[]
+  assignments EventAssignment[]
+  reviews     EventReview[]
+  rfqs        Rfq[]
+
+  @@index([status], name: "events_status_idx")
+  @@index([startsOn], name: "events_starts_on_idx")
+  @@map("events")
+}
+
+// ================= VENDORS =================
+
+model Vendor {
+  id             Int            @id @default(autoincrement())
+  name           String
+  category       VendorCategory
+  city           String?
+  contactName    String?        @map("contact_name")
+  contactPhone   String?        @map("contact_phone")
+  rating         Decimal        @default(4.5) @db.Decimal(3, 2)
+  reliabilityPct Int            @default(90) @map("reliability_pct")
+  preferred      Boolean        @default(false)
+  notes          String?
+
+  offerings     VendorOffering[]
+  eventVendors  EventVendor[]
+  rfqAwarded    Rfq[]            @relation("RfqAwardedVendor")
+  rfqRecipient  RfqRecipient[]
+  rfqQuotes     RfqQuote[]
+
+  @@index([category], name: "vendors_category_idx")
+  @@map("vendors")
+}
+
+model VendorOffering {
+  id              Int     @id @default(autoincrement())
+  vendorId        Int?    @map("vendor_id")
+  sku             String
+  unit            String
+  basePriceCents  BigInt  @map("base_price_cents")
+  peakMultiplier  Decimal @default(1.00) @map("peak_multiplier") @db.Decimal(4, 2)
+  minOrder        Int     @default(1) @map("min_order")
+  leadTimeDays    Int     @default(7) @map("lead_time_days")
+
+  vendor Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@map("vendor_offerings")
+}
+
+model EventVendor {
+  id            Int     @id @default(autoincrement())
+  eventId       Int?    @map("event_id")
+  vendorId      Int?    @map("vendor_id")
+  offeringSku   String? @map("offering_sku")
+  quantity      Int     @default(1)
+  quotedCents   BigInt  @map("quoted_cents")
+  bookedCents   BigInt? @map("booked_cents")
+  status        String  @default("quoted")
+
+  event  Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  vendor Vendor? @relation(fields: [vendorId], references: [id])
+
+  @@unique([eventId, vendorId, offeringSku])
+  @@map("event_vendors")
+}
+
+// ================= BUDGET / TICKETS / SPONSORS =================
+
+model BudgetLine {
+  id            Int     @id @default(autoincrement())
+  eventId       Int?    @map("event_id")
+  category      String
+  plannedCents  BigInt  @map("planned_cents")
+  actualCents   BigInt  @default(0) @map("actual_cents")
+  notes         String?
+
+  event Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId], name: "budget_lines_event_idx")
+  @@map("budget_lines")
+}
+
+model TicketTier {
+  id         Int    @id @default(autoincrement())
+  eventId    Int?   @map("event_id")
+  tierName   String @map("tier_name")
+  priceCents BigInt @map("price_cents")
+  inventory  Int
+  sold       Int    @default(0)
+
+  event Event?       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  sales TicketSale[]
+
+  @@map("ticket_tiers")
+}
+
+model TicketSale {
+  id           Int      @id @default(autoincrement())
+  tierId       Int?     @map("tier_id")
+  soldOn       DateTime @map("sold_on") @db.Date
+  qty          Int
+  revenueCents BigInt   @map("revenue_cents")
+
+  tier TicketTier? @relation(fields: [tierId], references: [id], onDelete: Cascade)
+
+  @@map("ticket_sales")
+}
+
+model Sponsor {
+  id          Int    @id @default(autoincrement())
+  eventId     Int?   @map("event_id")
+  name        String
+  tier        String?
+  amountCents BigInt @map("amount_cents")
+  status      String @default("signed")
+
+  event Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("sponsors")
+}
+
+model EventAssignment {
+  id       Int    @id @default(autoincrement())
+  eventId  Int?   @map("event_id")
+  memberId Int?   @map("member_id")
+  role     String?
+
+  event  Event?      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  member TeamMember? @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, memberId])
+  @@map("event_assignments")
+}
+
+model EventReview {
+  id         Int      @id @default(autoincrement())
+  eventId    Int?     @map("event_id")
+  source     String?
+  score      Decimal  @db.Decimal(3, 2)
+  nps        Int?
+  quote      String?
+  author     String?
+  reviewedOn DateTime? @map("reviewed_on") @db.Date
+
+  event Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("event_reviews")
+}
+
+model MarketIntel {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  organizer           String?
+  type                EventType?
+  city                String?
+  startsOn            DateTime? @map("starts_on") @db.Date
+  expectedAttendees   Int?      @map("expected_attendees")
+  estTicketPriceCents BigInt?   @map("est_ticket_price_cents")
+  signal              String?
+  notes               String?
+
+  @@map("market_intel")
+}
+
+// ================= RFQ WORKFLOW =================
+
+model Rfq {
+  id                Int            @id @default(autoincrement())
+  code              String?        @unique
+  eventId           Int?           @map("event_id")
+  title             String
+  category          VendorCategory
+  status            RfqStatus      @default(draft)
+  neededBy          DateTime?      @map("needed_by") @db.Date
+  budgetCeilingCents BigInt?       @map("budget_ceiling_cents")
+  notes             String?
+  createdBy         String?        @map("created_by")
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  sentAt            DateTime?      @map("sent_at") @db.Timestamptz(6)
+  closesAt          DateTime?      @map("closes_at") @db.Timestamptz(6)
+  awardedVendorId   Int?           @map("awarded_vendor_id")
+
+  event         Event?         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  awardedVendor Vendor?        @relation("RfqAwardedVendor", fields: [awardedVendorId], references: [id])
+  items         RfqItem[]
+  recipients    RfqRecipient[]
+  quotes        RfqQuote[]
+
+  @@index([eventId], name: "rfqs_event_idx")
+  @@index([status], name: "rfqs_status_idx")
+  @@map("rfqs")
+}
+
+model RfqItem {
+  id       Int    @id @default(autoincrement())
+  rfqId    Int?   @map("rfq_id")
+  sku      String
+  unit     String
+  quantity Int
+  specs    String?
+
+  rfq Rfq? @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+
+  @@map("rfq_items")
+}
+
+model RfqRecipient {
+  id           Int       @id @default(autoincrement())
+  rfqId        Int?      @map("rfq_id")
+  vendorId     Int?      @map("vendor_id")
+  invitedAt    DateTime  @default(now()) @map("invited_at") @db.Timestamptz(6)
+  respondedAt  DateTime? @map("responded_at") @db.Timestamptz(6)
+
+  rfq    Rfq?    @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  vendor Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([rfqId, vendorId])
+  @@map("rfq_recipients")
+}
+
+model RfqQuote {
+  id            Int         @id @default(autoincrement())
+  rfqId         Int?        @map("rfq_id")
+  vendorId      Int?        @map("vendor_id")
+  status        QuoteStatus @default(pending)
+  quotedCents   BigInt?     @map("quoted_cents")
+  leadTimeDays  Int?        @map("lead_time_days")
+  validityDays  Int?        @default(14) @map("validity_days")
+  submittedAt   DateTime?   @map("submitted_at") @db.Timestamptz(6)
+  notes         String?
+
+  rfq    Rfq?    @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  vendor Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([rfqId, vendorId])
+  @@index([rfqId], name: "rfq_quotes_rfq_idx")
+  @@map("rfq_quotes")
+}

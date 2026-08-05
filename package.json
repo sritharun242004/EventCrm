@@ -1,0 +1,48 @@
+{
+  "name": "codashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Eventbot — Event Management CRM (CEO + Manager dashboards, RFQs, budgets, vendors, calendar)",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": "11.15.1"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:pull": "prisma db pull",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "psql \"$DATABASE_URL\" -f prisma/seed/seed.sql",
+    "test:smoke": "bash scripts/smoke.sh",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:report": "playwright show-report"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.0.0",
+    "@prisma/client": "7.0.0",
+    "next": "16.2.11",
+    "pg": "8.16.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@tailwindcss/postcss": "4.1.14",
+    "@types/node": "24.10.0",
+    "@types/pg": "8.15.5",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "prisma": "7.0.0",
+    "tailwindcss": "4.1.14",
+    "typescript": "5.9.3"
+  }
+}

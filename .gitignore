@@ -1,0 +1,21 @@
+node_modules
+.next
+.env
+.env.local
+.env.*.local
+.vercel
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+
+# Test output — generated per run
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Prisma generated client
+/prisma/generated/
+
+# Editor
+.vscode/
+.idea/
