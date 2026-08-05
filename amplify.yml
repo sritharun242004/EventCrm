@@ -1,0 +1,23 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        # Amplify's Amazon Linux image ships Node 22+ and corepack; use corepack
+        # to activate the pnpm version pinned by packageManager in package.json.
+        - corepack enable
+        - corepack prepare pnpm@11.15.1 --activate
+        - pnpm --version
+        - pnpm install --frozen-lockfile
+    build:
+      commands:
+        - pnpm db:generate
+        - pnpm build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
