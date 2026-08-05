@@ -56,9 +56,10 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
         <div className="mobile-drawer-head">
           <div className="brand-name">Event<em>bot</em></div>
           <button
-            className="dialog-close"
+            className="drawer-close"
             onClick={() => setOpen(false)}
             aria-label="Close navigation"
+            type="button"
           >
             ×
           </button>

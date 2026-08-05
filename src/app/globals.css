@@ -939,7 +939,7 @@ tbody tr.clickable { cursor: pointer; }
   font-family: var(--font-display); font-size: 22px; font-weight: 500;
   letter-spacing: -0.015em; color: var(--ink);
 }
-.dialog-close {
+.dialog-close, .drawer-close {
   width: 32px; height: 32px;
   display: grid; place-items: center;
   background: transparent; border: 1px solid var(--rule);
@@ -947,8 +947,12 @@ tbody tr.clickable { cursor: pointer; }
   cursor: pointer; border-radius: 2px;
   font-family: var(--font-sans);
 }
-.dialog-close:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.dialog-close:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.dialog-close:hover, .drawer-close:hover {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+.dialog-close:focus-visible, .drawer-close:focus-visible {
+  outline: 2px solid var(--brand); outline-offset: 2px;
+}
 .dialog-body { padding: 20px 24px; max-height: 70vh; overflow-y: auto; }
 .dialog-foot {
   padding: 14px 24px; border-top: 1px solid var(--rule);
