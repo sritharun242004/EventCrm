@@ -8,7 +8,14 @@
 set -uo pipefail
 
 BASE_URL="${1:-http://localhost:3003}"
-DB_URL="postgresql://neondb_owner:npg_5TYuyMB2bRLK@ep-falling-bird-ax497cc1-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DB_URL="${DATABASE_URL:-}"
+if [[ -z "$DB_URL" && -f "$(dirname "$0")/../.env.local" ]]; then
+  DB_URL=$(grep '^DATABASE_URL' "$(dirname "$0")/../.env.local" | cut -d'=' -f2- | tr -d '"')
+fi
+if [[ -z "$DB_URL" ]]; then
+  echo "ERROR: DATABASE_URL not set. Export it or add to .env.local." >&2
+  exit 1
+fi
 LOG_FILE="${DEV_LOG:-/tmp/eventbot-dev.log}"
 LOG_BASELINE="/tmp/eventbot-dev.log.baseline"
 
