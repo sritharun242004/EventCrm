@@ -1,0 +1,30 @@
+offering_id,vendor_id,vendor_name,category,sku,unit,base_price_inr,peak_multiplier,peak_price_inr,min_order,lead_time_days
+4,2,Loud & Clear PA,sound_av,Line-array PA 15kW,day,125000.000000000000,1.25,156250.00,1,7
+3,1,SonicWave Audio,sound_av,Digital mixer 32ch,day,12000.000000000000,1.20,14400.00,1,5
+1,1,SonicWave Audio,sound_av,Line-array PA 20kW,day,185000.000000000000,1.30,240500.00,1,10
+2,1,SonicWave Audio,sound_av,Wireless mic (Shure),day,1500.0000000000000000,1.20,1800.00,4,3
+5,3,Ironframe Rigging,stage,Modular stage 40x20,day,220000.000000000000,1.30,286000.00,1,14
+6,3,Ironframe Rigging,stage,Truss span 40ft,day,35000.000000000000,1.20,42000.00,1,7
+7,4,Skydeck Structures,stage,Custom stage build,day,320000.000000000000,1.35,432000.00,1,14
+10,6,DreamState Decor,decor,Themed set (regal),day,120000.000000000000,1.30,156000.00,1,10
+9,5,Petal & Vine,decor,Backdrop install,day,45000.000000000000,1.20,54000.00,1,7
+8,5,Petal & Vine,decor,Floral centrepieces,piece,2500.0000000000000000,1.15,2875.00,10,5
+12,7,RedRoll Carpets,carpet_flooring,Event floor cover,sqft,18.0000000000000000,1.10,19.80,500,3
+11,7,RedRoll Carpets,carpet_flooring,Red carpet run,sqft,32.0000000000000000,1.10,35.20,200,3
+13,8,LumenPro Lighting,lighting,Moving head fixtures x24,day,58000.000000000000,1.25,72500.00,1,7
+17,11,AquaSprings,water,20L water dispensers,piece,1200.0000000000000000,1.10,1320.00,5,2
+18,11,AquaSprings,water,500ml bottled water,piece,25.0000000000000000,1.10,27.50,500,2
+16,10,BiteBox Corporate,catering,Corporate lunch box,pax,550.0000000000000000,1.10,605.00,100,3
+14,9,Sattva Kitchens,catering,Buffet dinner (veg),pax,1200.0000000000000000,1.15,1380.00,100,5
+15,9,Sattva Kitchens,catering,Cocktail hour finger food,pax,850.0000000000000000,1.15,977.50,100,3
+28,19,BuildRight Contractors,contractor,Pipe and drape 100ft,day,12000.000000000000,1.15,13800.00,1,3
+27,19,BuildRight Contractors,contractor,Prefab back-of-house,day,42000.000000000000,1.20,50400.00,1,5
+29,20,CleanCrew Services,contractor,Post-event deep clean,day,15000.000000000000,1.10,16500.00,1,1
+22,14,SafeSquare Security,security,Bouncer 12-hour,pax,2800.0000000000000000,1.20,3360.00,8,3
+21,13,BookMyPass,ticketing,Ticketing platform (SaaS),day,18000.000000000000,1.00,18000.00,1,1
+20,12,LiveDesk Ticketing,ticketing,Gate scanner rental,piece,1500.0000000000000000,1.10,1650.00,2,3
+19,12,LiveDesk Ticketing,ticketing,Ticketing platform (SaaS),day,15000.000000000000,1.00,15000.00,1,1
+23,15,Prism Photo Studio,photography,Photo team (2 shooters),day,45000.000000000000,1.15,51750.00,1,5
+24,16,Reelframe Video,videography,Video team + edit,day,65000.000000000000,1.15,74750.00,1,7
+25,17,MoveIt Logistics,transport,32ft truck,day,18000.000000000000,1.10,19800.00,1,2
+26,18,PrintPress Signs,printing,12x8 backdrop print,piece,3500.0000000000000000,1.10,3850.00,1,3

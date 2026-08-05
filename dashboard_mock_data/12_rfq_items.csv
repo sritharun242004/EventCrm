@@ -1,0 +1,11 @@
+rfq_item_id,rfq_code,rfq_title,sku,unit,quantity,specs
+1,RFQ-2026-0031,Line-array PA + monitors for 14k,Line-array PA 20kW,day,1,L-Acoustics K2 or equivalent; 4-way delay stack; front-fill
+2,RFQ-2026-0031,Line-array PA + monitors for 14k,Wireless mic,day,8,Shure ULX-D / equivalent; UHF band cleared
+3,RFQ-2026-0031,Line-array PA + monitors for 14k,Digital mixer 32ch,day,2,FOH + monitor
+4,RFQ-2026-0032,F&B for 2200 across 3 days,Buffet lunch,pax,2200,Day 1 & 2 lunch; 3 cuisine types
+5,RFQ-2026-0032,F&B for 2200 across 3 days,Buffet dinner,pax,2200,Day 1 & 2 dinner; live counters
+6,RFQ-2026-0032,F&B for 2200 across 3 days,Coffee/tea stations,pax,2200,"All-day, 3 stations"
+7,RFQ-2026-0033,Stage + truss for winter festival,Modular stage 60x30,day,2,"Weather cover, snow-load rated"
+8,RFQ-2026-0033,Stage + truss for winter festival,Truss span 60ft,day,4,Rigging + safety cert
+9,RFQ-2026-0034,Ticketing platform + scanners,Ticketing platform,day,3,API + student ID verification
+10,RFQ-2026-0034,Ticketing platform + scanners,Gate scanner,piece,4,Handheld + kiosk mix

@@ -1,0 +1,7 @@
+market_id,market_event,organizer,event_type,city,starts_on,expected_attendees,estimated_ticket_price_inr,signal,notes
+1,Global SaaS India,IndieHackers Asia,tech_summit,Bengaluru,2026-09-04,3000,8500.0000000000000000,competitor,Overlaps with our Dev tracks
+2,India Live Music Awards,Music Circle,gala,Mumbai,2026-10-02,1200,12000.000000000000,partner,Possible co-production pitch
+3,South Wedding Week,Bridal Bureau,wedding,Chennai,2026-11-15,5000,5000.0000000000000000,opportunity,Vendor scouting worth doing
+6,CFO Roundtable APAC,Peer100,conference,Singapore,2026-11-20,400,32000.000000000000,partner,FinPeak likely referral
+4,Startup Grand Slam,YourStory,conference,Bengaluru,2026-12-06,8000,4000.0000000000000000,competitor,Same weekend as our Winter Fest
+5,Bharat Cultural Festival,Ministry of Culture,festival,Delhi,2027-01-26,20000,0.00000000000000000000,opportunity,RFP window Sep 2026

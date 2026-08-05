@@ -1,0 +1,10 @@
+recipient_id,rfq_code,vendor_id,vendor_name,contact_name,contact_phone,invited_at,responded_at,response_status
+2,RFQ-2026-0031,2,Loud & Clear PA,Suresh N.,+91 98410 20002,2026-08-05 08:33:17.693044+00,2026-08-04 09:14:00+00,responded
+3,RFQ-2026-0031,4,Skydeck Structures,Rehana M.,+91 99204 40004,2026-08-05 08:33:17.693044+00,,pending
+1,RFQ-2026-0031,1,SonicWave Audio,Deepak K.,+91 98452 10001,2026-08-05 08:33:17.693044+00,2026-08-03 03:42:00+00,responded
+5,RFQ-2026-0032,10,BiteBox Corporate,Neel M.,+91 98204 10010,2026-08-05 08:33:17.693044+00,,pending
+4,RFQ-2026-0032,9,Sattva Kitchens,Chef Raghav,+91 98800 90009,2026-08-05 08:33:17.693044+00,2026-08-05 05:33:00+00,responded
+6,RFQ-2026-0033,3,Ironframe Rigging,Vinay P.,+91 98862 30003,2026-08-05 08:33:17.693044+00,2026-08-05 02:52:00+00,responded
+7,RFQ-2026-0033,4,Skydeck Structures,Rehana M.,+91 99204 40004,2026-08-05 08:33:17.693044+00,,pending
+9,RFQ-2026-0034,13,BookMyPass,Sameer G.,+91 98202 13013,2026-08-05 08:33:17.693044+00,,pending
+8,RFQ-2026-0034,12,LiveDesk Ticketing,Priya B.,+91 90080 12012,2026-08-05 08:33:17.693044+00,,pending

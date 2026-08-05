@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Responsive CEO operations dashboard preview">
+  <title>Eventbot · CEO Operations Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="runbar">
+      <span class="runbar-mark">——</span><span id="run-date">TODAY</span><span>·</span>
+      <span id="run-time">00:00 IST</span><span>·</span><span class="live-dot">READY</span>
+      <span id="run-status">No live events loaded</span><span class="runbar-mark push">——</span>
+    </header>
+
+    <header class="topbar">
+      <button class="menu-button" id="menu-button" aria-label="Open navigation" aria-expanded="false">☰</button>
+      <a class="brand" href="#overview" data-page="overview">Event<em>bot</em><small>Console</small></a>
+      <label class="global-search">
+        <span>⌕</span><input id="global-search" type="search" placeholder="Find event, vendor, RFQ…" aria-label="Global search">
+        <kbd>⌘K</kbd>
+      </label>
+      <div class="top-actions">
+        <div class="view-toggle" aria-label="Dashboard view">
+          <button class="active" data-view="ceo">CEO</button><button data-view="manager">Manager</button>
+        </div>
+        <button class="icon-button" id="theme-button" aria-label="Toggle theme">☼</button>
+        <button class="avatar" title="Account">TK</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <nav>
+        <p>Programme</p>
+        <a class="active" href="#overview" data-page="overview"><span>Overview</span></a>
+        <a href="#events" data-page="events"><span>Events</span><b id="nav-events">0</b></a>
+        <a href="#calendar" data-page="calendar"><span>Calendar</span></a>
+        <p>Production</p>
+        <a href="#vendors" data-page="vendors"><span>Vendors</span><b id="nav-vendors">0</b></a>
+        <a href="#budgets" data-page="budgets"><span>Budgets</span></a>
+        <a href="#rfqs" data-page="rfqs"><span>RFQs</span><b id="nav-rfqs">0</b></a>
+        <a href="#teams" data-page="teams"><span>Teams</span><b id="nav-teams">0</b></a>
+        <p>Signals</p>
+        <a href="#reputation" data-page="reputation"><span>Reputation</span></a>
+        <a href="#market" data-page="market"><span>Market Intelligence</span></a>
+        <a href="#weddings" data-page="weddings"><span>Weddings</span></a>
+      </nav>
+      <div class="import-panel">
+        <span class="eyebrow">DATA SOURCE</span>
+        <strong id="file-count">Empty template</strong>
+        <label class="upload-button">Load CSV files<input id="csv-input" type="file" accept=".csv,text/csv" multiple></label>
+      </div>
+    </aside>
+    <button class="sidebar-scrim" id="sidebar-scrim" aria-label="Close navigation"></button>
+
+    <main class="main" id="main">
+      <section class="page active" id="page-overview" data-section="overview">
+        <div class="page-head">
+          <div><span class="eyebrow" id="overview-eyebrow">EXECUTIVE OVERVIEW</span><h1 id="overview-title">How the business is running</h1><p id="overview-subtitle">Revenue, programme, people and market signals in one operating view.</p></div>
+          <div class="page-actions"><button class="button secondary" id="refresh-button">Refresh</button><label class="button primary">Import data<input class="hidden-input" type="file" accept=".csv" multiple data-upload></label></div>
+        </div>
+
+        <div class="empty-banner" id="empty-banner"><strong>Dashboard template is ready.</strong><span>Load the supplied CSV files to replace empty states with live analysis.</span></div>
+
+        <div class="kpi-grid">
+          <article class="kpi"><span id="kpi-label-1">Booked Revenue</span><strong id="kpi-revenue">₹0</strong><small id="kpi-note-1">From events calendar</small></article>
+          <article class="kpi"><span id="kpi-label-2">Active Events</span><strong id="kpi-events">0</strong><small id="kpi-events-note">No programme loaded</small></article>
+          <article class="kpi"><span id="kpi-label-3">Budget Utilized</span><strong id="kpi-budget">0%</strong><small id="kpi-note-3">Actual versus planned</small></article>
+          <article class="kpi"><span id="kpi-label-4">Reputation</span><strong id="kpi-reputation">—</strong><small id="kpi-note-4">Composite review score</small></article>
+        </div>
+
+        <div class="content-grid split-main">
+          <article class="panel">
+            <header><div><span class="eyebrow" id="chart-eyebrow">FINANCIAL RUN RATE</span><h2 id="chart-title">Actual vs projected revenue</h2></div><span class="legend"><i class="actual"></i>Actual <i class="projected"></i>Projected</span></header>
+            <div class="bar-chart" id="revenue-chart" aria-label="Revenue chart"><div class="chart-empty">Revenue bars will appear after events data is loaded.</div></div>
+          </article>
+          <article class="panel">
+            <header><div><span class="eyebrow">PROGRAMME MIX</span><h2>Events by type</h2></div></header>
+            <div class="donut-wrap"><div class="donut" id="event-donut"><span><b>0</b>Total</span></div><div class="donut-legend" id="type-legend"><p>No event types loaded</p></div></div>
+          </article>
+        </div>
+
+        <div class="content-grid split-even">
+          <article class="panel table-panel">
+            <header><div><span class="eyebrow">NEXT ON THE RUNSHEET</span><h2>Upcoming events</h2></div><button class="text-button" data-go="events">View pipeline →</button></header>
+            <div class="table-scroll"><table><thead><tr><th>When</th><th>Event</th><th>Status</th><th class="number">Budget</th></tr></thead><tbody id="upcoming-body"><tr><td colspan="4" class="empty-cell">Load `03_events_calendar.csv` to see upcoming events.</td></tr></tbody></table></div>
+          </article>
+          <article class="panel">
+            <header><div><span class="eyebrow">OPERATING ALERTS</span><h2>Attention required</h2></div><span class="count-badge" id="alert-count">0</span></header>
+            <div id="alerts-list" class="alert-list"><div class="empty-card">No alerts can be calculated without data.</div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-calendar" data-section="calendar">
+        <div class="page-head"><div><span class="eyebrow">DAILY OPERATIONS</span><h1>Calendar</h1><p>Event dates, timings, venues and production blocks.</p></div><div class="page-actions"><button class="button secondary" id="prev-month">←</button><button class="button secondary" id="today-button">Today</button><button class="button secondary" id="next-month">→</button></div></div>
+        <article class="panel calendar-panel"><header><h2 id="calendar-title">Month</h2><div class="status-key"><span>● Live</span><span>● Production</span><span>● Confirmed</span></div></header><div class="calendar-weekdays"><b>MON</b><b>TUE</b><b>WED</b><b>THU</b><b>FRI</b><b>SAT</b><b>SUN</b></div><div class="calendar-grid" id="calendar-grid"></div></article>
+      </section>
+
+      <section class="page" id="page-data" data-section="data">
+        <div class="page-head"><div><span class="eyebrow" id="data-eyebrow">OPERATIONS</span><h1 id="data-title">Events</h1><p id="data-subtitle">Data explorer</p></div><div class="page-actions"><input class="table-search" id="table-search" type="search" placeholder="Filter this table"><button class="button secondary" id="export-button">Export view</button></div></div>
+        <div class="summary-strip" id="summary-strip"></div>
+        <article class="panel table-panel data-panel"><header><h2 id="table-title">Records</h2><span class="count-badge" id="record-count">0</span></header><div class="table-scroll"><table id="data-table"><thead></thead><tbody><tr><td class="empty-cell">Load the matching CSV template to display this section.</td></tr></tbody></table></div></article>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,61 +1,80 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Toast = { id: number; text: string; kind?: "ok" | "err" };
 
 let nextId = 1;
-const listeners = new Set<(t: Toast | { drop: number }) => void>();
+const listeners = new Set<(t: Toast) => void>();
 
-/**
- * Fire a toast. If a toast with the exact same text is already visible,
- * we bump its lifetime instead of stacking a duplicate. Cap of 3 visible
- * at a time — older ones fade out as new ones arrive.
- */
+/** Fire a toast. Dedupes by exact text — refires refresh the visible timer. */
 export function toast(text: string, kind?: "ok" | "err") {
   const t: Toast = { id: nextId++, text, kind };
   listeners.forEach((l) => l(t));
 }
 
 const MAX_VISIBLE = 3;
-const TTL_MS = 2400;
+const TTL_MS = 3000;
 
 export function ToastHost() {
   const [items, setItems] = useState<Toast[]>([]);
+  const timersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
   useEffect(() => {
-    const push = (msg: Toast | { drop: number }) => {
-      if ("drop" in msg) {
-        setItems((prev) => prev.filter((x) => x.id !== msg.drop));
-        return;
-      }
+    const clearTimer = (id: number) => {
+      const t = timersRef.current.get(id);
+      if (t) { clearTimeout(t); timersRef.current.delete(id); }
+    };
+
+    const dismiss = (id: number) => {
+      clearTimer(id);
+      setItems((prev) => prev.filter((x) => x.id !== id));
+    };
+
+    const push = (msg: Toast) => {
       setItems((prev) => {
-        // Dedupe: if the same text is already showing, drop the previous
-        // instance so it visually resets rather than stacking.
+        // Drop any prior toast with the same text (its timer is stale)
+        prev.filter((x) => x.text === msg.text).forEach((x) => clearTimer(x.id));
         const withoutDupes = prev.filter((x) => x.text !== msg.text);
-        // Enforce cap
+        // Enforce visible cap
+        const overflow = withoutDupes.slice(0, Math.max(0, withoutDupes.length - (MAX_VISIBLE - 1)));
+        overflow.forEach((x) => clearTimer(x.id));
         const trimmed = withoutDupes.slice(-(MAX_VISIBLE - 1));
         return [...trimmed, msg];
       });
-      // Auto-dismiss
-      setTimeout(() => {
-        listeners.forEach((l) => l({ drop: msg.id }));
-      }, TTL_MS);
+      // Start / restart auto-dismiss timer
+      timersRef.current.set(msg.id, setTimeout(() => dismiss(msg.id), TTL_MS));
     };
+
     listeners.add(push);
-    return () => { listeners.delete(push); };
+    // Expose a dismiss handler on the host element for click-to-close
+    (ToastHost as any)._dismiss = dismiss;
+    return () => {
+      listeners.delete(push);
+      timersRef.current.forEach((t) => clearTimeout(t));
+      timersRef.current.clear();
+    };
   }, []);
 
   return (
     <div className="toast-host">
       {items.map((t) => (
-        <div key={t.id} className={"toast " + (t.kind ?? "")}>{t.text}</div>
+        <button
+          key={t.id}
+          className={"toast " + (t.kind ?? "")}
+          onClick={() => (ToastHost as any)._dismiss?.(t.id)}
+          title="Dismiss"
+          type="button"
+        >
+          {t.text}
+          <span aria-hidden="true" style={{ marginLeft: 10, opacity: 0.55 }}>×</span>
+        </button>
       ))}
     </div>
   );
 }
 
-/** Placeholder button that emits a toast — useful for controls not yet wired up. */
+/** Placeholder button — emits a toast. */
 export function ActionButton({
   label,
   toastMsg,
@@ -71,7 +90,12 @@ export function ActionButton({
 }) {
   const cls = "btn" + (variant === "primary" ? " primary" : variant === "ghost" ? " ghost" : "");
   return (
-    <button className={cls + (className ? " " + className : "")} style={style} onClick={() => toast(toastMsg, "ok")}>
+    <button
+      className={cls + (className ? " " + className : "")}
+      style={style}
+      onClick={() => toast(toastMsg, "ok")}
+      type="button"
+    >
       {label}
     </button>
   );

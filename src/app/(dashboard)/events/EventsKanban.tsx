@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import type { EventStatus } from "@prisma/client";
 import { updateEventStatus } from "./actions";
 import { toast } from "@/components/ui/Toast";
@@ -20,6 +20,7 @@ type Card = {
   clientName: string | null;
   venueName: string | null;
   teamName: string | null;
+  teamId: number | null;
   startsOn: string;
   endsOn: string;
   projectedCents: number;
@@ -27,7 +28,7 @@ type Card = {
   budgetCents: number;
 };
 
-const COLS: Array<{ key: EventStatus; title: string; bucket: EventStatus[] }> = [
+const STATUS_COLS: Array<{ key: EventStatus; title: string; bucket: EventStatus[] }> = [
   { key: "lead",          title: "Lead",              bucket: ["lead"] },
   { key: "proposed",      title: "Proposed",          bucket: ["proposed"] },
   { key: "confirmed",     title: "Confirmed",         bucket: ["confirmed"] },
@@ -35,14 +36,33 @@ const COLS: Array<{ key: EventStatus; title: string; bucket: EventStatus[] }> = 
   { key: "completed",     title: "Completed",         bucket: ["completed", "wrap_up"] },
 ];
 
-export function EventsKanban({ cards: initialCards }: { cards: Card[] }) {
+export function EventsKanban({
+  cards: initialCards,
+  groupBy = "status",
+}: {
+  cards: Card[];
+  groupBy?: "status" | "team";
+}) {
   const [cards, setCards] = useState(initialCards);
   const [draggingId, setDraggingId] = useState<number | null>(null);
-  const [hoverCol, setHoverCol] = useState<EventStatus | null>(null);
+  const [hoverCol, setHoverCol] = useState<string | null>(null);
   const [saving, startSaving] = useTransition();
 
+  // ============ Team grouping (read-only, drag disabled) ============
+  const teamCols = useMemo(() => {
+    if (groupBy !== "team") return [];
+    const map = new Map<string, { key: string; title: string; items: Card[] }>();
+    cards.forEach((c) => {
+      const key = c.teamId != null ? String(c.teamId) : "unassigned";
+      const title = c.teamName ?? "Unassigned";
+      if (!map.has(key)) map.set(key, { key, title, items: [] });
+      map.get(key)!.items.push(c);
+    });
+    return [...map.values()].sort((a, b) => a.title.localeCompare(b.title));
+  }, [cards, groupBy]);
+
   function grouped(status: EventStatus) {
-    const b = COLS.find((c) => c.key === status)!.bucket;
+    const b = STATUS_COLS.find((c) => c.key === status)!.bucket;
     return cards.filter((c) => b.includes(c.status));
   }
 
@@ -61,7 +81,6 @@ export function EventsKanban({ cards: initialCards }: { cards: Card[] }) {
       setHoverCol(null);
       return;
     }
-    // Optimistic — move the card before the server confirms.
     const previous = card.status;
     setCards((prev) => prev.map((c) => (c.id === card.id ? { ...c, status: target } : c)));
     setDraggingId(null);
@@ -77,9 +96,52 @@ export function EventsKanban({ cards: initialCards }: { cards: Card[] }) {
     });
   }
 
+  // ============ TEAM VIEW ============
+  if (groupBy === "team") {
+    return (
+      <div className="kanban" data-view="team" style={{ gridTemplateColumns: `repeat(${Math.max(teamCols.length, 1)}, minmax(220px, 1fr))` }}>
+        {teamCols.map((col) => (
+          <div key={col.key} className="kanban-col">
+            <h4>
+              <span>{col.title}</span>
+              <span className="n">{col.items.length}</span>
+            </h4>
+            {col.items.map((e) => (
+              <Link
+                href={`/events/${e.code}`}
+                key={e.id}
+                className={`k-card st-${statusClass(e.status)}`}
+              >
+                <div className="flex between">
+                  <Pill kind={statusClass(e.status) as any} dot>{statusLabel(e.status)}</Pill>
+                  <span className="subtle">{e.code}</span>
+                </div>
+                <div className="k-title" style={{ marginTop: 6 }}>{e.name}</div>
+                <div className="k-meta">
+                  <span className="muted" style={{ fontSize: 11 }}>{typeLabel(e.type)}</span>
+                  <span className="subtle">·</span>
+                  <span className="muted" style={{ fontSize: 11 }}>{e.clientName ?? "—"}</span>
+                </div>
+                <div className="k-foot">
+                  <span>
+                    {fmtDate(e.startsOn)}
+                    {new Date(e.endsOn).getTime() !== new Date(e.startsOn).getTime() ? " — " + fmtDate(e.endsOn) : ""}
+                  </span>
+                  <b>{moneyShort(e.projectedCents)}</b>
+                </div>
+              </Link>
+            ))}
+            {col.items.length === 0 && <div className="col-empty">No events</div>}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // ============ STATUS VIEW (default, drag+drop) ============
   return (
-    <div className="kanban" data-saving={saving ? "1" : "0"}>
-      {COLS.map((c) => {
+    <div className="kanban" data-saving={saving ? "1" : "0"} data-view="status">
+      {STATUS_COLS.map((c) => {
         const list = grouped(c.key);
         const isTarget = hoverCol === c.key;
         return (
@@ -117,7 +179,6 @@ export function EventsKanban({ cards: initialCards }: { cards: Card[] }) {
                   }}
                   onDragEnd={onDragEnd}
                   onClick={(ev) => {
-                    // Suppress navigation immediately after a drop happens on the source card
                     if (draggingId != null) ev.preventDefault();
                   }}
                 >
@@ -146,9 +207,7 @@ export function EventsKanban({ cards: initialCards }: { cards: Card[] }) {
                 </Link>
               );
             })}
-            {list.length === 0 ? (
-              <div className="col-empty">Drop here to move</div>
-            ) : null}
+            {list.length === 0 && <div className="col-empty">Drop here to move</div>}
           </div>
         );
       })}

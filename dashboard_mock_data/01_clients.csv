@@ -1,0 +1,9 @@
+client_id,name,company,contact_email,contact_phone,industry,lifetime_value_inr,created_at
+1,Priya Menon,TEDx Bangalore,priya@tedxblr.org,+91 98450 11223,Media,1850000.000000000000,2026-08-05 08:33:07.706239+00
+2,Arjun Rao,NovaTech Systems,arjun@novatech.io,+91 98800 34567,SaaS,4200000.000000000000,2026-08-05 08:33:07.706239+00
+3,Ishaan Kapoor,Skyline Live,ishaan@skylinelive.in,+91 97390 55501,Music,7600000.000000000000,2026-08-05 08:33:07.706239+00
+4,Meera Iyer,InnovateX Foundation,meera@innovatex.org,+91 90080 22110,Non-profit,950000.000000000000,2026-08-05 08:33:07.706239+00
+5,Rohan Shetty,Coastal Brew Co.,rohan@coastalbrew.co,+91 98860 77012,F&B,480000.000000000000,2026-08-05 08:33:07.706239+00
+6,Aditi Verma,Ministry of Tourism,aditi.verma@gov.in,+91 98181 66009,Government,3100000.000000000000,2026-08-05 08:33:07.706239+00
+7,Sameer Nair,Zenith Weddings,sameer@zenithwed.com,+91 99400 88221,Weddings,2200000.000000000000,2026-08-05 08:33:07.706239+00
+8,Kavita Rao,FinPeak Advisors,kavita@finpeak.co,+91 98410 12345,Finance,1350000.000000000000,2026-08-05 08:33:07.706239+00

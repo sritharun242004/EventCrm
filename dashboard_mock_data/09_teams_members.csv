@@ -1,0 +1,18 @@
+team_id,team_name,focus,lead_name,headcount,member_id,member_name,role,skills,utilization_pct,rating_avg
+1,Aurora Live,Concerts & Festivals,Nikhil Bansal,8,2,Anjali Bhatia,Stage Manager,stage; riders,78,4.70
+1,Aurora Live,Concerts & Festivals,Nikhil Bansal,8,4,Divya Krishnan,Coordinator,logistics,70,4.50
+1,Aurora Live,Concerts & Festivals,Nikhil Bansal,8,3,Karan Malhotra,Sound Lead,audio; line-array,85,4.60
+1,Aurora Live,Concerts & Festivals,Nikhil Bansal,8,1,Nikhil Bansal,Head Producer,production; concerts; budgets,92,4.80
+1,Aurora Live,Concerts & Festivals,Nikhil Bansal,8,5,Rehan Ali,Lighting Designer,lighting; moving-head,65,4.90
+2,Meridian Corp,Corporate & Conferences,Ayesha Khan,6,6,Ayesha Khan,Head of Corporate,corporate; client-mgmt,88,4.90
+2,Meridian Corp,Corporate & Conferences,Ayesha Khan,6,9,Farah Mistry,Guest Experience,hospitality,70,4.70
+2,Meridian Corp,Corporate & Conferences,Ayesha Khan,6,8,Radha Sharma,AV Coordinator,av; projection,60,4.50
+2,Meridian Corp,Corporate & Conferences,Ayesha Khan,6,7,Vikas Nambiar,Producer,conferences,75,4.60
+5,Ops Command,"Operations, permits, safety",Vikram Sethi,4,17,Prithvi Rao,Vendor Ops,procurement,78,4.60
+5,Ops Command,"Operations, permits, safety",Vikram Sethi,4,15,Vikram Sethi,Ops Director,permits; safety,90,4.90
+5,Ops Command,"Operations, permits, safety",Vikram Sethi,4,16,Zoya Ahmed,Safety Officer,safety; crowd,55,4.80
+3,Signal Talks,"TEDx, Summits, Panels",Rahul Deshmukh,5,12,Aditya Menon,Coordinator,logistics; runsheet,72,4.60
+3,Signal Talks,"TEDx, Summits, Panels",Rahul Deshmukh,5,11,Naina Roy,Speaker Relations,comms,68,4.70
+3,Signal Talks,"TEDx, Summits, Panels",Rahul Deshmukh,5,10,Rahul Deshmukh,Curator/Producer,curation; speakers,82,4.80
+4,Vermillion Ceremonies,Weddings & Private,Sneha Pillai,4,14,Manav Grewal,Decor Lead,decor; floral,62,4.70
+4,Vermillion Ceremonies,Weddings & Private,Sneha Pillai,4,13,Sneha Pillai,Head Planner,weddings; decor,80,4.80

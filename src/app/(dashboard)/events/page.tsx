@@ -2,7 +2,6 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { PageHead } from "@/components/ui/PageHead";
 import { ChipLink } from "@/components/ui/ChipLink";
-import { ActionButton } from "@/components/ui/Toast";
 import { EventsKanban } from "./EventsKanban";
 import type { EventType } from "@prisma/client";
 
@@ -19,11 +18,12 @@ const FILTERS: Array<{ label: string; type?: EventType }> = [
   { label: "Festivals", type: "festival" },
 ];
 
-type Search = Promise<{ type?: string }>;
+type Search = Promise<{ type?: string; group?: string }>;
 
 export default async function EventsPage({ searchParams }: { searchParams: Search }) {
   const sp = await searchParams;
   const activeType = sp.type as EventType | undefined;
+  const groupBy: "status" | "team" = sp.group === "team" ? "team" : "status";
 
   const events = await db.event.findMany({
     where: activeType ? { type: activeType } : undefined,
@@ -40,12 +40,21 @@ export default async function EventsPage({ searchParams }: { searchParams: Searc
     clientName: e.client?.company ?? null,
     venueName: e.venue?.name ?? null,
     teamName: e.leadTeam?.name ?? null,
+    teamId: e.leadTeamId ?? null,
     startsOn: e.startsOn.toISOString(),
     endsOn: e.endsOn.toISOString(),
     projectedCents: Number(e.projectedRevenueCents),
     spentCents: Number(e.spentCents),
     budgetCents: Number(e.totalBudgetCents),
   }));
+
+  // Build the current groupBy toggle URL — preserve any active type filter
+  const toggleGroupHref = (() => {
+    const p = new URLSearchParams();
+    if (activeType) p.set("type", activeType);
+    if (groupBy === "status") p.set("group", "team");
+    return "/events" + (p.toString() ? `?${p.toString()}` : "");
+  })();
 
   return (
     <>
@@ -55,7 +64,12 @@ export default async function EventsPage({ searchParams }: { searchParams: Searc
         subtitle={`${events.length} events on the board. Drag any card to move it through the stages.`}
         actions={
           <>
-            <ActionButton label="Group by team" toastMsg="Grouping by team — coming soon" />
+            <Link
+              className={"btn " + (groupBy === "team" ? "primary" : "")}
+              href={toggleGroupHref}
+            >
+              {groupBy === "team" ? "Grouped by team ✓" : "Group by team"}
+            </Link>
             <Link className="btn primary" href="/calendar">New event</Link>
           </>
         }
@@ -65,15 +79,18 @@ export default async function EventsPage({ searchParams }: { searchParams: Searc
         {FILTERS.map((f) => (
           <ChipLink
             key={f.label}
-            href={f.type ? `/events?type=${f.type}` : "/events"}
+            href={
+              (f.type ? `/events?type=${f.type}` : "/events") +
+              (groupBy === "team" ? (f.type ? "&" : "?") + "group=team" : "")
+            }
             label={f.label}
             active={f.type ? activeType === f.type : !activeType}
           />
         ))}
       </div>
 
-      {/* Remount per filter so optimistic kanban state never leaks between URLs. */}
-      <EventsKanban key={activeType ?? "all"} cards={cards} />
+      {/* Remount per filter / grouping so optimistic kanban state doesn't leak between URLs. */}
+      <EventsKanban key={(activeType ?? "all") + ":" + groupBy} cards={cards} groupBy={groupBy} />
     </>
   );
 }

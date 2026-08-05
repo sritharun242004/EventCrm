@@ -1,0 +1,21 @@
+vendor_id,vendor_name,category,city,contact_name,contact_phone,rating,reliability_pct,preferred,notes
+1,SonicWave Audio,sound_av,Bengaluru,Deepak K.,+91 98452 10001,4.80,96,t,Owns L-Acoustics K2 rig
+2,Loud & Clear PA,sound_av,Chennai,Suresh N.,+91 98410 20002,4.50,89,f,""
+3,Ironframe Rigging,stage,Bengaluru,Vinay P.,+91 98862 30003,4.70,94,t,40x20 quick-assembly deck
+4,Skydeck Structures,stage,Mumbai,Rehana M.,+91 99204 40004,4.60,91,f,""
+5,Petal & Vine,decor,Bengaluru,Anushka R.,+91 90190 50005,4.90,97,t,Sustainable florals
+6,DreamState Decor,decor,Delhi,Bhaskar S.,+91 88820 60006,4.40,85,f,""
+7,RedRoll Carpets,carpet_flooring,Bengaluru,Farhan U.,+91 98455 70007,4.50,92,t,"Fire-rated, per-sqft"
+8,LumenPro Lighting,lighting,Bengaluru,Meher T.,+91 97404 80008,4.70,93,t,Moving head + intelligent
+11,AquaSprings,water,Bengaluru,Sridhar V.,+91 98456 11011,4.60,96,t,20L + bottled + stations
+9,Sattva Kitchens,catering,Bengaluru,Chef Raghav,+91 98800 90009,4.80,95,t,Veg / non-veg / jain
+10,BiteBox Corporate,catering,Mumbai,Neel M.,+91 98204 10010,4.50,88,f,""
+19,BuildRight Contractors,contractor,Bengaluru,Mohan L.,+91 98455 19019,4.60,92,t,"Prefab, pipe-drape, truss"
+20,CleanCrew Services,contractor,Bengaluru,Divya P.,+91 90070 20020,4.40,90,f,Pre & post cleaning
+14,SafeSquare Security,security,Bengaluru,Col. Iyer,+91 98862 14014,4.80,97,t,Trained bouncer teams
+12,LiveDesk Ticketing,ticketing,Bengaluru,Priya B.,+91 90080 12012,4.70,98,t,"API, gate-scan"
+13,BookMyPass,ticketing,Mumbai,Sameer G.,+91 98202 13013,4.40,90,f,""
+15,Prism Photo Studio,photography,Bengaluru,Zoya S.,+91 98454 15015,4.70,94,t,""
+16,Reelframe Video,videography,Bengaluru,Karan A.,+91 90000 16016,4.60,92,f,""
+17,MoveIt Logistics,transport,Bengaluru,Sunil K.,+91 98867 17017,4.50,91,f,Truck fleet + tempo
+18,PrintPress Signs,printing,Bengaluru,Ganesh N.,+91 90020 18018,4.50,89,f,"Banners, standees"

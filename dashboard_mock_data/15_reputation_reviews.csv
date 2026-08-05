@@ -1,0 +1,9 @@
+review_id,event_code,event_name,event_type,source,score,nps,quote,author,reviewed_on
+8,EVT-2026-0106,Coastal Brew Festival,festival,instagram,4.50,62,"Chill vibes, beer flowed, good bands.",D. Rao,2026-07-21
+7,EVT-2026-0105,Zenith: Kapoor–Menon Wedding,wedding,google,4.90,88,"Every detail thought through, flawless three days.",Family,2026-06-16
+6,EVT-2026-0104,InnovateX Impact Awards,gala,linkedin,4.60,66,A beautifully produced awards evening.,K. Menon,2026-06-01
+5,EVT-2026-0103,NovaTech DevSummit,tech_summit,email,4.70,71,"Genuinely useful conference, well-run tracks.",A. Verma,2026-04-21
+4,EVT-2026-0102,TEDx Bangalore 2026,tedx,google,4.80,79,Better than any TEDx I have attended abroad.,M. Iyer,2026-03-25
+3,EVT-2026-0102,TEDx Bangalore 2026,tedx,email,4.90,84,World-class curation and stagecraft.,S. Kumar,2026-03-24
+1,EVT-2026-0101,Skyline Live: Arijit Singh Tour,concert,google,4.80,74,Best-produced Arijit concert of the year in the city.,Rakesh V.,2026-02-16
+2,EVT-2026-0101,Skyline Live: Arijit Singh Tour,concert,instagram,4.90,82,"Sound was crystal, crowd management was flawless.",Neha S.,2026-02-15

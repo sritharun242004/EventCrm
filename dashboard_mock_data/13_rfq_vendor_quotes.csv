@@ -1,0 +1,8 @@
+quote_id,rfq_code,rfq_title,category,budget_ceiling_inr,vendor_id,vendor_name,rating,reliability_pct,preferred,quote_status,quoted_inr,ceiling_headroom_inr,lead_time_days,validity_days,submitted_at,notes
+2,RFQ-2026-0031,Line-array PA + monitors for 14k,sound_av,480000.000000000000,2,Loud & Clear PA,4.50,89,f,submitted,385000.000000000000,95000.000000000000,12,14,2026-08-04 09:14:00+00,V-DOSC alt; 2-day setup.
+1,RFQ-2026-0031,Line-array PA + monitors for 14k,sound_av,480000.000000000000,1,SonicWave Audio,4.80,96,t,shortlisted,445000.000000000000,35000.000000000000,10,14,2026-08-03 03:42:00+00,K2 rig + spare amps. Includes RF coord.
+3,RFQ-2026-0031,Line-array PA + monitors for 14k,sound_av,480000.000000000000,4,Skydeck Structures,4.60,91,f,pending,,,,14,,
+4,RFQ-2026-0032,F&B for 2200 across 3 days,catering,420000.000000000000,9,Sattva Kitchens,4.80,95,t,submitted,398000.000000000000,22000.000000000000,5,10,2026-08-05 05:33:00+00,Full menu deck attached. Live counters at ₹18k each.
+5,RFQ-2026-0032,F&B for 2200 across 3 days,catering,420000.000000000000,10,BiteBox Corporate,4.50,88,f,pending,,,,10,,
+6,RFQ-2026-0033,Stage + truss for winter festival,stage,480000.000000000000,3,Ironframe Rigging,4.70,94,t,submitted,475000.000000000000,5000.0000000000000000,14,14,2026-08-05 02:52:00+00,"Includes weather cover, snow-load cert."
+7,RFQ-2026-0033,Stage + truss for winter festival,stage,480000.000000000000,4,Skydeck Structures,4.60,91,f,pending,,,,14,,

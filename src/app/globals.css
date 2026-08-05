@@ -470,17 +470,10 @@ a.kpi:hover { background: var(--paper); }
 .row-2b { grid-template-columns: 1fr 1fr; }
 .row-3 { grid-template-columns: 1fr 1fr 1fr; }
 .row-4 { grid-template-columns: repeat(4, 1fr); }
-/* ============================================================
-   Responsive stack — mobile-first
-     ≥1100px : desktop as designed
-     <1100px : tablet — KPIs → 2-col, single-column card grids
-     <900px  : sidebar becomes off-canvas drawer, hamburger appears
-     <640px  : KPIs 1-col, kanban stacks, calendar compresses to dot
-               strips, tables allow horizontal scroll with a bleed
-     <400px  : role toggle hides, avatar shrinks, headline compacts
-   ============================================================ */
+/* Responsive stack lives at the very end of this file so the media
+   queries win specificity ties against later component styles. */
 
-/* Hamburger button (topbar) — hidden by default, shown <900px */
+/* Persistent (always-on) responsive scaffolding */
 .hamburger {
   display: none;
   border: 0; background: transparent; padding: 6px; cursor: pointer;
@@ -490,8 +483,6 @@ a.kpi:hover { background: var(--paper); }
 .hamburger span {
   display: block; width: 18px; height: 2px; background: var(--ink); margin: 2px 0;
 }
-
-/* Off-canvas drawer + scrim */
 .mobile-scrim {
   position: fixed; inset: 0; background: rgba(14, 20, 32, 0.5);
   z-index: 60; opacity: 0; pointer-events: none;
@@ -523,141 +514,6 @@ a.kpi:hover { background: var(--paper); }
 .mobile-drawer .nav-group-title { padding: 16px 20px 8px; }
 @media (prefers-reduced-motion: reduce) {
   .mobile-drawer, .mobile-scrim { transition: none; }
-}
-
-/* -------- ≤1100px : tablets -- */
-@media (max-width: 1100px) {
-  .row-2, .row-2b, .row-3, .row-4 { grid-template-columns: 1fr; }
-  .kpi-row { grid-template-columns: repeat(2, 1fr); }
-  .kpi { border-right: 0; border-bottom: 1px solid var(--rule); }
-  .kpi:last-child { border-bottom: 0; }
-  .main { padding: 24px 24px 60px; }
-  .page-head h1 { font-size: 32px; }
-}
-
-/* -------- ≤900px : sidebar becomes drawer -------- */
-@media (max-width: 900px) {
-  .app {
-    grid-template-columns: 1fr;
-    grid-template-rows: var(--runsheet-h) var(--topbar-h) 1fr;
-  }
-  .app > .sidebar { display: none; }
-  .topbar { grid-template-columns: 1fr auto; }
-  .brand {
-    padding: 0 12px;
-    border-right: 0;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .brand-tag { display: none; }
-  .hamburger { display: inline-flex; }
-  .search { display: none; }
-  .role-toggle button { padding: 0 10px; }
-}
-
-/* -------- ≤640px : phones -------- */
-@media (max-width: 640px) {
-  :root { --topbar-h: 56px; --runsheet-h: 30px; }
-
-  .kpi-row { grid-template-columns: 1fr; }
-  .kpi { padding: 16px 20px; }
-  .main { padding: 20px 16px 60px; }
-  .page-head {
-    grid-template-columns: 1fr;
-    padding-bottom: 16px; margin-bottom: 20px;
-  }
-  .page-head h1 { font-size: 26px; line-height: 1.1; }
-  .page-actions { flex-wrap: wrap; gap: 6px; }
-  .page-actions .btn { padding: 6px 10px; font-size: 12.5px; }
-
-  /* Kanban stacks vertically */
-  .kanban {
-    grid-template-columns: 1fr;
-    overflow-x: visible;
-    gap: 20px;
-  }
-  .k-card { padding: 12px 14px; }
-
-  /* Calendar: shrink cells, hide names, show colored strips */
-  .cal-cell { min-height: 64px; padding: 4px 6px; }
-  .cal-evt {
-    font-size: 0; padding: 0;
-    height: 3px; margin-top: 3px;
-    border-left: 0; background: var(--info);
-  }
-  .cal-evt.live { background: var(--live); }
-  .cal-evt.production { background: var(--warn); }
-  .cal-evt.completed { background: var(--ok); }
-  .cal-evt.proposed { background: var(--rule-strong); }
-  .cal-evt b { display: none; }
-  .cal-head div { padding: 6px 4px; font-size: 9px; }
-  .day-n { font-size: 10px; }
-
-  /* Vendors: rail on top, horizontal-scrolling */
-  .rail { grid-template-columns: 1fr; gap: 8px; }
-  .rail-list {
-    display: flex; overflow-x: auto; gap: 4px;
-    border-right: 0; border-bottom: 1px solid var(--rule);
-    padding-bottom: 4px;
-  }
-  .rail-item {
-    white-space: nowrap; padding: 8px 12px;
-    border-right: 0; border-bottom: 2px solid transparent;
-    margin-right: 0;
-  }
-  .rail-item.on {
-    border-right-color: transparent;
-    border-bottom-color: var(--brand);
-  }
-
-  /* Budget rows collapse */
-  .bud-row {
-    grid-template-columns: 1fr auto;
-    grid-template-areas: "cat pct" "meter meter" "actual planned";
-    gap: 6px 12px; padding: 12px 4px;
-  }
-  .bud-row .cat { grid-area: cat; }
-  .bud-row .pct { grid-area: pct; }
-  .bud-row > *:nth-child(2) { grid-area: meter; }
-
-  /* RunSheet condenses */
-  .runsheet {
-    font-size: 10px; padding: 0 12px; gap: 8px;
-    overflow-x: auto; white-space: nowrap; scrollbar-width: none;
-  }
-  .runsheet::-webkit-scrollbar { display: none; }
-  .runsheet .rs-dash { display: none; }
-
-  /* Dialog fills screen */
-  .dialog {
-    top: 0; left: 0; transform: none;
-    width: 100vw; height: 100vh; max-height: 100vh;
-    border: 0; display: flex; flex-direction: column;
-  }
-  .dialog.open { transform: none; }
-  .dialog-body { flex: 1; max-height: none; }
-
-  .review .quote { font-size: 15px; }
-  .legend { gap: 10px; font-size: 10px; }
-
-  /* Tables get a bleed for scroll */
-  .table-wrap { border-left: 0; border-right: 0; margin: 0 -16px; }
-  th, td { padding: 10px 12px; font-size: 12.5px; }
-
-  /* RFQ compare grid transforms to a stacked list */
-  .quote-grid { grid-template-columns: 1fr !important; }
-  .quote-grid .qh { border-right: 0; }
-  .quote-grid .qh:first-child { display: none; }
-  .quote-grid .qlabel { display: none; }
-  .quote-grid .qval { border-right: 0; }
-}
-
-/* -------- ≤400px : tiny phones -------- */
-@media (max-width: 400px) {
-  .brand-name { font-size: 17px; }
-  .avatar, .avatar-button { width: 28px; height: 28px; font-size: 9px; }
-  .role-toggle { display: none; }
-  .page-head h1 { font-size: 22px; }
-  .kpi .value { font-size: 30px; }
 }
 
 /* ---------- Pills — muted, editorial ---------- */
@@ -1042,11 +898,13 @@ tbody tr.clickable { cursor: pointer; }
 }
 .toast {
   background: var(--ink); color: var(--paper);
-  border-radius: 2px; padding: 10px 14px;
+  border: 0; border-radius: 2px; padding: 10px 14px;
   font-family: var(--font-sans); font-size: 13px; font-weight: 400;
   animation: toastIn 200ms ease both;
-  max-width: 320px;
+  max-width: 320px; cursor: pointer; text-align: left;
+  display: inline-flex; align-items: center;
 }
+.toast:hover { filter: brightness(1.15); }
 .toast.err { background: var(--brand); }
 .toast.ok  { background: var(--ok); }
 @keyframes toastIn {
@@ -1153,3 +1011,147 @@ tbody tr.clickable { cursor: pointer; }
 .login-submit { width: 100%; justify-content: center; margin-top: 4px; }
 .avatar-button { border: 0; cursor: pointer; font: inherit; }
 @media (max-width: 480px) { .login-panel { padding: 28px 22px; } }
+
+/* ============================================================
+   RESPONSIVE STACK (end of file so specificity ties resolve in
+   favour of the media query rules that appear last)
+     ≥1100 : desktop
+     <1100 : tablet — 2-col KPIs, single-col grids
+     <900  : sidebar → drawer, hamburger appears, search hides
+     <640  : phones — KPIs 1-col, kanban stacks, calendar → dots,
+             vendor rail becomes horizontal-scroll strip on top,
+             tables get a bleed, dialogs full-screen
+     <400  : tiny phones — role toggle hides
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .row-2, .row-2b, .row-3, .row-4 { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .kpi { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .kpi:last-child { border-bottom: 0; }
+  .main { padding: 24px 24px 60px; }
+  .page-head h1 { font-size: 32px; }
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--runsheet-h) var(--topbar-h) 1fr;
+  }
+  .app > .sidebar { display: none; }
+  .topbar { grid-template-columns: 1fr auto; }
+  .brand {
+    padding: 0 12px;
+    border-right: 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .brand-tag { display: none; }
+  .hamburger { display: inline-flex; }
+  .search { display: none; }
+  .role-toggle button { padding: 0 10px; }
+}
+
+@media (max-width: 640px) {
+  :root { --topbar-h: 56px; --runsheet-h: 30px; }
+
+  .kpi-row { grid-template-columns: 1fr; }
+  .kpi { padding: 16px 20px; }
+  .main { padding: 20px 16px 60px; }
+  .page-head {
+    grid-template-columns: 1fr;
+    padding-bottom: 16px; margin-bottom: 20px;
+  }
+  .page-head h1 { font-size: 26px; line-height: 1.1; }
+  .page-actions { flex-wrap: wrap; gap: 6px; }
+  .page-actions .btn { padding: 6px 10px; font-size: 12.5px; }
+
+  /* Kanban stacks vertically */
+  .kanban {
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+    gap: 20px;
+  }
+  .k-card { padding: 12px 14px; }
+
+  /* Calendar: shrink cells, hide event names, use color strips */
+  .cal-cell { min-height: 64px; padding: 4px 6px; }
+  .cal-evt {
+    font-size: 0; padding: 0;
+    height: 3px; margin-top: 3px;
+    border-left: 0; background: var(--info);
+  }
+  .cal-evt.live { background: var(--live); }
+  .cal-evt.production { background: var(--warn); }
+  .cal-evt.completed { background: var(--ok); }
+  .cal-evt.proposed { background: var(--rule-strong); }
+  .cal-evt b { display: none; }
+  .cal-head div { padding: 6px 4px; font-size: 9px; }
+  .day-n { font-size: 10px; }
+
+  /* Vendors: rail becomes a horizontal-scroll strip on top */
+  .rail { grid-template-columns: 1fr !important; gap: 8px; }
+  .rail-list {
+    display: flex !important; overflow-x: auto; gap: 4px;
+    border-right: 0 !important; border-bottom: 1px solid var(--rule);
+    padding: 0 0 4px 0;
+    scrollbar-width: none;
+  }
+  .rail-list::-webkit-scrollbar { display: none; }
+  .rail-item {
+    white-space: nowrap; padding: 8px 12px;
+    border-right: 0 !important;
+    border-bottom: 2px solid transparent;
+    margin-right: 0;
+  }
+  .rail-item.on {
+    border-right-color: transparent !important;
+    border-bottom-color: var(--brand);
+  }
+
+  /* Budget rows collapse */
+  .bud-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "cat pct" "meter meter" "actual planned";
+    gap: 6px 12px; padding: 12px 4px;
+  }
+  .bud-row .cat { grid-area: cat; }
+  .bud-row .pct { grid-area: pct; }
+  .bud-row > *:nth-child(2) { grid-area: meter; }
+
+  /* RunSheet condenses */
+  .runsheet {
+    font-size: 10px; padding: 0 12px; gap: 8px;
+    overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+  }
+  .runsheet::-webkit-scrollbar { display: none; }
+  .runsheet .rs-dash { display: none; }
+
+  /* Dialog goes full-screen */
+  .dialog {
+    top: 0 !important; left: 0 !important; transform: none !important;
+    width: 100vw !important; height: 100vh !important; max-height: 100vh !important;
+    border: 0; display: flex; flex-direction: column;
+  }
+  .dialog.open { transform: none !important; }
+  .dialog-body { flex: 1; max-height: none; }
+
+  .review .quote { font-size: 15px; }
+  .legend { gap: 10px; font-size: 10px; }
+
+  .table-wrap { border-left: 0; border-right: 0; margin: 0 -16px; }
+  th, td { padding: 10px 12px; font-size: 12.5px; }
+
+  .quote-grid { grid-template-columns: 1fr !important; }
+  .quote-grid .qh { border-right: 0; }
+  .quote-grid .qh:first-child { display: none; }
+  .quote-grid .qlabel { display: none; }
+  .quote-grid .qval { border-right: 0; }
+}
+
+@media (max-width: 400px) {
+  .brand-name { font-size: 17px; }
+  .avatar, .avatar-button { width: 28px; height: 28px; font-size: 9px; }
+  .role-toggle { display: none; }
+  .page-head h1 { font-size: 22px; }
+  .kpi .value { font-size: 30px; }
+}

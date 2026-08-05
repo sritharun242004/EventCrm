@@ -1,0 +1,11 @@
+sponsor_id,event_code,event_name,sponsor_name,tier,amount_inr,status
+4,EVT-2026-0102,TEDx Bangalore 2026,Infosys,Title,220000.000000000000,paid
+5,EVT-2026-0102,TEDx Bangalore 2026,Zerodha,Gold,120000.000000000000,paid
+1,EVT-2026-0103,NovaTech DevSummit,AWS,Title,350000.000000000000,paid
+2,EVT-2026-0103,NovaTech DevSummit,GitHub,Gold,180000.000000000000,paid
+3,EVT-2026-0103,NovaTech DevSummit,Datadog,Silver,90000.000000000000,paid
+6,EVT-2026-0110,Ministry of Tourism Global Meet,Air India,Title,450000.000000000000,signed
+7,EVT-2026-0110,Ministry of Tourism Global Meet,Taj Group,Gold,250000.000000000000,signed
+8,EVT-2026-0110,Ministry of Tourism Global Meet,Google APAC,Gold,220000.000000000000,signed
+9,EVT-2026-0112,Coastal Brew Winter Fest,Kingfisher,Title,280000.000000000000,signed
+10,EVT-2026-0112,Coastal Brew Winter Fest,Sula Vineyards,Gold,120000.000000000000,signed
