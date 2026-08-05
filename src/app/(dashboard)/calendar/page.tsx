@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { fmtDateFull, nf } from "@/lib/dates";
+import { fmtDate, fmtDateFull, nf } from "@/lib/dates";
 import { statusClass, statusLabel } from "@/lib/format";
 import { Pill } from "@/components/ui/Pill";
 import { CalendarClient } from "./CalendarClient";
@@ -16,18 +16,16 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
   const y = Number(sp.y ?? new Date().getFullYear());
   const m = Number(sp.m ?? new Date().getMonth());
 
-  const [events, venues, clients] = await Promise.all([
+  const [events, venues] = await Promise.all([
     db.event.findMany({
       include: { venue: true },
       orderBy: { startsOn: "asc" },
     }),
     db.venue.findMany({ orderBy: { name: "asc" } }),
-    db.client.findMany({ orderBy: { name: "asc" } }),
   ]);
 
   const todayIso = new Date().toISOString().slice(0, 10);
 
-  // Shape for the client component — plain JSON with pre-formatted time.
   const calEvents = events.map((e) => ({
     id: e.id,
     code: e.code ?? "",
@@ -37,7 +35,11 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
     endsOn: e.endsOn.toISOString(),
     startsAt: e.startsAt ? e.startsAt.toISOString() : null,
     time: e.startsAt
-      ? new Date(e.startsAt).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true }).replace(":00", "")
+      ? new Date(e.startsAt).toLocaleTimeString("en-IN", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        }).replace(":00", "")
       : null,
   }));
 
@@ -51,8 +53,6 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
         year={y}
         month={m}
         events={calEvents}
-        venues={venues.map((v) => ({ id: v.id, name: v.name, city: v.city }))}
-        clients={clients.map((c) => ({ id: c.id, name: c.name, company: c.company }))}
         todayIso={todayIso}
       />
 
@@ -60,7 +60,12 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
         <div className="card">
           <div className="card-head"><h3>Load-in schedule · next 30 days</h3></div>
           {nextEvents.map((e) => (
-            <Link key={e.id} href={`/events/${e.code}`} className="flex between clickable" style={{ padding: "10px 0", borderBottom: "1px solid var(--outline)" }}>
+            <Link
+              key={e.id}
+              href={`/events/${e.code}`}
+              className="flex between clickable"
+              style={{ padding: "10px 0", borderBottom: "1px solid var(--outline)" }}
+            >
               <div>
                 <b>{e.name}</b><br />
                 <span className="subtle">{e.venue?.name ?? "—"} · {fmtDateFull(e.startsOn)}</span>
@@ -74,7 +79,11 @@ export default async function CalendarPage({ searchParams }: { searchParams: Sea
           {venues.map((v) => {
             const cnt = events.filter((e) => e.venue?.id === v.id).length;
             return (
-              <div key={v.id} className="flex between" style={{ padding: "8px 0", borderBottom: "1px solid var(--outline)" }}>
+              <div
+                key={v.id}
+                className="flex between"
+                style={{ padding: "8px 0", borderBottom: "1px solid var(--outline)" }}
+              >
                 <div>
                   <b>{v.name}</b><br />
                   <span className="subtle">{v.city} · {nf.format(v.capacity ?? 0)} cap</span>

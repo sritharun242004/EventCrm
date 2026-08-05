@@ -694,6 +694,26 @@ tbody tr.clickable { cursor: pointer; }
 .cal-cell:nth-child(7n) { border-right: 0; }
 .cal-cell.oob { background: var(--paper); color: var(--ink-3); }
 .cal-cell.today { background: var(--wash); }
+/* Full-cell background click target for creating events. Sits behind
+   day-number + event chips; those get a higher z-index to stay clickable. */
+.cal-cell .cal-add {
+  position: absolute; inset: 0; z-index: 1; display: block;
+}
+.cal-cell .day-n, .cal-cell .cal-evt { position: relative; z-index: 2; }
+.cal-cell.clickable:hover { background: var(--wash); }
+.cal-cell.clickable.today:hover { background: color-mix(in srgb, var(--wash) 70%, var(--surface)); }
+
+/* New-event form page ─────────────────────────────── */
+.new-event-card { max-width: 720px; }
+.new-event-card .form-foot {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding-top: 16px; margin-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 640px) {
+  .new-event-card .form-foot { flex-direction: column-reverse; }
+  .new-event-card .form-foot .btn { width: 100%; justify-content: center; }
+}
 .cal-cell.today .day-n { color: var(--brand); font-weight: 600; }
 .day-n {
   font-family: var(--font-mono); font-size: 11px; font-weight: 500;
