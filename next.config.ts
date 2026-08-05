@@ -1,11 +1,29 @@
 import type { NextConfig } from "next";
+import path from "node:path";
 
 const config: NextConfig = {
   reactStrictMode: true,
-  // Do NOT set serverExternalPackages here — on Amplify's SSR compute, external
-  // packages are not guaranteed to be in the Lambda's node_modules. Letting
-  // Next bundle @prisma/client + @prisma/adapter-pg into the RSC chunks means
-  // every dynamic route can reach the DB at request time.
+
+  // Standalone output packages every runtime dep — including Prisma's engine
+  // files — into a self-contained .next/standalone folder that Amplify's
+  // Lambda can execute directly. Combined with the trace includes below, this
+  // makes sure @prisma/client + adapter + Query Engine binaries ship together.
+  output: "standalone",
+
+  // Mark Prisma as external so Next uses trace-file resolution instead of
+  // bundling it (Prisma's runtime does dynamic requires that don't bundle).
+  serverExternalPackages: ["@prisma/client", "@prisma/adapter-pg", "@prisma/engines"],
+
+  // Force the trace to include the pnpm-hoisted Prisma files even though
+  // they live under a hashed .pnpm path.
+  outputFileTracingIncludes: {
+    "/**/*": [
+      "./node_modules/.pnpm/**/@prisma/client/**",
+      "./node_modules/.pnpm/**/@prisma/adapter-pg/**",
+      "./node_modules/.pnpm/**/@prisma/engines/**",
+    ],
+  },
+
   typescript: {
     ignoreBuildErrors: false,
   },
