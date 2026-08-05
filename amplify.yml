@@ -12,6 +12,9 @@ frontend:
     build:
       commands:
         - pnpm db:generate
+        # Force-propagate runtime env vars to Next.js. Amplify sets these at
+        # build-time; Next reads .env.production at runtime, so pipe them through.
+        - env | grep -E '^(DATABASE_URL|DIRECT_URL|AUTH_EMAIL|AUTH_PASSWORD|AUTH_SECRET)=' > .env.production
         - pnpm build
   artifacts:
     baseDirectory: .next
