@@ -69,10 +69,11 @@ export function BudgetActions({
               <h3>Add budget line</h3>
               <button type="button" className="drawer-close" onClick={() => setOpen(false)} aria-label="Close">×</button>
             </div>
-            <div style={{ padding: "0 20px", marginTop: -8, marginBottom: 8 }}>
-              <span className="subtle">on <b style={{ color: "var(--ink)" }}>{eventName}</b></span>
-            </div>
-            <form action={submit} className="vendor-form">
+            <form action={submit}>
+              <div className="dialog-body vendor-form-body">
+                <div className="subtle" style={{ marginBottom: 12 }}>
+                  on <b style={{ color: "var(--ink)" }}>{eventName}</b>
+                </div>
               <div className="field-row">
                 <div className="field">
                   <label htmlFor="bl-category">Category *</label>
@@ -94,7 +95,8 @@ export function BudgetActions({
                 <label htmlFor="bl-notes">Notes</label>
                 <input id="bl-notes" name="notes" placeholder="e.g. Two-camera setup + drone" />
               </div>
-              <div className="vendor-form-foot">
+              </div>
+              <div className="dialog-foot">
                 <button type="button" className="btn" onClick={() => setOpen(false)}>Cancel</button>
                 <button type="submit" className="btn primary" disabled={saving}>
                   {saving ? "Saving…" : "Add line"}

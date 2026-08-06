@@ -63,7 +63,8 @@ export function MarketActions() {
               <h3>Add market signal</h3>
               <button type="button" className="drawer-close" onClick={() => setOpen(false)} aria-label="Close">×</button>
             </div>
-            <form action={submit} className="vendor-form">
+            <form action={submit}>
+              <div className="dialog-body vendor-form-body">
               <div className="field">
                 <label htmlFor="ms-name">Event name *</label>
                 <input id="ms-name" name="name" required placeholder="e.g. India Live Music Awards" />
@@ -122,7 +123,8 @@ export function MarketActions() {
                 <label htmlFor="ms-notes">Notes</label>
                 <textarea id="ms-notes" name="notes" rows={2} placeholder="e.g. RFP window opens August, worth pitching." />
               </div>
-              <div className="vendor-form-foot">
+              </div>
+              <div className="dialog-foot">
                 <button type="button" className="btn" onClick={() => setOpen(false)}>Cancel</button>
                 <button type="submit" className="btn primary" disabled={saving}>
                   {saving ? "Saving…" : "Add signal"}

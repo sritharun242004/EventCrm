@@ -104,7 +104,8 @@ function AddMemberDrawer({ teams, onClose }: { teams: Team[]; onClose: () => voi
 
   return (
     <DrawerShell title="Add team member" onClose={onClose}>
-      <form action={submit} className="vendor-form">
+      <form action={submit}>
+        <div className="dialog-body vendor-form-body">
         <div className="field">
           <label htmlFor="tm-name">Name *</label>
           <input id="tm-name" name="name" required placeholder="e.g. Priya Menon" />
@@ -138,7 +139,8 @@ function AddMemberDrawer({ teams, onClose }: { teams: Team[]; onClose: () => voi
           <label htmlFor="tm-skills">Skills (comma-separated)</label>
           <input id="tm-skills" name="skills" placeholder="production, audio, stage" />
         </div>
-        <div className="vendor-form-foot">
+        </div>
+        <div className="dialog-foot">
           <button type="button" className="btn" onClick={onClose}>Cancel</button>
           <button type="submit" className="btn primary" disabled={saving}>
             {saving ? "Saving…" : "Add member"}
@@ -179,7 +181,8 @@ function ReassignDrawer({
 
   return (
     <DrawerShell title="Reassign member" onClose={onClose}>
-      <form action={submit} className="vendor-form">
+      <form action={submit}>
+        <div className="dialog-body vendor-form-body">
         <div className="field">
           <label htmlFor="rs-member">Member *</label>
           <select id="rs-member" name="memberId" required defaultValue="">
@@ -200,7 +203,8 @@ function ReassignDrawer({
             ))}
           </select>
         </div>
-        <div className="vendor-form-foot">
+        </div>
+        <div className="dialog-foot">
           <button type="button" className="btn" onClick={onClose}>Cancel</button>
           <button type="submit" className="btn primary" disabled={saving}>
             {saving ? "Saving…" : "Reassign"}
