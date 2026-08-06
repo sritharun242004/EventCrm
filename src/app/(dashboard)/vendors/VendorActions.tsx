@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { categoryLabel } from "@/lib/format";
 import { toast } from "@/components/ui/Toast";
@@ -15,8 +16,11 @@ type VendorCategoryValue = (typeof categories)[number];
 
 export function VendorActions() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [saving, startSaving] = useTransition();
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -63,14 +67,19 @@ export function VendorActions() {
       <button className="btn" type="button" onClick={() => toast("CSV price-list import is not available yet", "err")}>Import price list</button>
       <button className="btn primary" type="button" aria-label="Open add vendor dialog" onClick={() => setOpen(true)}>Add vendor</button>
 
-      <button className={`dialog-scrim ${open ? "open" : ""}`} type="button" onClick={() => setOpen(false)} aria-label="Close add vendor dialog" />
-      <div className={`dialog vendor-dialog ${open ? "open" : ""}`} role="dialog" aria-modal="true" aria-labelledby="addVendorTitle" aria-hidden={!open}>
+      {mounted ? createPortal(<>
+        <button className={`dialog-scrim vendor-scrim ${open ? "open" : ""}`} type="button" onClick={() => setOpen(false)} aria-label="Close add vendor dialog" />
+        <div className={`vendor-dialog ${open ? "open" : ""}`} role="dialog" aria-modal="true" aria-labelledby="addVendorTitle" aria-describedby="addVendorDescription" aria-hidden={!open}>
         <div className="dialog-head">
-          <h3 id="addVendorTitle">Add vendor</h3>
+          <div>
+            <div className="vendor-dialog-kicker">Vendor directory</div>
+            <h3 id="addVendorTitle">Add vendor</h3>
+            <p id="addVendorDescription">Create a vendor profile and optionally add the first rate-card item.</p>
+          </div>
           <button type="button" className="dialog-close" onClick={() => setOpen(false)} aria-label="Close dialog">×</button>
         </div>
         <form action={submit} key={open ? "open" : "closed"}>
-          <div className="dialog-body">
+          <div className="dialog-body vendor-form-body">
             <div className="field-row">
               <div className="field"><label htmlFor="vendor-name">Vendor name</label><input id="vendor-name" name="name" required autoFocus placeholder="e.g. Northstar Production" /></div>
               <div className="field"><label htmlFor="vendor-category">Category</label><select id="vendor-category" name="category" defaultValue="sound_av">{categories.map((category) => <option key={category} value={category}>{categoryLabel(category)}</option>)}</select></div>
@@ -105,7 +114,8 @@ export function VendorActions() {
             <button type="submit" className="btn primary" disabled={saving}>{saving ? "Adding vendor…" : "Add vendor"}</button>
           </div>
         </form>
-      </div>
+        </div>
+      </>, document.body) : null}
     </>
   );
 }

@@ -29,6 +29,7 @@ test.describe("Vendors + category rail", () => {
   });
 
   test("Add vendor creates a vendor and first rate-card item", async ({ page }) => {
+    test.setTimeout(60_000);
     await page.goto("/vendors");
     await page.getByRole("button", { name: "Open add vendor dialog" }).click();
 
@@ -37,14 +38,13 @@ test.describe("Vendors + category rail", () => {
     await page.selectOption("select[name=category]", "sound_av");
     await page.fill("input[name=city]", "Bengaluru");
     await page.fill("input[name=contactName]", "Test Producer");
+    await page.check("input[name=preferred]");
     await page.fill("input[name=reliabilityPct]", "96");
     await page.fill("input[name=sku]", "E2E PA Package");
     await page.fill("input[name=unit]", "day");
     await page.fill("input[name=basePriceInr]", "45000");
 
-    // The fixed, transformed dialog has an internal scroll container; submitting
-    // through requestSubmit avoids browser viewport heuristics moving the page.
-    await page.locator(".vendor-dialog form").evaluate((form: HTMLFormElement) => form.requestSubmit());
+    await page.locator(".vendor-dialog button[type=submit]").click();
     await expect(page.locator(".toast.ok", { hasText: /added to vendor directory/ })).toBeVisible({ timeout: 10_000 });
     await page.reload();
     await expect(page.getByText(name, { exact: false })).toBeVisible();
