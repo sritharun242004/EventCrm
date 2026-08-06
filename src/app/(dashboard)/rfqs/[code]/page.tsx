@@ -9,6 +9,7 @@ import { Kpi, KpiRow } from "@/components/ui/Kpi";
 import { Pill } from "@/components/ui/Pill";
 import { Meter } from "@/components/ui/Meter";
 import { Card } from "@/components/ui/Card";
+import { AwardButton } from "./AwardButton";
 
 export const revalidate = 30;
 
@@ -49,11 +50,17 @@ export default async function RfqDetail({ params }: Props) {
         subtitle={`${categoryLabel(r.category)} · needed by ${fmtDate(r.neededBy)} · linked to ${r.event?.name ?? ""}`}
         actions={
           <>
-            <button className="btn">Duplicate</button>
-            <button className="btn">Send reminder</button>
-            <button className="btn primary" disabled={r.status === "awarded"}>
-              Award {lowest ? "· " + moneyShort(lowest.quotedCents) : ""}
-            </button>
+            {lowest && lowest.vendor ? (
+              <AwardButton
+                rfqId={r.id}
+                vendorId={lowest.vendor.id}
+                vendorName={lowest.vendor.name}
+                label={`Award · ${moneyShort(lowest.quotedCents)}`}
+                disabled={r.status === "awarded"}
+              />
+            ) : (
+              <button className="btn primary" disabled>Award (no bids)</button>
+            )}
           </>
         }
       />
@@ -240,14 +247,22 @@ export default async function RfqDetail({ params }: Props) {
         {r.quotes.map((q) => (
           <div className="qval" key={"a-" + q.id}>
             {q.status === "pending" ? (
-              <button className="btn ghost" style={{ padding: "4px 10px", fontSize: 12 }}>Nudge</button>
+              <span className="muted" style={{ fontSize: 12 }}>Waiting…</span>
             ) : q.status === "awarded" ? (
               <Pill kind="completed">Awarded</Pill>
-            ) : (
-              <button className="btn primary" style={{ padding: "4px 10px", fontSize: 12 }}>
-                {q === lowest ? "Award" : "Consider"}
-              </button>
-            )}
+            ) : q.status === "declined" ? (
+              <Pill kind="proposed">Declined</Pill>
+            ) : q.vendor ? (
+              <AwardButton
+                rfqId={r.id}
+                vendorId={q.vendor.id}
+                vendorName={q.vendor.name}
+                label={q === lowest ? "Award" : "Award anyway"}
+                variant={q === lowest ? "primary" : "ghost"}
+                size="sm"
+                disabled={r.status === "awarded"}
+              />
+            ) : null}
           </div>
         ))}
       </div>

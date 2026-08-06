@@ -5,6 +5,7 @@ import { PageHead } from "@/components/ui/PageHead";
 import { Kpi, KpiRow } from "@/components/ui/Kpi";
 import { Card } from "@/components/ui/Card";
 import { Meter } from "@/components/ui/Meter";
+import { BudgetActions } from "./BudgetActions";
 
 export const revalidate = 30;
 
@@ -79,8 +80,7 @@ export default async function BudgetsPage({ searchParams }: { searchParams: Sear
                 ))}
               </select>
             </form>
-            <button className="btn">Export CSV</button>
-            <button className="btn primary">Add line</button>
+            <BudgetActions eventId={evt.id} eventName={evt.name} />
           </>
         }
       />

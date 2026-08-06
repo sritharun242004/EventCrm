@@ -1,0 +1,13 @@
+import { chromium } from "@playwright/test";
+const b = await chromium.launch();
+const p = await (await b.newContext()).newPage();
+await p.goto("https://event.thebotcompany.in/login");
+await p.fill('input[name="email"]', "tarun@gmail.com");
+await p.fill('input[name="password"]', "tarun123");
+await p.click('button.btn.primary:has-text("Sign in"), button[type="submit"]:has-text("Sign in")');
+await p.waitForURL(/overview/, { timeout: 15000 });
+await p.goto("https://event.thebotcompany.in/vendors");
+const openBtn = await p.getByRole("button", { name: /Open add vendor dialog/i }).count();
+const addBtn = await p.locator("button", { hasText: "Add vendor" }).count();
+console.log("open-dialog buttons:", openBtn, "  'Add vendor' buttons:", addBtn);
+await b.close();

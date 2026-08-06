@@ -9,6 +9,7 @@ import { Kpi, KpiRow } from "@/components/ui/Kpi";
 import { Pill } from "@/components/ui/Pill";
 import { Meter } from "@/components/ui/Meter";
 import { Card } from "@/components/ui/Card";
+import { NoteEditor } from "./NoteEditor";
 
 export const revalidate = 30;
 
@@ -51,8 +52,6 @@ export default async function EventDetail({ params }: Props) {
         actions={
           <>
             <Link className="btn ghost" href="/events">← All events</Link>
-            <button className="btn">Export brief</button>
-            <button className="btn primary">Add note</button>
           </>
         }
       />
@@ -99,7 +98,7 @@ export default async function EventDetail({ params }: Props) {
 
       <div className="row row-2" style={{ marginBottom: 12 }}>
         <Card title="Highlight">
-          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55 }}>{evt.highlight ?? "—"}</p>
+          <NoteEditor eventId={evt.id} initial={evt.highlight} />
         </Card>
         <Card title="Duration">
           <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em" }}>

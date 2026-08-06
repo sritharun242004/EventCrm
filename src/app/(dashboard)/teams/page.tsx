@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { PageHead } from "@/components/ui/PageHead";
 import { Meter } from "@/components/ui/Meter";
 import { Pill } from "@/components/ui/Pill";
+import { TeamActions } from "./TeamActions";
 
 export const revalidate = 60;
 
@@ -12,18 +13,21 @@ export default async function TeamsPage() {
     db.event.findMany({ include: { leadTeam: true } }),
   ]);
 
+  const actionTeams = teams.map((t) => ({ id: t.id, name: t.name }));
+  const actionMembers = members.map((m) => ({
+    id: m.id,
+    name: m.name,
+    teamId: m.teamId,
+    teamName: m.team?.name ?? null,
+  }));
+
   return (
     <>
       <PageHead
         crumb="Team management"
         title="Teams"
         subtitle={`${teams.length} teams · ${members.length} people. Utilization, ratings, and current focus.`}
-        actions={
-          <>
-            <button className="btn">Reassign</button>
-            <button className="btn primary">Add member</button>
-          </>
-        }
+        actions={<TeamActions teams={actionTeams} members={actionMembers} />}
       />
 
       <div className="row row-3" style={{ marginBottom: 16 }}>

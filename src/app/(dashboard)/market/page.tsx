@@ -6,7 +6,7 @@ import { PageHead } from "@/components/ui/PageHead";
 import { Card } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";
 import { ChipLink } from "@/components/ui/ChipLink";
-import { ActionButton } from "@/components/ui/Toast";
+import { MarketActions } from "./MarketActions";
 
 export const revalidate = 60;
 
@@ -35,8 +35,7 @@ export default async function MarketPage({ searchParams }: { searchParams: Searc
         subtitle="Signals from competitor, partner, and opportunity events across the region."
         actions={
           <>
-            <ActionButton label="Import calendar" toastMsg="ICS import — coming soon" />
-            <ActionButton label="Add signal" toastMsg="Add signal form — coming soon" variant="primary" />
+            <MarketActions />
           </>
         }
       />
