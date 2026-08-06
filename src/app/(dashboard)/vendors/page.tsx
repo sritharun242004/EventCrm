@@ -5,6 +5,7 @@ import { categoryLabel } from "@/lib/format";
 import { PageHead } from "@/components/ui/PageHead";
 import { Meter } from "@/components/ui/Meter";
 import type { VendorCategory } from "@prisma/client";
+import { VendorActions } from "./VendorActions";
 
 // Vendor directory changes infrequently — cache the render for 60s.
 export const revalidate = 60;
@@ -41,12 +42,7 @@ export default async function VendorsPage({ searchParams }: { searchParams: Sear
         crumb="Vendor Directory"
         title="Vendors & Pricing"
         subtitle={`Rate cards, ratings, reliability — ${totalCount} vendors across ${allCategories.length} categories.`}
-        actions={
-          <>
-            <button className="btn">Import price list</button>
-            <button className="btn primary">Add vendor</button>
-          </>
-        }
+        actions={<VendorActions />}
       />
 
       <div className="rail">

@@ -34,3 +34,14 @@ export function purgeE2eEvents() {
     // ignore: table may not exist yet, or nothing to delete
   }
 }
+
+/** Delete only vendors created by the browser suite and their cascaded offerings. */
+export function purgeE2eVendors() {
+  const dbUrl = resolveDbUrl();
+  const cmd = `psql "${dbUrl}" -c "DELETE FROM vendors WHERE name LIKE 'E2E Vendor UI %'"`;
+  try {
+    execSync(cmd, { stdio: "pipe" });
+  } catch {
+    // Ignore cleanup failures when the database is unavailable.
+  }
+}

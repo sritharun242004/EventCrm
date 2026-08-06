@@ -999,6 +999,14 @@ tbody tr.clickable { cursor: pointer; }
   outline: 0; border-color: var(--ink);
 }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-row-3 { grid-template-columns: repeat(3, 1fr); }
+.vendor-dialog { width: min(680px, calc(100vw - 32px)); }
+.vendor-check { display: flex; align-items: flex-end; padding-bottom: 16px; }
+.vendor-check label { display: flex; align-items: center; gap: 8px; color: var(--ink); font: 500 13px var(--font-sans); letter-spacing: 0; text-transform: none; cursor: pointer; }
+.vendor-check input { width: auto; }
+.form-section-title { margin: 20px 0 12px; padding-top: 16px; border-top: 1px solid var(--rule); font: 600 11px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+.form-section-title span { color: var(--ink-3); font-weight: 400; margin-left: 6px; }
+@media (max-width: 640px) { .field-row, .field-row-3 { grid-template-columns: 1fr; gap: 0; } }
 
 /* ============================================================
    Motion polish — minimal, respects reduced-motion
