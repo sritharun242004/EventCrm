@@ -1,0 +1,22 @@
+import { NextResponse } from "next/server";
+import { getSessionUser } from "@/lib/auth";
+
+function extractJson(text:string) {
+  const clean=text.replace(/```json|```/g,"").trim(); const start=clean.indexOf("{"); const end=clean.lastIndexOf("}");
+  if(start<0||end<=start) throw new Error("The AI response did not contain complete JSON");
+  return JSON.parse(clean.slice(start,end+1));
+}
+
+export async function POST(request:Request) {
+  if(!await getSessionUser()) return NextResponse.json({error:"Unauthorized"},{status:401});
+  const key=process.env.ANTHROPIC_API_KEY; if(!key) return NextResponse.json({error:"ANTHROPIC_API_KEY is not configured"},{status:503});
+  const {brief,caseStudies,rateItems}=await request.json();
+  if(typeof brief!=="string"||brief.trim().length<30) return NextResponse.json({error:"A meaningful client brief is required"},{status:400});
+  const prompt=`You are the commercial director of a premium Indian event management agency. Turn the client enquiry into an impressive but truthful proposal draft. Use past events only as proof, never invent achievements. Use supplied rate items where relevant. Return ONLY valid compact JSON with keys: client, company, title, eventType, city, date, attendees (number), budget (number INR), objective (string), concept (string), scope (exactly 5 strings), lines (6-10 objects with name, quantity, unit, rate), proofIds (up to 3 numeric IDs), nextSteps (string).\n\nCLIENT ENQUIRY:\n${brief}\n\nPAST EVENTS:\n${JSON.stringify(caseStudies)}\n\nRATE ITEMS:\n${JSON.stringify(rateItems)}`;
+  try {
+    const response=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01"},body:JSON.stringify({model:process.env.ANTHROPIC_MODEL||"claude-sonnet-4-20250514",max_tokens:3000,temperature:.35,messages:[{role:"user",content:prompt}]})});
+    const data=await response.json(); if(!response.ok) return NextResponse.json({error:data?.error?.message||"Claude request failed"},{status:502});
+    const text=(data.content||[]).filter((block:{type:string})=>block.type==="text").map((block:{text:string})=>block.text).join("\n");
+    return NextResponse.json(extractJson(text));
+  } catch(error) { return NextResponse.json({error:error instanceof Error?error.message:"Proposal generation failed"},{status:500}); }
+}

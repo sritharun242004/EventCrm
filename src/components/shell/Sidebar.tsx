@@ -26,6 +26,7 @@ const NAV: Array<{
   {
     group: "Production",
     items: [
+      { href: "/proposals", label: "Proposal Factory" },
       { href: "/vendors",   label: "Vendors",  count: (c) => c.vendors },
       { href: "/budgets",   label: "Budgets"  },
       { href: "/rfqs",      label: "RFQs",     count: (c) => c.rfqs },
