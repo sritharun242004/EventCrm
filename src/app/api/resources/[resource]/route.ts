@@ -7,6 +7,14 @@ const resources = {
     filename: "EVENTBOT_DASHBOARD_BUILD_PROMPT.md",
     type: "text/markdown; charset=utf-8",
   },
+  mapping: {
+    filename: "CUSTOMIZE_DASHBOARD_WITH_MY_DATA.md",
+    type: "text/markdown; charset=utf-8",
+  },
+  starter: {
+    filename: "MY_EXECUTIVE_DASHBOARD_STARTER.html",
+    type: "text/html; charset=utf-8",
+  },
   data: {
     filename: "EVENTBOT_DASHBOARD_MOCK_DATA.xlsx",
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -24,9 +32,13 @@ export async function GET(_:Request,{params}:{params:Promise<{resource:string}>}
   try {
     const data=resource==="prompt"
       ? await readFile(path.join(process.cwd(),"ceo_dashboard_starter","CLAUDE_DASHBOARD_PROMPT.md"))
-      : resource==="csv"
-        ? await readFile(path.join(process.cwd(),"eventbot_dashboard_mock_data.zip"))
-        : await readFile(path.join(process.cwd(),"eventbot_dashboard_all_data.xlsx"));
+      : resource==="mapping"
+        ? await readFile(path.join(process.cwd(),"ceo_dashboard_starter","CLAUDE_DATA_MAPPING_PROMPT.md"))
+        : resource==="starter"
+          ? await readFile(path.join(process.cwd(),"eventbot_ceo_dashboard_preview.html"))
+          : resource==="csv"
+            ? await readFile(path.join(process.cwd(),"eventbot_dashboard_mock_data.zip"))
+            : await readFile(path.join(process.cwd(),"eventbot_dashboard_all_data.xlsx"));
     return new NextResponse(data,{headers:{
       "Content-Type":item.type,
       "Content-Disposition":`attachment; filename="${item.filename}"`,
