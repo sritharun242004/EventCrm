@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import PromptCopyPanel from "./PromptCopyPanel";
 
 // This public handoff page changes as the downloadable kit evolves. Keeping it
 // dynamic prevents a year-long immutable CloudFront response from hiding a new
@@ -14,7 +17,8 @@ export const metadata:Metadata={
 
 const tables=["Clients","Venues","Events & calendar","Vendor master","Vendor pricing","Vendor schedules","Budget lines","Budget summary","Teams & members","Assignments","RFQs","Quote comparison","Reputation","Market intelligence","Ticket pricing","Sponsors","Wedding events"];
 
-export default function PromptResourcesPage(){
+export default async function PromptResourcesPage(){
+  const prompt=await readFile(path.join(process.cwd(),"ceo_dashboard_starter","CLAUDE_DATA_MAPPING_PROMPT.md"),"utf8");
   return <main className="kit-page">
     <header className="kit-nav"><Link href="/" className="kit-brand">Event<em>bot</em><span>Bring your own data</span></Link><a href="#downloads" className="kit-nav-link">Download files ↓</a></header>
 
@@ -28,6 +32,8 @@ export default function PromptResourcesPage(){
       <article><div className="kit-file-top"><span className="kit-file-icon">XLSX</span><span>42 KB · Optional demo</span></div><h3>Populated sample data</h3><p>Use this only to demonstrate the workflow when an organisation is not ready to share its own information.</p><ul><li>19 connected data tables</li><li>Indian currency and dates</li><li>No private client information</li><li>Replaceable with their workbook</li></ul><a href="/api/resources/data" download>Download sample workbook <span>↓</span></a></article>
       <article><div className="kit-file-top"><span className="kit-file-icon">MD+</span><span>Advanced · Full rebuild</span></div><h3>Full product specification</h3><p>The detailed design and analytics brief for paid plans or coding assistants capable of rebuilding the dashboard from scratch.</p><ul><li>CEO and Operations views</li><li>Complete design system</li><li>All analytics modules</li><li>Optional for customization</li></ul><a href="/api/resources/prompt" download>Download full specification <span>↓</span></a></article>
     </div></section>
+
+    <PromptCopyPanel prompt={prompt}/>
 
     <section className="kit-paste"><div><div className="kit-eyebrow">PASTE THIS WITH THE FILES</div><h2>Keep the request small and direct.</h2></div><div className="kit-code"><span>CLAUDE INSTRUCTION</span><p>“Replace only the embedded DATA object in the attached minimal HTML using my Excel/CSV data and follow the Markdown instructions. Do not rebuild or add pages. Never invent missing values. Return one downloadable self-contained file named my_executive_dashboard.html before optional testing.”</p></div></section>
 
