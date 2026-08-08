@@ -19,6 +19,8 @@ Customize the supplied single-page HTML with my organisation's data. Do **not** 
 6. A short upcoming-project table: project, status, date, budget and collection percentage
 7. Team count, people count and overall utilization when available
 8. Four small market-review numbers: opportunities, competitor events, partner signals and estimated pipeline
+9. CEO attention: overdue collections, over-budget events, decisions awaiting approval and overloaded people
+10. Forward view: cash due in 30 days, projected gross margin, pipeline conversion, contracted value in the next 90 days, top-three client concentration and cancellation exposure
 
 Do not add vendor directories, detailed calendars, RFQ workspaces, reputation pages, long tables, operational forms, complex navigation, or extra analytics. This is a minimal CXO snapshot, not an operational application.
 
@@ -36,12 +38,22 @@ Inspect my sheets/files and map columns by meaning rather than exact spelling:
 - proposed/upcoming/planned → upcoming
 - owner/team/assignee/manager → team information
 - competitor/opportunity/partner/market → market signals
+- invoice due/due date/payment date/receivable ageing → cash due and overdue collections
+- cost/actual cost/spend versus approved budget → over-budget events and projected margin
+- approval/decision/blocker/escalation → decisions awaiting approval
+- utilization/capacity/allocation/workload → overloaded people; use above 85% only when no threshold is supplied
+- lead/proposal/qualified/confirmed/won → pipeline conversion
+- contracted/booked event value plus event date → next-90-day contracted value
+- client/account/customer revenue → top-three client revenue concentration
+- cancellation probability/value at risk/refundable exposure → cancellation exposure
 
 Handle Indian and international currency formats, percentages, blank cells and different date formats. Join sheets only when reliable IDs or names exist.
 
 ## Data integrity
 
 Never invent a value. Missing information must display as `Not available` or be omitted. Do not turn a blank field into zero. Calculate totals from the source records and retain the source-data date. Remove all demonstration values when real data is supplied.
+
+For derived metrics, calculate only when the required source fields are present and reliable. Do not use outstanding receivables as overdue collections unless a due date proves they are overdue. Do not treat projected revenue as contracted value. Do not manufacture cancellation probability, collection dates, margins, approvals or capacity thresholds.
 
 Only modify the `DATA` object already embedded near the bottom of the HTML unless a label genuinely needs to match the organisation's terminology. Preserve the existing responsive design and chart code.
 
