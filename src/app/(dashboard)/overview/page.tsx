@@ -108,7 +108,7 @@ export default async function Overview() {
           <>
             <ActionButton label="Export" toastMsg="Preparing CSV export…" />
             <ActionButton label="Share" toastMsg="Share link copied" />
-            <Link className="btn primary" href="/calendar">
+            <Link className="btn primary" href="/calendar/new">
               New event
             </Link>
           </>

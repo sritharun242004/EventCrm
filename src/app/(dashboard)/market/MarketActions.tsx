@@ -2,15 +2,19 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import { createMarketSignal } from "./actions";
 import { toast } from "@/components/ui/Toast";
 import { ActionButton } from "@/components/ui/Toast";
 
 export function MarketActions() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const [saving, startSaving] = useTransition();
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -55,13 +59,17 @@ export function MarketActions() {
         Add signal
       </button>
 
-      {open && (
+      {open && mounted ? createPortal(
         <>
-          <div className="vendor-scrim open" onClick={() => setOpen(false)} aria-hidden="true" />
+          <button className="dialog-scrim vendor-scrim open" type="button" onClick={() => setOpen(false)} aria-label="Close add market signal dialog" />
           <div ref={ref} className="vendor-dialog open" role="dialog" aria-modal="true" aria-label="Add market signal">
-            <div className="vendor-dialog-head">
-              <h3>Add market signal</h3>
-              <button type="button" className="drawer-close" onClick={() => setOpen(false)} aria-label="Close">×</button>
+            <div className="dialog-head">
+              <div>
+                <div className="vendor-dialog-kicker">Market intelligence</div>
+                <h3>Add market signal</h3>
+                <p>Track a competitor, partner or opportunity event for commercial follow-up.</p>
+              </div>
+              <button type="button" className="dialog-close" onClick={() => setOpen(false)} aria-label="Close add market signal dialog">×</button>
             </div>
             <form action={submit}>
               <div className="dialog-body vendor-form-body">
@@ -132,8 +140,7 @@ export function MarketActions() {
               </div>
             </form>
           </div>
-        </>
-      )}
+        </>, document.body) : null}
     </>
   );
 }

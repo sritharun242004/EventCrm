@@ -70,7 +70,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Searc
             >
               {groupBy === "team" ? "Grouped by team ✓" : "Group by team"}
             </Link>
-            <Link className="btn primary" href="/calendar">New event</Link>
+            <Link className="btn primary" href="/calendar/new">New event</Link>
           </>
         }
       />

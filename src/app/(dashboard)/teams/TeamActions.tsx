@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import { createTeamMember, reassignTeamMember } from "./actions";
 import { toast } from "@/components/ui/Toast";
 
@@ -53,6 +54,8 @@ function DrawerShell({
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
@@ -64,17 +67,22 @@ function DrawerShell({
       document.body.style.overflow = prev;
     };
   }, [onClose]);
-  return (
+  if (!mounted) return null;
+  return createPortal(
     <>
-      <div className="vendor-scrim open" onClick={onClose} aria-hidden="true" />
+      <button className="dialog-scrim vendor-scrim open" type="button" onClick={onClose} aria-label={`Close ${title}`} />
       <div ref={ref} className="vendor-dialog open" role="dialog" aria-modal="true" aria-label={title}>
-        <div className="vendor-dialog-head">
-          <h3>{title}</h3>
-          <button type="button" className="drawer-close" onClick={onClose} aria-label={`Close ${title}`}>×</button>
+        <div className="dialog-head">
+          <div>
+            <div className="vendor-dialog-kicker">Team management</div>
+            <h3>{title}</h3>
+            <p>{title === "Add team member" ? "Create a team profile with role, skills, utilization and performance rating." : "Move an existing team member to a different operating team."}</p>
+          </div>
+          <button type="button" className="dialog-close" onClick={onClose} aria-label={`Close ${title}`}>×</button>
         </div>
         {children}
       </div>
-    </>
+    </>, document.body
   );
 }
 
@@ -108,7 +116,7 @@ function AddMemberDrawer({ teams, onClose }: { teams: Team[]; onClose: () => voi
         <div className="dialog-body vendor-form-body">
         <div className="field">
           <label htmlFor="tm-name">Name *</label>
-          <input id="tm-name" name="name" required placeholder="e.g. Priya Menon" />
+          <input id="tm-name" name="name" required autoFocus placeholder="e.g. Priya Menon" />
         </div>
         <div className="field-row">
           <div className="field">
@@ -185,7 +193,7 @@ function ReassignDrawer({
         <div className="dialog-body vendor-form-body">
         <div className="field">
           <label htmlFor="rs-member">Member *</label>
-          <select id="rs-member" name="memberId" required defaultValue="">
+          <select id="rs-member" name="memberId" required defaultValue="" autoFocus>
             <option value="" disabled>Select a member</option>
             {members.map((m) => (
               <option key={m.id} value={m.id}>
