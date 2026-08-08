@@ -5,6 +5,45 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 
+const CATEGORIES = ["sound_av", "stage", "decor", "carpet_flooring", "lighting", "fnb", "water", "catering", "contractor", "security", "ticketing", "photography", "videography", "transport", "printing", "logistics"] as const;
+
+const createSchema = z.object({
+  eventId: z.coerce.number().int().positive().optional(),
+  title: z.string().trim().min(3, "Title is required").max(160),
+  category: z.enum(CATEGORIES),
+  neededBy: z.string().optional(),
+  budgetCeilingInr: z.coerce.number().min(0).optional(),
+  notes: z.string().trim().max(800).optional(),
+});
+
+export async function createRfq(input: z.input<typeof createSchema>) {
+  const user = await requireUser();
+  const parsed = createSchema.safeParse(input);
+  if (!parsed.success) return { ok: false as const, error: parsed.error.issues[0]?.message ?? "Invalid RFQ" };
+  const data = parsed.data;
+  try {
+    const year = new Date().getFullYear();
+    const code = `RFQ-${year}-${Date.now().toString().slice(-7)}`;
+    const rfq = await db.rfq.create({
+      data: {
+        code,
+        eventId: data.eventId,
+        title: data.title,
+        category: data.category,
+        neededBy: data.neededBy ? new Date(`${data.neededBy}T00:00:00.000Z`) : null,
+        budgetCeilingCents: data.budgetCeilingInr != null ? BigInt(Math.round(data.budgetCeilingInr * 100)) : null,
+        notes: data.notes || null,
+        createdBy: user.email,
+      },
+      select: { code: true },
+    });
+    revalidatePath("/rfqs");
+    return { ok: true as const, code: rfq.code! };
+  } catch (err) {
+    return { ok: false as const, error: err instanceof Error ? err.message : "RFQ creation failed" };
+  }
+}
+
 const awardSchema = z.object({
   rfqId: z.coerce.number().int().positive(),
   vendorId: z.coerce.number().int().positive(),

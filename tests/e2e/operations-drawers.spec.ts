@@ -41,6 +41,20 @@ test("market signal drawer uses the shared UI", async ({ page }) => {
   await expect(dialog.getByRole("button", { name: "Add signal" })).toBeVisible();
 });
 
+test("new RFQ opens a functional procurement drawer", async ({ page }) => {
+  await page.goto("/rfqs");
+  await page.getByRole("button", { name: "Open new RFQ dialog" }).click();
+  const dialog = await expectViewportDrawer(page, "New RFQ");
+  await expect(dialog.getByText("Procurement workspace")).toBeVisible();
+  await expect(page.locator("#rfq-title")).toBeFocused();
+  await page.locator("#rfq-title").fill("Browser-tested production RFQ");
+  await page.locator("#rfq-category").selectOption("stage");
+  await page.locator("#rfq-ceiling").fill("500000");
+  await expect(dialog.getByRole("button", { name: "Create draft RFQ" })).toBeEnabled();
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(dialog).toBeHidden();
+});
+
 test("team and market drawers are full screen on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/teams");

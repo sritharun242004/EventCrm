@@ -7,16 +7,17 @@ import { PageHead } from "@/components/ui/PageHead";
 import { Kpi, KpiRow } from "@/components/ui/Kpi";
 import { Pill } from "@/components/ui/Pill";
 import type { RfqStatus } from "@prisma/client";
+import { RfqActions } from "./RfqActions";
 
 export const revalidate = 30;
 
 const ORDER: RfqStatus[] = ["draft", "sent", "collecting", "comparing", "awarded"];
 
 export default async function RfqsPage() {
-  const rfqs = await db.rfq.findMany({
+  const [rfqs, events] = await Promise.all([db.rfq.findMany({
     include: { event: true, quotes: true },
     orderBy: { createdAt: "desc" },
-  });
+  }), db.event.findMany({ select: { id: true, name: true }, orderBy: { startsOn: "desc" }, take: 100 })]);
 
   const totalCeiling = sumPaise(rfqs, (r) => r.budgetCeilingCents);
   const allQuotes = rfqs.flatMap((r) => r.quotes);
@@ -33,10 +34,7 @@ export default async function RfqsPage() {
         title="Vendor RFQs"
         subtitle="Create requests, send to vendors, compare quotes side-by-side, and award — all in one flow."
         actions={
-          <>
-            <button className="btn">Templates</button>
-            <button className="btn primary">New RFQ</button>
-          </>
+          <RfqActions events={events} />
         }
       />
 
