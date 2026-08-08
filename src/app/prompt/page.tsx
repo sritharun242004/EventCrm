@@ -1,3 +1,1 @@
-import { redirect } from "next/navigation";
-
-export default function PromptAliasPage(){redirect("/propmt")}
+export { default, dynamic, metadata, revalidate } from "../propmt/page";

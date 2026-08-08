@@ -3,6 +3,10 @@ import type { NextConfig } from "next";
 const config: NextConfig = {
   reactStrictMode: true,
 
+  async redirects() {
+    return [{ source: "/propmt", destination: "/prompt", permanent: true }];
+  },
+
   // Standalone output packages every runtime dep — including Prisma's engine
   // files — into a self-contained .next/standalone folder that Amplify's
   // Lambda can execute directly. Combined with the trace includes below, this
