@@ -24,6 +24,7 @@ const config: NextConfig = {
     "/api/resources/**/*": [
       "./ceo_dashboard_starter/CLAUDE_DASHBOARD_PROMPT.md",
       "./eventbot_dashboard_all_data.xlsx",
+      "./eventbot_dashboard_mock_data.zip",
     ],
   },
 

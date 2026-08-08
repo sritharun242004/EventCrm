@@ -11,6 +11,10 @@ const resources = {
     filename: "EVENTBOT_DASHBOARD_MOCK_DATA.xlsx",
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   },
+  csv: {
+    filename: "EVENTBOT_DASHBOARD_CSV_TABLES.zip",
+    type: "application/zip",
+  },
 } as const;
 
 export async function GET(_:Request,{params}:{params:Promise<{resource:string}>}) {
@@ -20,7 +24,9 @@ export async function GET(_:Request,{params}:{params:Promise<{resource:string}>}
   try {
     const data=resource==="prompt"
       ? await readFile(path.join(process.cwd(),"ceo_dashboard_starter","CLAUDE_DASHBOARD_PROMPT.md"))
-      : await readFile(path.join(process.cwd(),"eventbot_dashboard_all_data.xlsx"));
+      : resource==="csv"
+        ? await readFile(path.join(process.cwd(),"eventbot_dashboard_mock_data.zip"))
+        : await readFile(path.join(process.cwd(),"eventbot_dashboard_all_data.xlsx"));
     return new NextResponse(data,{headers:{
       "Content-Type":item.type,
       "Content-Disposition":`attachment; filename="${item.filename}"`,

@@ -1,18 +1,17 @@
-# CEO Operations Dashboard — Claude Build Brief
+# Eventbot CEO Operations Dashboard — Claude Build Brief
 
 ## 1. Objective
 
 Build a polished, responsive operations dashboard for the CEO of an event and human-management agency. The dashboard must help the CEO and operations team plan daily work, block calendars, manage events, compare vendors, control budgets, monitor teams, evaluate RFQs, track reputation, and understand competitors.
 
-The deliverable must run as a simple HTML application on a laptop without requiring a complex backend. It must work well on desktop, tablet, and mobile. Use the supplied empty CSV templates as the data contract. When populated CSV files are supplied later, the dashboard should load and analyze them without changing the interface code.
+The deliverable must run as a polished HTML application on a laptop without requiring a complex backend. It must work well on desktop, tablet, and mobile. Use the supplied populated Excel workbook as the demonstration data source. Every KPI, chart, calendar, table and insight must be calculated from the workbook rows—do not replace the supplied values with zeros or empty states.
 
 ## 2. Files supplied with this brief
 
-- `eventbot_empty_dashboard_template.xlsx`: one empty workbook with a Contents sheet and 19 header-only data sheets.
-- `empty_csv_templates/`: the same 19 tables as individual header-only CSV files.
-- `CLAUDE_DASHBOARD_PROMPT.md`: this specification and reusable prompt.
+- `EVENTBOT_DASHBOARD_MOCK_DATA.xlsx`: one populated workbook containing 19 connected data tables for clients, events, calendars, vendors, pricing, budgets, RFQs, teams, reviews, competitors, weddings, tickets and sponsors.
+- `EVENTBOT_DASHBOARD_BUILD_PROMPT.md`: this specification and reusable build prompt.
 
-The files intentionally contain no private business data. The CEO can populate them manually or export matching data from another system.
+The workbook contains realistic mock records, not private business data. Use every relevant populated sheet to create an immediately impressive working preview. The organisation can replace those rows later with its own data using the same headers.
 
 ## 3. Required output
 
@@ -20,10 +19,11 @@ Create a self-contained dashboard project with:
 
 ```text
 dashboard/
+  eventbot_dashboard.html       # fully working standalone preview
   index.html
   styles.css
   app.js
-  data/                    # populated CSV files go here
+  data/                    # converted workbook tables, if separate files are needed
   README.md
 ```
 
@@ -33,7 +33,7 @@ Prefer plain HTML, modern CSS, and vanilla JavaScript. Small browser-safe librar
 - Chart.js or Apache ECharts for charts.
 - SheetJS only if direct `.xlsx` import is implemented.
 
-The dashboard must still display a useful empty state when no CSV rows are present. Do not invent live business numbers in empty mode.
+The first launch must display the supplied mock figures, charts, calendars and insights immediately. Do not ship a preview whose main KPIs show zero. Also implement a useful empty state for the future case where an organisation removes all rows.
 
 ## 4. User roles and primary workflow
 
@@ -222,9 +222,11 @@ Required adaptations:
 - Dialogs become near-full-screen bottom sheets on mobile.
 - Navigation, dialogs, filters and tables must be keyboard accessible.
 
-## 9. CSV data rules
+## 9. Workbook and data rules
 
-- Load each CSV by its supplied filename.
+- Inspect every workbook sheet and header before coding.
+- Load the supplied `.xlsx` workbook directly with SheetJS, or convert each sheet into an embedded JavaScript data table during the build.
+- The final standalone HTML must include or embed the demonstration data so it works when opened with a double-click; it must not fail because browsers block local `fetch()` calls.
 - Use `event_code`, `vendor_id`, `member_id`, `rfq_code`, `team_id` and `tier_id` as relationship keys.
 - Treat blank cells as unknown, not zero.
 - Columns ending in `_inr` are Indian rupees.
@@ -233,7 +235,7 @@ Required adaptations:
 - Use Indian number formatting: `₹12,34,567`, lakhs and crores for compact KPIs.
 - Validate headers and display a friendly error identifying missing columns.
 - Escape all imported text before rendering it into HTML.
-- Never execute HTML or JavaScript contained in CSV cells.
+- Never execute HTML or JavaScript contained in workbook cells.
 
 ## 10. Interactions
 
@@ -260,7 +262,7 @@ Required adaptations:
 
 ## 12. Suggested build sequence and time plan
 
-1. **Data loading and validation — 1–2 hours:** parse all CSVs, normalize values and build relationships.
+1. **Data loading and validation — 1–2 hours:** parse all workbook sheets, normalize values and build relationships.
 2. **Responsive shell and design tokens — 1–2 hours:** navigation, themes, typography and layouts.
 3. **Overview, events and calendar — 3–4 hours:** daily operational core.
 4. **Vendors, budgets and RFQs — 3–4 hours:** procurement and financial analysis.
@@ -272,22 +274,24 @@ Expected first complete prototype: approximately 12–17 focused development hou
 ## 13. Copy-ready master prompt for Claude
 
 ```text
-You are a senior frontend engineer and data-visualization designer. Build a production-quality, responsive CEO operations dashboard using the attached CLAUDE_DASHBOARD_PROMPT.md and the supplied empty CSV templates.
+You are a senior frontend engineer, executive-product designer and data-visualization specialist. Build a production-quality, responsive CEO operations dashboard using the attached EVENTBOT_DASHBOARD_BUILD_PROMPT.md and EVENTBOT_DASHBOARD_MOCK_DATA.xlsx workbook.
 
-Create a portable HTML/CSS/JavaScript project that runs locally on a laptop. Use the exact CSV filenames and headers as the data contract. The files may initially contain only headers, so implement polished empty states and never fabricate business results. When rows are later added, all KPIs, charts, tables, calendars, filters and comparisons must calculate automatically from the CSV data.
+First inspect every workbook sheet, column and relationship. Use the supplied populated rows to calculate every KPI, infographic, chart, alert, comparison and calendar block. The initial preview must be rich with meaningful data; do not show zero-value KPI cards or empty charts when corresponding workbook rows exist.
 
-Implement Overview, Events, Calendar, Vendors, Budgets, RFQs, Teams, Reputation, Market Intelligence and Weddings. Include all specified infographics, CEO/Operations role switching, light/dark themes, global search, filters, event detail views and responsive behavior.
+Create both a well-organised HTML/CSS/JavaScript project and a self-contained `eventbot_dashboard.html` that can be opened directly on a laptop. Embed the parsed demonstration data in the standalone file so it works without a server, package manager or local-file `fetch()` permission. Preserve the workbook headers as the future data contract.
 
-Follow the supplied design tokens and typography: Fraunces for display headings, IBM Plex Sans for interface text and IBM Plex Mono for IDs/times/financial values, with offline-safe fallbacks. Use semantic HTML, WCAG AA contrast, visible keyboard focus, reduced-motion support and safe CSV rendering.
+Implement Overview, Events, Calendar, Vendors, Budgets, RFQs, Teams, Reputation, Market Intelligence and Weddings. Include all specified infographics, CEO/Operations role switching, light/dark themes, global search, filters, event detail views and responsive behavior. Surface decision-ready observations such as budget risk, vendor reliability, RFQ response gaps, team overload, revenue trajectory, upcoming conflicts and market opportunities.
 
-Do not leave dead buttons. Every visible control must work, or be disabled with an explicit explanation. Test at 375×812, 768×1024, 1366×768 and 1440×900. Provide a README with exact local-run instructions and explain where the populated CSV files should be placed.
+Follow the supplied design tokens and typography: Fraunces for display headings, IBM Plex Sans for interface text and IBM Plex Mono for IDs, times and financial values, with offline-safe fallbacks. The visual quality should feel like a premium executive operating console: editorial, calm, trustworthy and information-dense. Use semantic HTML, WCAG AA contrast, visible keyboard focus, reduced-motion support and safe workbook rendering.
 
-First inspect every supplied CSV header and summarize the relationships. Then present the implementation plan. After that, create the complete project files and verify every route, button, filter, dialog and responsive layout.
+Do not leave dead buttons. Every visible control must work, or be disabled with an explicit explanation. Test at 375×812, 768×1024, 1366×768 and 1440×900. Verify that the standalone HTML opens directly and displays populated data at every size. Provide a README with exact instructions for opening the preview and replacing the mock workbook with organisation data.
+
+Before coding, report the workbook sheets found, row counts, important relationships and the executive insights you plan to surface. Then present the implementation plan. After that, create the complete files, generate the standalone HTML, and verify every section, button, filter, dialog, calculation and responsive layout. Finish by listing the calculated headline KPIs so we can confirm the workbook was loaded successfully.
 ```
 
 ## 14. Acceptance checklist
 
-- [ ] Loads all supplied CSV tables or shows actionable empty states.
+- [ ] Loads all supplied workbook tables and shows populated mock insights on first launch.
 - [ ] All 10 dashboard sections are available.
 - [ ] Calendar blocks display dates and IST times correctly.
 - [ ] Vendor schedules, rate cards and RFQ comparisons are linked.
