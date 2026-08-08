@@ -4,14 +4,14 @@
 
 Build a polished, responsive operations dashboard for the CEO of an event and human-management agency. The dashboard must help the CEO and operations team plan daily work, block calendars, manage events, compare vendors, control budgets, monitor teams, evaluate RFQs, track reputation, and understand competitors.
 
-The deliverable must run as a polished HTML application on a laptop without requiring a complex backend. It must work well on desktop, tablet, and mobile. Use the supplied populated Excel workbook as the demonstration data source. Every KPI, chart, calendar, table and insight must be calculated from the workbook rows—do not replace the supplied values with zeros or empty states.
+The deliverable must run as a polished HTML application on a laptop without requiring a complex backend. It must work well on desktop, tablet, and mobile. Use the supplied populated Excel workbook as the demonstration data source, not as a rigid schema that every organisation must follow. Every KPI, chart, calendar, table and insight must be calculated from available rows—do not replace missing information with zeros or invent results.
 
 ## 2. Files supplied with this brief
 
 - `EVENTBOT_DASHBOARD_MOCK_DATA.xlsx`: one populated workbook containing 19 connected data tables for clients, events, calendars, vendors, pricing, budgets, RFQs, teams, reviews, competitors, weddings, tickets and sponsors.
 - `EVENTBOT_DASHBOARD_BUILD_PROMPT.md`: this specification and reusable build prompt.
 
-The workbook contains realistic mock records, not private business data. Use every relevant populated sheet to create an immediately impressive working preview. The organisation can replace those rows later with its own data using the same headers.
+The workbook contains realistic mock records, not private business data. Use every relevant populated sheet to create an immediately impressive working preview. Real organisations may later upload Excel or CSV files with different sheet names, column names, table structures, date formats and only some categories of data. The dashboard must profile, map and adapt to those files rather than failing or requiring an exact Eventbot export.
 
 ## 3. Required output
 
@@ -222,7 +222,51 @@ Required adaptations:
 - Dialogs become near-full-screen bottom sheets on mobile.
 - Navigation, dialogs, filters and tables must be keyboard accessible.
 
-## 9. Workbook and data rules
+## 9. Flexible bring-your-own-data behavior
+
+The Eventbot workbook is a complete demonstration dataset. It is not a mandatory template for every user. The generated dashboard must also work when a CEO or COO supplies different or incomplete files.
+
+### Data discovery
+
+- Accept `.xlsx`, `.xls` and one or more `.csv` files through a visible Import Data workflow.
+- Inspect all sheets/files, headers, types, sample values and row counts before choosing dashboard modules.
+- Automatically classify likely entities such as events, clients, vendors, budgets, invoices, teams, calendars, tasks, reviews, proposals, sales pipeline and competitors.
+- Match column aliases case-insensitively and ignore punctuation, spacing and underscore differences.
+- Recognize common aliases, for example:
+  - event name: `event_name`, `event`, `project`, `programme`, `program_name`
+  - date: `starts_on`, `event_date`, `start_date`, `date`, `scheduled_for`
+  - revenue: `booked_revenue_inr`, `revenue`, `value`, `amount`, `sales`, `contract_value`
+  - budget: `total_budget_inr`, `budget`, `planned_cost`, `estimated_cost`
+  - actual spend: `spent_inr`, `actual`, `actual_cost`, `expenses`, `cost`
+  - status: `status`, `stage`, `pipeline_stage`, `event_status`
+  - attendance: `confirmed_attendees`, `attendees`, `guests`, `pax`, `participants`
+- Infer types from values when headers are unclear, but show the proposed mapping before applying it.
+- Provide a simple mapping screen where the user can confirm, change or skip each detected field.
+- Persist confirmed mappings in local storage for the next import on that device.
+
+### Partial and missing data
+
+- Build the richest dashboard supported by the available data; do not require all 19 Eventbot tables.
+- If only events and revenue exist, provide a strong executive overview, pipeline, event mix, trend and calendar.
+- If budgets are missing, omit budget-utilisation claims and show “Budget data not supplied” with an Import Data action.
+- If vendors are missing, hide vendor rankings and show an optional setup card instead of an empty table.
+- If dates are missing, provide list and pipeline views but do not fabricate a calendar.
+- If ratings or reviews are missing, omit reputation scores instead of showing `0 / 5`.
+- Treat blank, invalid and unavailable cells as unknown—not zero.
+- Never calculate ratios whose denominator is missing or zero.
+- Every KPI must display its source table, row count and calculation in a tooltip or details panel.
+- Add a Data Coverage panel listing available modules, unavailable modules, mapped fields, rejected rows and data-quality warnings.
+
+### Adaptive navigation and insights
+
+- Show navigation sections only when they have usable data, while keeping an “Add more data” entry available.
+- Reflow KPI grids and content layouts when modules are absent; do not leave visual holes.
+- Generate insight cards only from verifiable calculations. Label inferred classifications clearly.
+- Separate “No data supplied”, “No matching records” and a genuine numeric zero as three different states.
+- Allow the user to replace, append or clear imported data and immediately recalculate the dashboard.
+- Keep all processing inside the browser unless the user explicitly configures a backend.
+
+## 10. Workbook and data rules
 
 - Inspect every workbook sheet and header before coding.
 - Load the supplied `.xlsx` workbook directly with SheetJS, or convert each sheet into an embedded JavaScript data table during the build.
@@ -237,7 +281,7 @@ Required adaptations:
 - Escape all imported text before rendering it into HTML.
 - Never execute HTML or JavaScript contained in workbook cells.
 
-## 10. Interactions
+## 11. Interactions
 
 - Global search across events, vendors, clients, RFQs and teams.
 - Filter state reflected in the URL where practical.
@@ -249,7 +293,7 @@ Required adaptations:
 - Provide clear loading, empty, success and error states.
 - Do not create buttons that have no behavior. Disable unavailable actions and label them clearly.
 
-## 11. Accessibility and quality
+## 12. Accessibility and quality
 
 - Semantic HTML landmarks and headings.
 - Visible focus states.
@@ -260,7 +304,7 @@ Required adaptations:
 - No console errors or broken links.
 - Test at 375×812, 768×1024, 1366×768 and 1440×900.
 
-## 12. Suggested build sequence and time plan
+## 13. Suggested build sequence and time plan
 
 1. **Data loading and validation — 1–2 hours:** parse all workbook sheets, normalize values and build relationships.
 2. **Responsive shell and design tokens — 1–2 hours:** navigation, themes, typography and layouts.
@@ -271,7 +315,7 @@ Required adaptations:
 
 Expected first complete prototype: approximately 12–17 focused development hours.
 
-## 13. Copy-ready master prompt for Claude
+## 14. Copy-ready master prompt for Claude
 
 ```text
 You are a senior frontend engineer, executive-product designer and data-visualization specialist. Build a production-quality, responsive CEO operations dashboard using the attached EVENTBOT_DASHBOARD_BUILD_PROMPT.md and EVENTBOT_DASHBOARD_MOCK_DATA.xlsx workbook.
@@ -279,6 +323,10 @@ You are a senior frontend engineer, executive-product designer and data-visualiz
 First inspect every workbook sheet, column and relationship. Use the supplied populated rows to calculate every KPI, infographic, chart, alert, comparison and calendar block. The initial preview must be rich with meaningful data; do not show zero-value KPI cards or empty charts when corresponding workbook rows exist.
 
 Create both a well-organised HTML/CSS/JavaScript project and a self-contained `eventbot_dashboard.html` that can be opened directly on a laptop. Embed the parsed demonstration data in the standalone file so it works without a server, package manager or local-file `fetch()` permission. Preserve the workbook headers as the future data contract.
+
+The Eventbot workbook is a demonstration, not a mandatory customer schema. Add a browser-based Import Data workflow that accepts arbitrary Excel and CSV files. Profile their sheets, headers and sample values; automatically map common aliases; let the user confirm mappings; and adapt the dashboard to whichever event, financial, vendor, team, calendar, customer or reputation data is actually available. Do not require all modules or all Eventbot columns.
+
+When information is missing, remove or reflow unsupported visualizations and state exactly what data would enable them. Never display missing values as zero, never invent records, and never calculate a KPI without sufficient source fields. Distinguish “not supplied”, “no matching records” and a real zero. Include a Data Coverage panel showing mapped fields, available modules, unavailable modules and quality warnings.
 
 Implement Overview, Events, Calendar, Vendors, Budgets, RFQs, Teams, Reputation, Market Intelligence and Weddings. Include all specified infographics, CEO/Operations role switching, light/dark themes, global search, filters, event detail views and responsive behavior. Surface decision-ready observations such as budget risk, vendor reliability, RFQ response gaps, team overload, revenue trajectory, upcoming conflicts and market opportunities.
 
@@ -289,9 +337,13 @@ Do not leave dead buttons. Every visible control must work, or be disabled with 
 Before coding, report the workbook sheets found, row counts, important relationships and the executive insights you plan to surface. Then present the implementation plan. After that, create the complete files, generate the standalone HTML, and verify every section, button, filter, dialog, calculation and responsive layout. Finish by listing the calculated headline KPIs so we can confirm the workbook was loaded successfully.
 ```
 
-## 14. Acceptance checklist
+## 15. Acceptance checklist
 
 - [ ] Loads all supplied workbook tables and shows populated mock insights on first launch.
+- [ ] Accepts differently structured Excel/CSV files through a mapping workflow.
+- [ ] Works with partial datasets and adapts navigation, KPIs and layouts accordingly.
+- [ ] Missing information is never converted to zero or fabricated.
+- [ ] Data Coverage explains field mappings, available modules and quality warnings.
 - [ ] All 10 dashboard sections are available.
 - [ ] Calendar blocks display dates and IST times correctly.
 - [ ] Vendor schedules, rate cards and RFQ comparisons are linked.
