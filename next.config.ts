@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import path from "node:path";
 
 const config: NextConfig = {
   reactStrictMode: true,
@@ -21,6 +20,10 @@ const config: NextConfig = {
       "./node_modules/.pnpm/**/@prisma/client/**",
       "./node_modules/.pnpm/**/@prisma/adapter-pg/**",
       "./node_modules/.pnpm/**/@prisma/engines/**",
+    ],
+    "/api/resources/**/*": [
+      "./ceo_dashboard_starter/CLAUDE_DASHBOARD_PROMPT.md",
+      "./eventbot_dashboard_all_data.xlsx",
     ],
   },
 
