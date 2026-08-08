@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+// This public handoff page changes as the downloadable kit evolves. Keeping it
+// dynamic prevents a year-long immutable CloudFront response from hiding a new
+// release after deployment.
+export const dynamic="force-dynamic";
+export const revalidate=0;
+
 export const metadata:Metadata={
   title:"Create Your Own Executive Dashboard",
   description:"Download a ready-made executive dashboard and customize it with your own Excel or CSV data.",
