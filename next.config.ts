@@ -28,7 +28,7 @@ const config: NextConfig = {
     "/api/resources/**/*": [
       "./ceo_dashboard_starter/CLAUDE_DASHBOARD_PROMPT.md",
       "./ceo_dashboard_starter/CLAUDE_DATA_MAPPING_PROMPT.md",
-      "./eventbot_ceo_dashboard_preview.html",
+      "./ceo_dashboard_starter/CXO_MINIMAL_DASHBOARD.html",
       "./eventbot_dashboard_all_data.xlsx",
       "./eventbot_dashboard_mock_data.zip",
     ],

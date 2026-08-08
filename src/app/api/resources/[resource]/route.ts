@@ -35,7 +35,7 @@ export async function GET(_:Request,{params}:{params:Promise<{resource:string}>}
       : resource==="mapping"
         ? await readFile(path.join(process.cwd(),"ceo_dashboard_starter","CLAUDE_DATA_MAPPING_PROMPT.md"))
         : resource==="starter"
-          ? await readFile(path.join(process.cwd(),"eventbot_ceo_dashboard_preview.html"))
+          ? await readFile(path.join(process.cwd(),"ceo_dashboard_starter","CXO_MINIMAL_DASHBOARD.html"))
           : resource==="csv"
             ? await readFile(path.join(process.cwd(),"eventbot_dashboard_mock_data.zip"))
             : await readFile(path.join(process.cwd(),"eventbot_dashboard_all_data.xlsx"));
