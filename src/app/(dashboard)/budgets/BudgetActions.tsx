@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import { addBudgetLine } from "../events/actions";
 import { toast } from "@/components/ui/Toast";
 
@@ -18,9 +19,12 @@ export function BudgetActions({
   eventName: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const [saving, startSaving] = useTransition();
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -61,13 +65,17 @@ export function BudgetActions({
         Add line
       </button>
 
-      {open && (
+      {open && mounted ? createPortal(
         <>
-          <div className="vendor-scrim open" onClick={() => setOpen(false)} aria-hidden="true" />
+          <button className="dialog-scrim vendor-scrim open" type="button" onClick={() => setOpen(false)} aria-label="Close add budget line dialog" />
           <div ref={ref} className="vendor-dialog open" role="dialog" aria-modal="true" aria-label="Add budget line">
-            <div className="vendor-dialog-head">
-              <h3>Add budget line</h3>
-              <button type="button" className="drawer-close" onClick={() => setOpen(false)} aria-label="Close">×</button>
+            <div className="dialog-head">
+              <div>
+                <div className="vendor-dialog-kicker">Budget planner</div>
+                <h3>Add budget line</h3>
+                <p>Add a planned cost and optionally record the amount already spent.</p>
+              </div>
+              <button type="button" className="dialog-close" onClick={() => setOpen(false)} aria-label="Close add budget line dialog">×</button>
             </div>
             <form action={submit}>
               <div className="dialog-body vendor-form-body">
@@ -104,8 +112,7 @@ export function BudgetActions({
               </div>
             </form>
           </div>
-        </>
-      )}
+        </>, document.body) : null}
     </>
   );
 }
