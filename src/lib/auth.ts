@@ -34,28 +34,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const gate = loginAttemptAllowed(email);
         if (!gate.allowed) return null;
 
-        // Legacy env-auth cutover fallback: LEGACY_AUTH=on lets the old
-        // single-user env creds sign in as the seeded CEO.
-        if (
-          process.env.LEGACY_AUTH === "on" &&
-          process.env.AUTH_EMAIL?.trim().toLowerCase() === email &&
-          process.env.AUTH_PASSWORD === password
-        ) {
-          const ceo = await db.user.findFirst({
-            where: { role: "ceo", active: true },
-            orderBy: { id: "asc" },
-          });
-          if (ceo) {
-            recordLoginSuccess(email);
-            return {
-              id: String(ceo.id),
-              email: ceo.email,
-              name: ceo.name,
-              role: ceo.role,
-            };
-          }
-        }
-
         const user = await db.user.findUnique({ where: { email } });
         if (!user || !user.active || !user.passwordHash) {
           recordLoginFailure(email);

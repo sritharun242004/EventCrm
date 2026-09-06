@@ -11,6 +11,6 @@ import { can, type Action, type SessionUser } from "@/lib/authz";
 export async function guardPage(action: Action): Promise<SessionUser> {
   const user = await getSessionUser();
   if (!user) redirect("/login");
-  if (!can(user, action)) redirect("/overview");
+  if (!can(user, action)) redirect("/forbidden");
   return user;
 }

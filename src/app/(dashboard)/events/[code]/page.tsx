@@ -10,9 +10,11 @@ import { Pill } from "@/components/ui/Pill";
 import { Meter } from "@/components/ui/Meter";
 import { Card } from "@/components/ui/Card";
 import { NoteEditor } from "./NoteEditor";
+import { AccessDrawer } from "./AccessDrawer";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { whereEventVisible } from "@/lib/visibility";
+import { can } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +45,28 @@ export default async function EventDetail({ params }: Props) {
     redirect("/forbidden");
   }
 
+  const showGrantDrawer = can(me, "event.grant_access");
+  const [grantsRaw, candidates] = showGrantDrawer
+    ? await Promise.all([
+        db.eventUserAccess.findMany({
+          where: { eventId: evt.id },
+          include: { user: true, grantedBy: true },
+          orderBy: { grantedAt: "asc" },
+        }),
+        db.user.findMany({
+          where: { active: true },
+          select: { id: true, name: true, email: true, role: true },
+          orderBy: [{ role: "asc" }, { name: "asc" }],
+        }),
+      ])
+    : [[], []];
+  const grantees = grantsRaw.map((g) => ({
+    userId: g.userId,
+    name: g.user.name,
+    role: g.user.role,
+    grantedByName: g.grantedBy.name,
+  }));
+
   const planned = sumPaise(evt.budgets, (b) => b.plannedCents);
   const actual = sumPaise(evt.budgets, (b) => b.actualCents);
   const marginPct = pct(BigInt(Number(evt.projectedRevenueCents) - Number(evt.totalBudgetCents)), evt.projectedRevenueCents);
@@ -61,6 +85,9 @@ export default async function EventDetail({ params }: Props) {
         subtitle={`${fmtDateFull(evt.startsOn)}${new Date(evt.endsOn).getTime() !== new Date(evt.startsOn).getTime() ? " → " + fmtDate(evt.endsOn) : ""} · ${evt.venue?.name} · ${evt.venue?.city}`}
         actions={
           <>
+            {showGrantDrawer && (
+              <AccessDrawer eventId={evt.id} grantees={grantees} candidates={candidates} />
+            )}
             <Link className="btn ghost" href="/events">← All events</Link>
           </>
         }
