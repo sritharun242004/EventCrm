@@ -143,6 +143,14 @@ enum ProposalStatus {
   @@map("proposal_status")
 }
 
+enum PlaybookTrigger {
+  manual
+  event_confirmed
+  event_in_production
+
+  @@map("playbook_trigger")
+}
+
 // ================= CORE =================
 
 model Client {
@@ -233,6 +241,7 @@ model Event {
   client      Client?           @relation(fields: [clientId], references: [id])
   primaryContact Contact?       @relation("EventPrimaryContact", fields: [primaryContactId], references: [id], onDelete: SetNull)
   proposals   Proposal[]        @relation("EventProposals")
+  playbookRuns EventPlaybookRun[] @relation("EventPlaybookRuns")
   venue       Venue?            @relation(fields: [venueId], references: [id])
   leadTeam    Team?             @relation(fields: [leadTeamId], references: [id])
   createdBy   User?             @relation("EventCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
@@ -706,4 +715,49 @@ model Proposal {
 
   @@index([eventId, version], name: "proposals_event_version_idx")
   @@map("proposals")
+}
+
+// ================= TASK PLAYBOOKS (Phase G) =================
+
+model TaskPlaybook {
+  id          Int             @id @default(autoincrement())
+  name        String
+  trigger     PlaybookTrigger @default(manual)
+  eventType   EventType?      @map("event_type")
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  items TaskPlaybookItem[]
+  runs  EventPlaybookRun[]
+
+  @@map("task_playbooks")
+}
+
+model TaskPlaybookItem {
+  id                  Int          @id @default(autoincrement())
+  playbookId          Int          @map("playbook_id")
+  title               String
+  description         String?
+  priority            TaskPriority @default(normal)
+  defaultAssigneeRole UserRole?    @map("default_assignee_role")
+  offsetDaysFromEvent Int          @map("offset_days_from_event")
+  orderIdx            Int          @default(0) @map("order_idx")
+
+  playbook TaskPlaybook @relation(fields: [playbookId], references: [id], onDelete: Cascade)
+
+  @@index([playbookId, orderIdx], name: "playbook_item_order_idx")
+  @@map("task_playbook_items")
+}
+
+model EventPlaybookRun {
+  id         Int      @id @default(autoincrement())
+  eventId    Int      @map("event_id")
+  playbookId Int      @map("playbook_id")
+  ranAt      DateTime @default(now()) @map("ran_at") @db.Timestamptz(6)
+
+  event    Event        @relation("EventPlaybookRuns", fields: [eventId], references: [id], onDelete: Cascade)
+  playbook TaskPlaybook @relation(fields: [playbookId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, playbookId])
+  @@map("event_playbook_runs")
 }

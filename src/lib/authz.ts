@@ -29,6 +29,8 @@ export type Action =
   | "contact.edit"
   | "proposal.create"
   | "proposal.send"
+  | "playbook.manage"
+  | "view.settings.playbooks"
   | "user.invite"
   | "user.deactivate"
   | "user.change_role"
@@ -132,6 +134,9 @@ export function can(user: SessionUser, action: Action, resource?: Resource): boo
       return r === "ceo";
     case "view.settings.audit":
       return r === "ceo" || r === "finance";
+    case "view.settings.playbooks":
+    case "playbook.manage":
+      return r === "ceo";
   }
 }
 

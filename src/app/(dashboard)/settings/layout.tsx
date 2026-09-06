@@ -19,6 +19,9 @@ export default async function SettingsLayout({ children }: { children: React.Rea
           {can(user, "view.settings.audit") && (
             <Link href="/settings/audit" className="px-2 py-1 rounded hover:bg-slate-100">Audit log</Link>
           )}
+          {can(user, "view.settings.playbooks") && (
+            <Link href="/settings/playbooks" className="px-2 py-1 rounded hover:bg-slate-100">Playbooks</Link>
+          )}
         </nav>
         <div>{children}</div>
       </div>

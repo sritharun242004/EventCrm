@@ -22,6 +22,7 @@
     "db:seed": "psql \"$DATABASE_URL\" -f prisma/seed/seed.sql",
     "db:seed:ceo": "node --experimental-strip-types prisma/seed/seed-ceo.ts",
     "db:seed:demo-users": "node --experimental-strip-types prisma/seed/seed-demo-users.ts",
+    "db:seed:playbooks": "node --experimental-strip-types prisma/seed/seed-playbooks.ts",
     "test:smoke": "bash scripts/smoke.sh",
     "test:unit": "node --test --experimental-strip-types src/lib/*.test.ts",
     "e2e": "playwright test",

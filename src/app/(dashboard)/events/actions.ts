@@ -8,6 +8,7 @@ import { requireUser } from "@/lib/auth";
 import { canSeeEvent } from "@/lib/visibility-server";
 import { can } from "@/lib/authz";
 import { logActivity } from "@/lib/activity";
+import { runPlaybooksForStatus } from "@/lib/playbooks";
 
 const VALID: EventStatus[] = [
   "lead", "proposed", "confirmed", "in_production", "live", "wrap_up", "completed", "cancelled",
@@ -38,9 +39,12 @@ export async function updateEventStatus(id: number, next: EventStatus) {
       entityId: id,
       diff: { before: before?.status, after: next },
     });
+    // Fire matching playbooks (idempotent per event+playbook).
+    await runPlaybooksForStatus({ eventId: id, newStatus: next, actorUserId: me.id });
     revalidatePath("/events");
     revalidatePath("/overview");
     revalidatePath("/calendar");
+    revalidatePath("/tasks");
     return { ok: true as const };
   } catch (err) {
     return { ok: false as const, error: err instanceof Error ? err.message : "Update failed" };
