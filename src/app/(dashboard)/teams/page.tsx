@@ -3,10 +3,12 @@ import { PageHead } from "@/components/ui/PageHead";
 import { Meter } from "@/components/ui/Meter";
 import { Pill } from "@/components/ui/Pill";
 import { TeamActions } from "./TeamActions";
+import { guardPage } from "@/lib/guard";
 
 export const revalidate = 60;
 
 export default async function TeamsPage() {
+  await guardPage("view.teams");
   const [teams, members, events] = await Promise.all([
     db.team.findMany({ include: { members: true } }),
     db.teamMember.findMany({ include: { team: true } }),

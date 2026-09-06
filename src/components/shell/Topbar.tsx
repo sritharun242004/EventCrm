@@ -1,24 +1,38 @@
 "use client";
 
 import { ThemeToggle } from "./ThemeToggle";
-import { RoleToggle } from "./RoleToggle";
 import { MobileNav } from "./MobileNav";
 import { logout } from "@/app/login/actions";
 
+const ROLE_LABELS: Record<string, string> = {
+  ceo: "Owner",
+  sales: "Sales",
+  producer: "Producer",
+  coordinator: "Coordinator",
+  finance: "Finance",
+};
+
 export function Topbar({
   email,
+  name,
+  role,
   mobileNavChildren,
 }: {
   email: string;
+  name: string;
+  role: string;
   mobileNavChildren: React.ReactNode;
 }) {
-  const initials = email
-    .split("@")[0]
-    .split(/[.\-_]/)
-    .map((p) => p[0] ?? "")
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "U";
+  const initials =
+    (name
+      .split(/[\s._-]+/)
+      .map((p) => p[0] ?? "")
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() ||
+      email[0]?.toUpperCase() ||
+      "U");
+  const roleLabel = ROLE_LABELS[role] ?? role;
 
   return (
     <header className="topbar">
@@ -40,7 +54,20 @@ export function Topbar({
       </div>
 
       <div className="top-actions">
-        <RoleToggle />
+        <span
+          className="role-badge"
+          title={`${name} — ${roleLabel}`}
+          style={{
+            fontSize: "0.7rem",
+            padding: "0.15rem 0.5rem",
+            borderRadius: "999px",
+            background: "var(--container, #f1f5f9)",
+            color: "var(--ink, #131b2e)",
+            fontWeight: 500,
+          }}
+        >
+          {roleLabel}
+        </span>
         <ThemeToggle />
         <form action={logout}>
           <button

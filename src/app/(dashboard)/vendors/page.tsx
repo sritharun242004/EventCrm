@@ -6,6 +6,7 @@ import { PageHead } from "@/components/ui/PageHead";
 import { Meter } from "@/components/ui/Meter";
 import type { VendorCategory } from "@prisma/client";
 import { VendorActions } from "./VendorActions";
+import { guardPage } from "@/lib/guard";
 
 // Vendor directory changes infrequently — cache the render for 60s.
 export const revalidate = 60;
@@ -13,6 +14,7 @@ export const revalidate = 60;
 type Search = Promise<{ cat?: string }>;
 
 export default async function VendorsPage({ searchParams }: { searchParams: Search }) {
+  await guardPage("view.vendors");
   const sp = await searchParams;
   const filter = sp.cat;
 

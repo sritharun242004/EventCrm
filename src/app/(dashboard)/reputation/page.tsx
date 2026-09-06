@@ -4,10 +4,12 @@ import { PageHead } from "@/components/ui/PageHead";
 import { Kpi, KpiRow } from "@/components/ui/Kpi";
 import { Card } from "@/components/ui/Card";
 import { Meter } from "@/components/ui/Meter";
+import { guardPage } from "@/lib/guard";
 
 export const revalidate = 60;
 
 export default async function ReputationPage() {
+  await guardPage("view.reputation");
   const [reviews, eventsWithRep] = await Promise.all([
     db.eventReview.findMany({
       include: { event: true },

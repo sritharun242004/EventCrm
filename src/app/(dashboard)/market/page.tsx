@@ -7,12 +7,14 @@ import { Card } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";
 import { ChipLink } from "@/components/ui/ChipLink";
 import { MarketActions } from "./MarketActions";
+import { guardPage } from "@/lib/guard";
 
 export const revalidate = 60;
 
 type Search = Promise<{ signal?: string }>;
 
 export default async function MarketPage({ searchParams }: { searchParams: Search }) {
+  await guardPage("view.market");
   const sp = await searchParams;
   const filter = sp.signal;
 
