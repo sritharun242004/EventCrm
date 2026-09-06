@@ -7,6 +7,7 @@ import type { EventStatus } from "@prisma/client";
 import { requireUser } from "@/lib/auth";
 import { canSeeEvent } from "@/lib/visibility-server";
 import { can } from "@/lib/authz";
+import { logActivity } from "@/lib/activity";
 
 const VALID: EventStatus[] = [
   "lead", "proposed", "confirmed", "in_production", "live", "wrap_up", "completed", "cancelled",
@@ -28,7 +29,15 @@ export async function updateEventStatus(id: number, next: EventStatus) {
     : can(me, "event.move_status.confirmed_to_completed");
   if (!gate) return { ok: false as const, error: "Forbidden" };
   try {
+    const before = await db.event.findUnique({ where: { id }, select: { status: true } });
     await db.event.update({ where: { id }, data: { status: next } });
+    await logActivity({
+      actorUserId: me.id,
+      action: "event.move_status",
+      entityType: "event",
+      entityId: id,
+      diff: { before: before?.status, after: next },
+    });
     revalidatePath("/events");
     revalidatePath("/overview");
     revalidatePath("/calendar");
@@ -81,13 +90,27 @@ export async function addBudgetLine(input: z.input<typeof budgetLineSchema>) {
   if (!can(me, "budget.line.create")) return { ok: false as const, error: "Forbidden" };
   try {
     const evt = await db.event.findUnique({ where: { id: d.eventId }, select: { code: true } });
-    await db.budgetLine.create({
+    const created = await db.budgetLine.create({
       data: {
         eventId: d.eventId,
         category: d.category,
         plannedCents: BigInt(Math.round(d.plannedInr * 100)),
         actualCents: d.actualInr != null ? BigInt(Math.round(d.actualInr * 100)) : 0n,
         notes: d.notes || null,
+      },
+    });
+    await logActivity({
+      actorUserId: me.id,
+      action: "budget.line.create",
+      entityType: "event",
+      entityId: d.eventId,
+      diff: {
+        after: {
+          budgetLineId: created.id,
+          category: d.category,
+          plannedInr: d.plannedInr,
+          actualInr: d.actualInr ?? 0,
+        },
       },
     });
     revalidatePath("/budgets");

@@ -497,6 +497,7 @@ model User {
   comments        Comment[] @relation("CommentAuthor")
   mentions        CommentMention[] @relation("Mentioned")
   notifications   Notification[]   @relation("Notifs")
+  activityEntries ActivityLog[]    @relation("ActivityActor")
 
   @@index([role], name: "users_role_idx")
   @@map("users")
@@ -629,4 +630,22 @@ model Notification {
 
   @@index([userId, readAt], name: "notif_user_unread_idx")
   @@map("notifications")
+}
+
+// ================= ACTIVITY LOG (Phase E) =================
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  actorUserId Int?     @map("actor_user_id")
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    Int      @map("entity_id")
+  diff        Json?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  actor User? @relation("ActivityActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId, createdAt], name: "activity_entity_idx")
+  @@index([actorUserId, createdAt], name: "activity_actor_idx")
+  @@map("activity_log")
 }

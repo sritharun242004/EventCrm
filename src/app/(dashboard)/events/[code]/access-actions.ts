@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { can } from "@/lib/authz";
 import { canSeeEvent } from "@/lib/visibility-server";
+import { logActivity } from "@/lib/activity";
 
 export async function grantAccess(formData: FormData): Promise<void> {
   const me = await requireUser();
@@ -20,6 +21,13 @@ export async function grantAccess(formData: FormData): Promise<void> {
     create: { eventId, userId, grantedByUserId: me.id },
     update: {},
   });
+  await logActivity({
+    actorUserId: me.id,
+    action: "event.grant_access",
+    entityType: "event",
+    entityId: eventId,
+    diff: { grantedUserId: userId },
+  });
   const evt = await db.event.findUnique({ where: { id: eventId }, select: { code: true } });
   if (evt?.code) revalidatePath(`/events/${evt.code}`);
   revalidatePath("/events");
@@ -34,6 +42,13 @@ export async function revokeAccess(formData: FormData): Promise<void> {
   if (!can(me, "event.grant_access")) throw new Error("Forbidden.");
   if (me.role === "producer" && !(await canSeeEvent(me, eventId))) throw new Error("Forbidden.");
   await db.eventUserAccess.deleteMany({ where: { eventId, userId } });
+  await logActivity({
+    actorUserId: me.id,
+    action: "event.revoke_access",
+    entityType: "event",
+    entityId: eventId,
+    diff: { revokedUserId: userId },
+  });
   const evt = await db.event.findUnique({ where: { id: eventId }, select: { code: true } });
   if (evt?.code) revalidatePath(`/events/${evt.code}`);
   revalidatePath("/events");

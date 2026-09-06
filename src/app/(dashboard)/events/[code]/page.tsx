@@ -69,11 +69,17 @@ export default async function EventDetail({ params }: Props) {
     grantedByName: g.grantedBy.name,
   }));
 
-  const [eventComments] = await Promise.all([
+  const [eventComments, eventActivity] = await Promise.all([
     db.comment.findMany({
       where: { entityType: "event", entityId: evt.id },
       include: { author: { select: { id: true, name: true, role: true } } },
       orderBy: { createdAt: "asc" },
+    }),
+    db.activityLog.findMany({
+      where: { entityType: "event", entityId: evt.id },
+      include: { actor: { select: { name: true, role: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 50,
     }),
   ]);
   const commentRows = eventComments.map((c) => ({
@@ -329,6 +335,29 @@ export default async function EventDetail({ params }: Props) {
           comments={commentRows}
           candidates={taskCandidates}
         />
+      </Card>
+
+      <Card title="Activity" sub={`${eventActivity.length} recent entr${eventActivity.length === 1 ? "y" : "ies"}`}>
+        {eventActivity.length === 0 ? (
+          <p className="text-sm text-slate-400 italic">No activity yet.</p>
+        ) : (
+          <ul className="text-xs space-y-1">
+            {eventActivity.map((a) => (
+              <li key={a.id} className="text-slate-600">
+                <span className="text-slate-400">{new Date(a.createdAt).toLocaleString()}</span>
+                {" · "}
+                <span className="font-medium text-slate-700">{a.actor?.name ?? "system"}</span>
+                {" · "}
+                <span className="font-mono">{a.action}</span>
+                {a.diff && (
+                  <span className="text-slate-400 ml-2">
+                    {JSON.stringify(a.diff)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </Card>
     </>
   );

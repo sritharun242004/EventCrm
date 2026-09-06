@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { getSessionUser } from "@/lib/session";
 import { requireRole } from "@/lib/authz";
 import type { UserRole } from "@prisma/client";
+import { logActivity } from "@/lib/activity";
 
 export type FormResult = { error?: string; ok?: boolean };
 
@@ -49,8 +50,15 @@ export async function inviteUser(formData: FormData): Promise<FormResult> {
   const existing = await db.user.findUnique({ where: { email } });
   if (existing) return { error: "A user with that email already exists." };
 
-  await db.user.create({
+  const created = await db.user.create({
     data: { email, name, role, invitedByUserId: me.id, invitedAt: new Date() },
+  });
+  await logActivity({
+    actorUserId: me.id,
+    action: "user.invite",
+    entityType: "user",
+    entityId: created.id,
+    diff: { email, name, role },
   });
 
   const token = randomBytes(32).toString("hex");
@@ -69,6 +77,7 @@ export async function deactivateUser(formData: FormData): Promise<void> {
   const id = Number(formData.get("id"));
   if (id === me.id) throw new Error("Cannot deactivate yourself.");
   await db.user.update({ where: { id }, data: { active: false } });
+  await logActivity({ actorUserId: me.id, action: "user.deactivate", entityType: "user", entityId: id });
   revalidatePath("/settings/users");
 }
 
@@ -77,6 +86,7 @@ export async function reactivateUser(formData: FormData): Promise<void> {
   requireRole(me, "ceo");
   const id = Number(formData.get("id"));
   await db.user.update({ where: { id }, data: { active: true } });
+  await logActivity({ actorUserId: me.id, action: "user.reactivate", entityType: "user", entityId: id });
   revalidatePath("/settings/users");
 }
 
@@ -87,6 +97,14 @@ export async function changeUserRole(formData: FormData): Promise<void> {
   const role = String(formData.get("role")) as UserRole;
   if (!ROLES.includes(role)) throw new Error("Invalid role.");
   if (id === me.id && role !== "ceo") throw new Error("Cannot demote yourself.");
+  const before = await db.user.findUnique({ where: { id }, select: { role: true } });
   await db.user.update({ where: { id }, data: { role } });
+  await logActivity({
+    actorUserId: me.id,
+    action: "user.change_role",
+    entityType: "user",
+    entityId: id,
+    diff: { before: before?.role, after: role },
+  });
   revalidatePath("/settings/users");
 }
