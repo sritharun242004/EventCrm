@@ -92,6 +92,25 @@ enum UserRole {
   @@map("user_role")
 }
 
+enum TaskStatus {
+  open
+  in_progress
+  blocked
+  done
+  cancelled
+
+  @@map("task_status")
+}
+
+enum TaskPriority {
+  low
+  normal
+  high
+  urgent
+
+  @@map("task_priority")
+}
+
 // ================= CORE =================
 
 model Client {
@@ -189,6 +208,7 @@ model Event {
   reviews     EventReview[]
   rfqs        Rfq[]
   grants      EventUserAccess[] @relation("EventGrantees")
+  tasks       Task[]
 
   @@index([status], name: "events_status_idx")
   @@index([startsOn], name: "events_starts_on_idx")
@@ -451,6 +471,8 @@ model User {
   rfqsCreated     Rfq[]     @relation("RfqCreatedBy")
   eventGrants     EventUserAccess[] @relation("EventGrants")
   eventGrantsMade EventUserAccess[] @relation("EventGrantsBy")
+  tasksAssigned   Task[]    @relation("TaskAssignee")
+  tasksCreated    Task[]    @relation("TaskCreator")
 
   @@index([role], name: "users_role_idx")
   @@map("users")
@@ -500,4 +522,41 @@ model EventUserAccess {
   @@unique([eventId, userId])
   @@index([userId], name: "event_access_user_idx")
   @@map("event_user_access")
+}
+
+// ================= TASKS (Phase C) =================
+
+model Task {
+  id               Int          @id @default(autoincrement())
+  eventId          Int          @map("event_id")
+  title            String
+  description      String?
+  status           TaskStatus   @default(open)
+  priority         TaskPriority @default(normal)
+  assigneeUserId   Int?         @map("assignee_user_id")
+  createdByUserId  Int          @map("created_by_user_id")
+  dueOn            DateTime?    @map("due_on") @db.Date
+  completedAt      DateTime?    @map("completed_at") @db.Timestamptz(6)
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  event      Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  assignee   User?               @relation("TaskAssignee", fields: [assigneeUserId], references: [id], onDelete: SetNull)
+  createdBy  User                @relation("TaskCreator",  fields: [createdByUserId], references: [id], onDelete: Cascade)
+  checklist  TaskChecklistItem[]
+
+  @@index([eventId, status], name: "tasks_event_status_idx")
+  @@index([assigneeUserId, status], name: "tasks_assignee_status_idx")
+  @@map("tasks")
+}
+
+model TaskChecklistItem {
+  id      Int     @id @default(autoincrement())
+  taskId  Int     @map("task_id")
+  label   String
+  done    Boolean @default(false)
+  order   Int     @default(0)
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("task_checklist_items")
 }

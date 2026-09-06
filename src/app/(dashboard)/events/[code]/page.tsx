@@ -11,6 +11,7 @@ import { Meter } from "@/components/ui/Meter";
 import { Card } from "@/components/ui/Card";
 import { NoteEditor } from "./NoteEditor";
 import { AccessDrawer } from "./AccessDrawer";
+import { TaskDrawer } from "./TaskDrawer";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { whereEventVisible } from "@/lib/visibility";
@@ -67,6 +68,28 @@ export default async function EventDetail({ params }: Props) {
     grantedByName: g.grantedBy.name,
   }));
 
+  const [tasksRaw, taskCandidates] = await Promise.all([
+    db.task.findMany({
+      where: { eventId: evt.id },
+      include: { assignee: { select: { id: true, name: true, role: true } } },
+      orderBy: [{ status: "asc" }, { dueOn: "asc" }, { createdAt: "desc" }],
+    }),
+    db.user.findMany({
+      where: { active: true },
+      select: { id: true, name: true, role: true },
+      orderBy: [{ role: "asc" }, { name: "asc" }],
+    }),
+  ]);
+  const eventTasks = tasksRaw.map((t) => ({
+    id: t.id,
+    title: t.title,
+    description: t.description,
+    status: t.status,
+    priority: t.priority,
+    assignee: t.assignee,
+    dueOn: t.dueOn ? t.dueOn.toISOString() : null,
+  }));
+
   const planned = sumPaise(evt.budgets, (b) => b.plannedCents);
   const actual = sumPaise(evt.budgets, (b) => b.actualCents);
   const marginPct = pct(BigInt(Number(evt.projectedRevenueCents) - Number(evt.totalBudgetCents)), evt.projectedRevenueCents);
@@ -85,6 +108,7 @@ export default async function EventDetail({ params }: Props) {
         subtitle={`${fmtDateFull(evt.startsOn)}${new Date(evt.endsOn).getTime() !== new Date(evt.startsOn).getTime() ? " → " + fmtDate(evt.endsOn) : ""} · ${evt.venue?.name} · ${evt.venue?.city}`}
         actions={
           <>
+            <TaskDrawer eventId={evt.id} tasks={eventTasks} candidates={taskCandidates} />
             {showGrantDrawer && (
               <AccessDrawer eventId={evt.id} grantees={grantees} candidates={candidates} />
             )}

@@ -52,7 +52,7 @@ function buildSidebar(user: SessionUser, counts: Counts): SidebarGroup[] {
     gate("view.overview") && { href: "/overview", label: "Overview" },
     gate("view.events") && { href: "/events", label: "Events", count: counts.events },
     gate("view.calendar") && { href: "/calendar", label: "Calendar" },
-    // /tasks lands in Phase C — sidebar entry re-added there.
+    gate("view.tasks") && { href: "/tasks", label: "Tasks" },
   ].filter(Boolean) as SidebarGroup["items"];
   if (programme.length) groups.push({ group: "Programme", items: programme });
 
