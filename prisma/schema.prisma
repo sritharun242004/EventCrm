@@ -188,6 +188,7 @@ model Event {
   assignments EventAssignment[]
   reviews     EventReview[]
   rfqs        Rfq[]
+  grants      EventUserAccess[] @relation("EventGrantees")
 
   @@index([status], name: "events_status_idx")
   @@index([startsOn], name: "events_starts_on_idx")
@@ -448,6 +449,8 @@ model User {
   teamMember      TeamMember?
   eventsCreated   Event[]   @relation("EventCreatedBy")
   rfqsCreated     Rfq[]     @relation("RfqCreatedBy")
+  eventGrants     EventUserAccess[] @relation("EventGrants")
+  eventGrantsMade EventUserAccess[] @relation("EventGrantsBy")
 
   @@index([role], name: "users_role_idx")
   @@map("users")
@@ -481,4 +484,20 @@ model VerificationToken {
 
   @@id([identifier, token])
   @@map("verification_tokens")
+}
+
+model EventUserAccess {
+  id              Int      @id @default(autoincrement())
+  eventId         Int      @map("event_id")
+  userId          Int      @map("user_id")
+  grantedByUserId Int      @map("granted_by_user_id")
+  grantedAt       DateTime @default(now()) @map("granted_at") @db.Timestamptz(6)
+
+  event     Event @relation("EventGrantees", fields: [eventId], references: [id], onDelete: Cascade)
+  user      User  @relation("EventGrants",   fields: [userId], references: [id], onDelete: Cascade)
+  grantedBy User  @relation("EventGrantsBy", fields: [grantedByUserId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([userId], name: "event_access_user_idx")
+  @@map("event_user_access")
 }
