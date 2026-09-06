@@ -322,6 +322,117 @@ Everything else stays where it is, with role-gated CTAs.
 
 ---
 
+## 8b. Competitive-scan additions (folded into Phase 1)
+
+Reference CRMs: Cvent, Bizzabo, HoneyBook, Planning Pod, Aisle Planner, Perfect Venue, Splash, Salesforce Event Mgmt.
+
+**Added to Phase 1:**
+
+### Contacts (people, separate from Client companies)
+
+```prisma
+model Contact {
+  id           Int      @id @default(autoincrement())
+  clientId     Int?     @map("client_id")
+  name         String
+  title        String?
+  email        String?
+  phone        String?
+  isPrimary    Boolean  @default(false) @map("is_primary")
+  notes        String?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  client       Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  @@index([clientId], name: "contacts_client_idx")
+  @@map("contacts")
+}
+```
+- Add `Event.primaryContactId Int?` (nullable FK to Contact).
+- UI: "People" tab on Client detail; Contact picker on Event brief.
+- `can(role, "contact.edit")` = CEO, Sales, Producer.
+
+### Proposals (shareable public link)
+
+```prisma
+enum ProposalStatus { draft sent viewed accepted declined superseded  @@map("proposal_status") }
+
+model Proposal {
+  id             Int             @id @default(autoincrement())
+  eventId        Int             @map("event_id")
+  version        Int             @default(1)
+  status         ProposalStatus  @default(draft)
+  publicToken    String          @unique @map("public_token")   // 32-byte URL-safe
+  title          String
+  bodyMarkdown   String          @map("body_markdown")
+  amountCents    BigInt?         @map("amount_cents")
+  createdByUserId Int            @map("created_by_user_id")
+  sentAt         DateTime?       @map("sent_at") @db.Timestamptz(6)
+  firstViewedAt  DateTime?       @map("first_viewed_at") @db.Timestamptz(6)
+  acceptedAt     DateTime?       @map("accepted_at") @db.Timestamptz(6)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  event          Event           @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  @@index([eventId, version], name: "proposals_event_version_idx")
+  @@map("proposals")
+}
+```
+- Public URL: `/p/[publicToken]` — no auth. Records `first_viewed_at` on first GET; "Accept" POST records `accepted_at` and flips `Event.status → confirmed` if it was `proposed`.
+- Server actions: `proposal.create`, `proposal.send` (marks `sent`, generates public URL, optionally sends via Resend), `proposal.supersede` (new version).
+- `can(role, "proposal.create")` = CEO, Sales, Producer.
+- Activity log entries: `proposal.sent`, `proposal.viewed`, `proposal.accepted`.
+
+### Task playbooks (templates that auto-populate tasks)
+
+```prisma
+enum PlaybookTrigger { manual event_confirmed event_in_production  @@map("playbook_trigger") }
+
+model TaskPlaybook {
+  id        Int             @id @default(autoincrement())
+  name      String
+  trigger   PlaybookTrigger @default(manual)
+  eventType EventType?      @map("event_type")   // optional filter, e.g. only concerts
+  active    Boolean         @default(true)
+  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  items     TaskPlaybookItem[]
+  @@map("task_playbooks")
+}
+
+model TaskPlaybookItem {
+  id                Int          @id @default(autoincrement())
+  playbookId        Int          @map("playbook_id")
+  title             String
+  description       String?
+  priority          TaskPriority @default(normal)
+  defaultAssigneeRole UserRole?  @map("default_assignee_role")
+  offsetDaysFromEvent Int        @map("offset_days_from_event")   // negative = before event start
+  playbook          TaskPlaybook @relation(fields: [playbookId], references: [id], onDelete: Cascade)
+  @@map("task_playbook_items")
+}
+```
+- When `Event.status` transitions to a `trigger` value (and no prior playbook run exists for that event + playbook pair), the app fans out one `Task` per `TaskPlaybookItem`, resolving `dueOn = event.startsOn + offsetDaysFromEvent` and `assigneeUserId = first active user with default_assignee_role`.
+- Idempotency: `event_playbook_runs { event_id, playbook_id, ran_at }` unique on `(event_id, playbook_id)`.
+- Seed: one starter playbook per common event type (`concert`, `wedding`, `conference`) with 8–15 items each.
+- `can(role, "playbook.manage")` = CEO only.
+
+**Deferred to Phase 2 / 3 (backlog, in priority order):**
+1. File attachments per event (Vercel Blob).
+2. Guest list / RSVP for private events.
+3. Payment schedule + invoices (deposit / interim / final).
+4. Email templates + tracked outbound comms.
+5. Public lead-capture forms.
+6. Seating charts / floor plans (visual — bigger scope).
+7. E-signature integration (DocuSign or similar).
+8. Native mobile app (PWA suffices until then).
+
+Permission-matrix additions:
+
+| Action | CEO | Sales | Producer | Coord | Finance |
+|---|:-:|:-:|:-:|:-:|:-:|
+| `contact.create` / `contact.edit` | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `proposal.create` / `proposal.send` | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `playbook.manage` | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Public `proposal.view` (by token) | — public — |
+
+---
+
 ## 9. Implementation phases
 
 Each phase is independently shippable and independently useful.
@@ -331,6 +442,8 @@ Each phase is independently shippable and independently useful.
 - **Phase C — Tasks.** Tables, `/tasks` (My + Team + per-event), task drawer on the event brief, task assignment notification.
 - **Phase D — Comments + @mentions + Notifications.** Comment thread component on Events + RFQs + Tasks. @mention picker. Notification bell with unread badge, polling every 60s (SSE later if needed).
 - **Phase E — Activity Feed + Audit Log.** `logActivity()` wrapper on all mutating server actions. Per-event activity tab. `/settings/audit` for CEO.
+- **Phase F — Contacts + Proposals.** `Contact` table, People tab on Client, Contact picker on Event brief. `Proposal` table, in-app editor, `/p/[publicToken]` public viewer with view/accept tracking, Resend send-out.
+- **Phase G — Task playbooks.** `TaskPlaybook` + `TaskPlaybookItem` + `event_playbook_runs`, playbook manager UI (`/settings/playbooks`), auto-trigger on `Event.status` change, seed 3 starter playbooks (concert, wedding, conference).
 
 Each phase is one PR with its own tests and a "verify" checklist in the PR description.
 
