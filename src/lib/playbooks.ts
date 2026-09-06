@@ -1,7 +1,6 @@
 import "server-only";
 import { db } from "@/lib/db";
 import type { EventStatus, PlaybookTrigger, UserRole } from "@prisma/client";
-import { notify } from "@/lib/comments";
 import { logActivity } from "@/lib/activity";
 
 const STATUS_TO_TRIGGER: Partial<Record<EventStatus, PlaybookTrigger>> = {
@@ -63,7 +62,7 @@ export async function runPlaybooksForStatus(input: {
     }
 
     await db.$transaction(async (tx) => {
-      const run = await tx.eventPlaybookRun.create({
+      await tx.eventPlaybookRun.create({
         data: { eventId: evt.id, playbookId: pb.id },
       });
       for (const item of pb.items) {
@@ -71,7 +70,7 @@ export async function runPlaybooksForStatus(input: {
           ? usersByRole[item.defaultAssigneeRole]?.id ?? null
           : null;
         const dueOn = new Date(startMs + item.offsetDaysFromEvent * 86_400_000);
-        const created = await tx.task.create({
+        await tx.task.create({
           data: {
             eventId: evt.id,
             title: item.title,
@@ -96,7 +95,6 @@ export async function runPlaybooksForStatus(input: {
           });
         }
       }
-      return run;
     });
 
     await logActivity({

@@ -6,10 +6,9 @@ import { requireUser } from "@/lib/auth";
 import { can } from "@/lib/authz";
 import { canSeeEvent } from "@/lib/visibility-server";
 import { notify } from "@/lib/comments";
-import type { TaskStatus, TaskPriority } from "@prisma/client";
+import type { TaskStatus } from "@prisma/client";
 
 const STATUSES: TaskStatus[] = ["open", "in_progress", "blocked", "done", "cancelled"];
-const PRIORITIES: TaskPriority[] = ["low", "normal", "high", "urgent"];
 
 const createSchema = z.object({
   eventId: z.coerce.number().int().positive(),

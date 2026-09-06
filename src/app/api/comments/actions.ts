@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import type { CommentEntity } from "@prisma/client";
-import { extractMentions, assertCanCommentOn, notify, linkForEntity } from "@/lib/comments";
+import { extractMentions, assertCanCommentOn, linkForEntity } from "@/lib/comments";
 
 const KINDS: CommentEntity[] = ["event", "rfq", "task"];
 
