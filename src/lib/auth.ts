@@ -1,72 +1,123 @@
 import "server-only";
-
-import { createHmac, timingSafeEqual } from "node:crypto";
-import { cookies } from "next/headers";
+import NextAuth from "next-auth";
 import { redirect } from "next/navigation";
+import Credentials from "next-auth/providers/credentials";
+import Resend from "next-auth/providers/resend";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import bcrypt from "bcryptjs";
+import { db } from "@/lib/db";
+import type { UserRole } from "@prisma/client";
+import { loginAttemptAllowed, recordLoginFailure, recordLoginSuccess } from "@/lib/rate-limit";
 
-const SESSION_COOKIE = "eventbot_session";
-const SESSION_TTL_SECONDS = 60 * 60 * 12;
+const SESSION_MAX_AGE = 60 * 60 * 12;
 
-function authConfig() {
-  const email = process.env.AUTH_EMAIL?.trim().toLowerCase();
-  const password = process.env.AUTH_PASSWORD;
-  const secret = process.env.AUTH_SECRET;
-  if (!email || !password || !secret || secret.length < 32) {
-    throw new Error("Authentication is not configured. Set AUTH_EMAIL, AUTH_PASSWORD, and a 32+ character AUTH_SECRET.");
-  }
-  return { email, password, secret };
+if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 32) {
+  throw new Error("AUTH_SECRET must be set to a 32+ character string.");
 }
 
-function equal(a: string, b: string) {
-  const aa = Buffer.from(a);
-  const bb = Buffer.from(b);
-  return aa.length === bb.length && timingSafeEqual(aa, bb);
-}
+export const { auth, handlers, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(db),
+  secret: process.env.AUTH_SECRET,
+  session: { strategy: "jwt", maxAge: SESSION_MAX_AGE },
+  pages: { signIn: "/login" },
+  providers: [
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(creds) {
+        const email = String(creds?.email ?? "").trim().toLowerCase();
+        const password = String(creds?.password ?? "");
+        if (!email || !password) return null;
 
-function sign(payload: string, secret: string) {
-  return createHmac("sha256", secret).update(payload).digest("base64url");
-}
+        const gate = loginAttemptAllowed(email);
+        if (!gate.allowed) return null;
 
-export function verifyCredentials(email: string, password: string) {
-  const config = authConfig();
-  return equal(email.trim().toLowerCase(), config.email) && equal(password, config.password);
-}
+        // Legacy env-auth cutover fallback: LEGACY_AUTH=on lets the old
+        // single-user env creds sign in as the seeded CEO.
+        if (
+          process.env.LEGACY_AUTH === "on" &&
+          process.env.AUTH_EMAIL?.trim().toLowerCase() === email &&
+          process.env.AUTH_PASSWORD === password
+        ) {
+          const ceo = await db.user.findFirst({
+            where: { role: "ceo", active: true },
+            orderBy: { id: "asc" },
+          });
+          if (ceo) {
+            recordLoginSuccess(email);
+            return {
+              id: String(ceo.id),
+              email: ceo.email,
+              name: ceo.name,
+              role: ceo.role,
+            };
+          }
+        }
 
-export async function createSession(email: string) {
-  const { secret } = authConfig();
-  const expiresAt = Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS;
-  const payload = Buffer.from(JSON.stringify({ email: email.toLowerCase(), expiresAt })).toString("base64url");
-  const token = `${payload}.${sign(payload, secret)}`;
-  (await cookies()).set(SESSION_COOKIE, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: SESSION_TTL_SECONDS,
-  });
-}
+        const user = await db.user.findUnique({ where: { email } });
+        if (!user || !user.active || !user.passwordHash) {
+          recordLoginFailure(email);
+          return null;
+        }
 
-export async function getSessionUser(): Promise<{ email: string } | null> {
-  const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  if (!token) return null;
-  try {
-    const { secret, email: allowedEmail } = authConfig();
-    const [payload, signature] = token.split(".");
-    if (!payload || !signature || !equal(signature, sign(payload, secret))) return null;
-    const session = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { email?: string; expiresAt?: number };
-    if (session.email !== allowedEmail || !session.expiresAt || session.expiresAt <= Date.now() / 1000) return null;
-    return { email: session.email };
-  } catch {
-    return null;
-  }
-}
+        const ok = await bcrypt.compare(password, user.passwordHash);
+        if (!ok) {
+          recordLoginFailure(email);
+          return null;
+        }
 
-export async function requireUser() {
+        recordLoginSuccess(email);
+        await db.user.update({
+          where: { id: user.id },
+          data: { lastLoginAt: new Date() },
+        });
+
+        return {
+          id: String(user.id),
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        };
+      },
+    }),
+    Resend({
+      from: process.env.EMAIL_FROM ?? "no-reply@localhost",
+      apiKey: process.env.RESEND_API_KEY ?? "re_missing",
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        const u = user as { id: string; role: UserRole; email?: string | null; name?: string | null };
+        token.sub = String(u.id);
+        (token as { role?: UserRole }).role = u.role;
+        if (u.name) token.name = u.name;
+        if (u.email) token.email = u.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as { id?: string }).id = String(token.sub);
+        (session.user as { role?: UserRole }).role = (token as { role?: UserRole }).role;
+      }
+      return session;
+    },
+  },
+});
+
+// ---- Backwards-compat shims for callers that pre-dated Auth.js v5 wiring ----
+// Kept minimal and re-export the new primitives. New code should import from
+// @/lib/session directly instead.
+
+export { getSessionUser } from "@/lib/session";
+
+export async function requireUser(): Promise<{ id: number; email: string; name: string; role: UserRole }> {
+  const { getSessionUser } = await import("@/lib/session");
   const user = await getSessionUser();
   if (!user) redirect("/login");
   return user;
 }
 
-export async function clearSession() {
-  (await cookies()).delete(SESSION_COOKIE);
-}
