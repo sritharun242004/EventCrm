@@ -82,6 +82,16 @@ enum QuoteStatus {
   @@map("quote_status")
 }
 
+enum UserRole {
+  ceo
+  sales
+  producer
+  coordinator
+  finance
+
+  @@map("user_role")
+}
+
 // ================= CORE =================
 
 model Client {
@@ -134,8 +144,10 @@ model TeamMember {
   skillTags      String[] @map("skill_tags")
   utilizationPct Int      @default(0) @map("utilization_pct")
   ratingAvg      Decimal  @default(4.5) @map("rating_avg") @db.Decimal(3, 2)
+  userId         Int?     @unique @map("user_id")
 
   team        Team?             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user        User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
   assignments EventAssignment[]
 
   @@map("team_members")
@@ -163,10 +175,12 @@ model Event {
   reputationScore       Decimal?    @map("reputation_score") @db.Decimal(3, 2)
   highlight             String?
   createdAt             DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdByUserId       Int?        @map("created_by_user_id")
 
   client      Client?           @relation(fields: [clientId], references: [id])
   venue       Venue?            @relation(fields: [venueId], references: [id])
   leadTeam    Team?             @relation(fields: [leadTeamId], references: [id])
+  createdBy   User?             @relation("EventCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
   vendors     EventVendor[]
   budgets     BudgetLine[]
   tiers       TicketTier[]
@@ -177,6 +191,7 @@ model Event {
 
   @@index([status], name: "events_status_idx")
   @@index([startsOn], name: "events_starts_on_idx")
+  @@index([createdByUserId], name: "events_created_by_idx")
   @@map("events")
 }
 
@@ -347,6 +362,7 @@ model Rfq {
   budgetCeilingCents BigInt?       @map("budget_ceiling_cents")
   notes             String?
   createdBy         String?        @map("created_by")
+  createdByUserId   Int?           @map("created_by_user_id")
   createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
   sentAt            DateTime?      @map("sent_at") @db.Timestamptz(6)
   closesAt          DateTime?      @map("closes_at") @db.Timestamptz(6)
@@ -354,12 +370,14 @@ model Rfq {
 
   event         Event?         @relation(fields: [eventId], references: [id], onDelete: Cascade)
   awardedVendor Vendor?        @relation("RfqAwardedVendor", fields: [awardedVendorId], references: [id])
+  createdByUser User?          @relation("RfqCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
   items         RfqItem[]
   recipients    RfqRecipient[]
   quotes        RfqQuote[]
 
   @@index([eventId], name: "rfqs_event_idx")
   @@index([status], name: "rfqs_status_idx")
+  @@index([createdByUserId], name: "rfqs_created_by_user_idx")
   @@map("rfqs")
 }
 
@@ -407,4 +425,60 @@ model RfqQuote {
   @@unique([rfqId, vendorId])
   @@index([rfqId], name: "rfq_quotes_rfq_idx")
   @@map("rfq_quotes")
+}
+
+// ================= AUTH =================
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  name            String
+  passwordHash    String?   @map("password_hash")
+  role            UserRole
+  active          Boolean   @default(true)
+  invitedByUserId Int?      @map("invited_by_user_id")
+  invitedAt       DateTime? @map("invited_at") @db.Timestamptz(6)
+  acceptedAt      DateTime? @map("accepted_at") @db.Timestamptz(6)
+  lastLoginAt     DateTime? @map("last_login_at") @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  invitedBy       User?     @relation("Invites", fields: [invitedByUserId], references: [id])
+  invitees        User[]    @relation("Invites")
+  accounts        Account[]
+  teamMember      TeamMember?
+  eventsCreated   Event[]   @relation("EventCreatedBy")
+  rfqsCreated     Rfq[]     @relation("RfqCreatedBy")
+
+  @@index([role], name: "users_role_idx")
+  @@map("users")
+}
+
+model Account {
+  id                Int     @id @default(autoincrement())
+  userId            Int     @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId], name: "accounts_user_idx")
+  @@map("accounts")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime @db.Timestamptz(6)
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
 }
