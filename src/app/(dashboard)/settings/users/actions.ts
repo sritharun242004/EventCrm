@@ -49,7 +49,7 @@ export async function inviteUser(formData: FormData): Promise<FormResult> {
   const existing = await db.user.findUnique({ where: { email } });
   if (existing) return { error: "A user with that email already exists." };
 
-  const created = await db.user.create({
+  await db.user.create({
     data: { email, name, role, invitedByUserId: me.id, invitedAt: new Date() },
   });
 
