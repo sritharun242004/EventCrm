@@ -12,6 +12,7 @@ const PUBLIC: RegExp[] = [
   /^\/login/,
   /^\/accept-invite/,
   /^\/reset-password/,
+  /^\/p\//, // Public proposal viewer — token-gated inside the page
   /^\/api\/auth/,
   /^\/api\/health/,
   /^\/api\/notifications/, // auth check happens inside the route

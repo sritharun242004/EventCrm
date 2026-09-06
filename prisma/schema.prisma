@@ -132,6 +132,17 @@ enum NotificationKind {
   @@map("notification_kind")
 }
 
+enum ProposalStatus {
+  draft
+  sent
+  viewed
+  accepted
+  declined
+  superseded
+
+  @@map("proposal_status")
+}
+
 // ================= CORE =================
 
 model Client {
@@ -144,7 +155,8 @@ model Client {
   lifetimeValueCents BigInt   @default(0) @map("lifetime_value_cents")
   createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  events Event[]
+  events   Event[]
+  contacts Contact[]
 
   @@map("clients")
 }
@@ -216,8 +228,11 @@ model Event {
   highlight             String?
   createdAt             DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
   createdByUserId       Int?        @map("created_by_user_id")
+  primaryContactId      Int?        @map("primary_contact_id")
 
   client      Client?           @relation(fields: [clientId], references: [id])
+  primaryContact Contact?       @relation("EventPrimaryContact", fields: [primaryContactId], references: [id], onDelete: SetNull)
+  proposals   Proposal[]        @relation("EventProposals")
   venue       Venue?            @relation(fields: [venueId], references: [id])
   leadTeam    Team?             @relation(fields: [leadTeamId], references: [id])
   createdBy   User?             @relation("EventCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
@@ -498,6 +513,7 @@ model User {
   mentions        CommentMention[] @relation("Mentioned")
   notifications   Notification[]   @relation("Notifs")
   activityEntries ActivityLog[]    @relation("ActivityActor")
+  proposalsCreated Proposal[]      @relation("ProposalCreator")
 
   @@index([role], name: "users_role_idx")
   @@map("users")
@@ -648,4 +664,46 @@ model ActivityLog {
   @@index([entityType, entityId, createdAt], name: "activity_entity_idx")
   @@index([actorUserId, createdAt], name: "activity_actor_idx")
   @@map("activity_log")
+}
+
+// ================= CONTACTS + PROPOSALS (Phase F) =================
+
+model Contact {
+  id           Int      @id @default(autoincrement())
+  clientId     Int?     @map("client_id")
+  name         String
+  title        String?
+  email        String?
+  phone        String?
+  isPrimary    Boolean  @default(false) @map("is_primary")
+  notes        String?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  client         Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  primaryForEvents Event[] @relation("EventPrimaryContact")
+
+  @@index([clientId], name: "contacts_client_idx")
+  @@map("contacts")
+}
+
+model Proposal {
+  id              Int             @id @default(autoincrement())
+  eventId         Int             @map("event_id")
+  version         Int             @default(1)
+  status          ProposalStatus  @default(draft)
+  publicToken     String          @unique @map("public_token")
+  title           String
+  bodyMarkdown    String          @map("body_markdown")
+  amountCents     BigInt?         @map("amount_cents")
+  createdByUserId Int             @map("created_by_user_id")
+  sentAt          DateTime?       @map("sent_at") @db.Timestamptz(6)
+  firstViewedAt   DateTime?       @map("first_viewed_at") @db.Timestamptz(6)
+  acceptedAt      DateTime?       @map("accepted_at") @db.Timestamptz(6)
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  event     Event @relation("EventProposals", fields: [eventId], references: [id], onDelete: Cascade)
+  createdBy User  @relation("ProposalCreator", fields: [createdByUserId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, version], name: "proposals_event_version_idx")
+  @@map("proposals")
 }

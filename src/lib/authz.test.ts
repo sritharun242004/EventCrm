@@ -116,6 +116,16 @@ describe("can(user, action)", () => {
     }
   });
 
+  test("contact + proposal actions: ceo + sales + producer", () => {
+    for (const r of roles) {
+      const expect = r === "ceo" || r === "sales" || r === "producer";
+      assert.equal(can(u(r), "contact.create"), expect);
+      assert.equal(can(u(r), "contact.edit"), expect);
+      assert.equal(can(u(r), "proposal.create"), expect);
+      assert.equal(can(u(r), "proposal.send"), expect);
+    }
+  });
+
   test("view.rfqs/vendors/teams: ceo + producer", () => {
     for (const r of roles) {
       const expect = r === "ceo" || r === "producer";

@@ -25,6 +25,10 @@ export type Action =
   | "task.edit"
   | "task.assign"
   | "comment.post"
+  | "contact.create"
+  | "contact.edit"
+  | "proposal.create"
+  | "proposal.send"
   | "user.invite"
   | "user.deactivate"
   | "user.change_role"
@@ -90,6 +94,13 @@ export function can(user: SessionUser, action: Action, resource?: Resource): boo
     case "task.assign":
     case "comment.post":
       return true;
+
+    // ---------- Contacts / Proposals ----------
+    case "contact.create":
+    case "contact.edit":
+    case "proposal.create":
+    case "proposal.send":
+      return r === "ceo" || r === "sales" || r === "producer";
 
     // ---------- User mgmt / audit ----------
     case "user.invite":

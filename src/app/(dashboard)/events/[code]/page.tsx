@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/Card";
 import { NoteEditor } from "./NoteEditor";
 import { AccessDrawer } from "./AccessDrawer";
 import { TaskDrawer } from "./TaskDrawer";
+import { ProposalDrawer } from "./ProposalDrawer";
 import { CommentThread } from "@/components/comments/CommentThread";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
@@ -68,6 +69,26 @@ export default async function EventDetail({ params }: Props) {
     role: g.user.role,
     grantedByName: g.grantedBy.name,
   }));
+
+  const [eventProposals] = await Promise.all([
+    db.proposal.findMany({
+      where: { eventId: evt.id },
+      orderBy: [{ version: "desc" }],
+    }),
+  ]);
+  const proposalRows = eventProposals.map((p) => ({
+    id: p.id,
+    version: p.version,
+    status: p.status,
+    title: p.title,
+    amountInr: p.amountCents != null ? Number(p.amountCents) / 100 : null,
+    publicToken: p.publicToken,
+    sentAt: p.sentAt?.toISOString() ?? null,
+    firstViewedAt: p.firstViewedAt?.toISOString() ?? null,
+    acceptedAt: p.acceptedAt?.toISOString() ?? null,
+    createdAt: p.createdAt.toISOString(),
+  }));
+  const publicBase = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
   const [eventComments, eventActivity] = await Promise.all([
     db.comment.findMany({
@@ -131,6 +152,9 @@ export default async function EventDetail({ params }: Props) {
         actions={
           <>
             <TaskDrawer eventId={evt.id} tasks={eventTasks} candidates={taskCandidates} />
+            {can(me, "proposal.create") && (
+              <ProposalDrawer eventId={evt.id} proposals={proposalRows} publicBase={publicBase} />
+            )}
             {showGrantDrawer && (
               <AccessDrawer eventId={evt.id} grantees={grantees} candidates={candidates} />
             )}
