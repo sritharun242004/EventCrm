@@ -13,6 +13,8 @@ import { Sparkline } from "@/components/charts/Sparkline";
 import { Donut } from "@/components/charts/Donut";
 import { DualBar } from "@/components/charts/DualBar";
 import { OverviewKpiSwitcher } from "./OverviewKpiSwitcher";
+import { requireUser } from "@/lib/auth";
+import { whereEventVisible } from "@/lib/visibility";
 import { LinkRow } from "@/components/ui/LinkRow";
 import { ActionButton } from "@/components/ui/Toast";
 
@@ -36,9 +38,11 @@ const PALETTE = [
 
 export default async function Overview() {
   const now = new Date();
+  const me = await requireUser();
 
   const [events, reviews, members, teams, marketAll] = await Promise.all([
     db.event.findMany({
+      where: whereEventVisible(me),
       include: { client: true, venue: true, leadTeam: true },
       orderBy: { startsOn: "asc" },
     }),

@@ -4,10 +4,11 @@ import { PageHead } from "@/components/ui/PageHead";
 import { ChipLink } from "@/components/ui/ChipLink";
 import { EventsKanban } from "./EventsKanban";
 import type { EventType } from "@prisma/client";
+import { requireUser } from "@/lib/auth";
+import { whereEventVisible } from "@/lib/visibility";
 
-// Drag-and-drop calls updateEventStatus which revalidates /events immediately,
-// so a 15s ISR window is a safe cache without breaking responsiveness.
-export const revalidate = 15;
+// User-scoped: cannot ISR-cache since different roles see different sets.
+export const dynamic = "force-dynamic";
 
 const FILTERS: Array<{ label: string; type?: EventType }> = [
   { label: "All" },
@@ -21,15 +22,25 @@ const FILTERS: Array<{ label: string; type?: EventType }> = [
 type Search = Promise<{ type?: string; group?: string }>;
 
 export default async function EventsPage({ searchParams }: { searchParams: Search }) {
+  const me = await requireUser();
   const sp = await searchParams;
   const activeType = sp.type as EventType | undefined;
   const groupBy: "status" | "team" = sp.group === "team" ? "team" : "status";
 
-  const events = await db.event.findMany({
-    where: activeType ? { type: activeType } : undefined,
-    include: { client: true, venue: true, leadTeam: true },
-    orderBy: { startsOn: "asc" },
-  });
+  const eventScope = whereEventVisible(me);
+  const whereFilter = activeType
+    ? { AND: [{ type: activeType }, eventScope] }
+    : eventScope;
+
+  const [events, totalVisible, totalAll] = await Promise.all([
+    db.event.findMany({
+      where: whereFilter,
+      include: { client: true, venue: true, leadTeam: true },
+      orderBy: { startsOn: "asc" },
+    }),
+    db.event.count({ where: eventScope }),
+    db.event.count(),
+  ]);
 
   const cards = events.map((e) => ({
     id: e.id,
@@ -61,7 +72,11 @@ export default async function EventsPage({ searchParams }: { searchParams: Searc
       <PageHead
         crumb="Pipeline"
         title="Events"
-        subtitle={`${events.length} events on the board. Drag any card to move it through the stages.`}
+        subtitle={
+          me.role === "ceo"
+            ? `${events.length} events on the board. Drag any card to move it through the stages.`
+            : `Seeing ${totalVisible} of ${totalAll} events (${me.role} default). Drag any card to move it through the stages.`
+        }
         actions={
           <>
             <Link

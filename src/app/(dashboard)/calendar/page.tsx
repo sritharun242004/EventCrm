@@ -4,20 +4,23 @@ import { fmtDate, fmtDateFull, nf } from "@/lib/dates";
 import { statusClass, statusLabel } from "@/lib/format";
 import { Pill } from "@/components/ui/Pill";
 import { CalendarClient } from "./CalendarClient";
+import { requireUser } from "@/lib/auth";
+import { whereEventVisible } from "@/lib/visibility";
 
-// Month view — new events land after revalidate; the createEvent action also
-// force-revalidates so a freshly-created event still shows up immediately.
-export const revalidate = 30;
+// User-scoped: cannot ISR since visible set differs per role.
+export const dynamic = "force-dynamic";
 
 type Search = Promise<{ y?: string; m?: string }>;
 
 export default async function CalendarPage({ searchParams }: { searchParams: Search }) {
+  const me = await requireUser();
   const sp = await searchParams;
   const y = Number(sp.y ?? new Date().getFullYear());
   const m = Number(sp.m ?? new Date().getMonth());
 
   const [events, venues] = await Promise.all([
     db.event.findMany({
+      where: whereEventVisible(me),
       include: { venue: true },
       orderBy: { startsOn: "asc" },
     }),

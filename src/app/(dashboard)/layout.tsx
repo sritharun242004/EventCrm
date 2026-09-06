@@ -1,52 +1,50 @@
-import { unstable_cache } from "next/cache";
 import { Sidebar, type SidebarGroup } from "@/components/shell/Sidebar";
 import { Topbar } from "@/components/shell/Topbar";
 import { RunSheet } from "@/components/shell/RunSheet";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
-import { can, type Action } from "@/lib/authz";
-
-const getSidebarCounts = unstable_cache(
-  async () => {
-    const [events, vendors, teams, rfqs] = await Promise.all([
-      db.event.count(),
-      db.vendor.count(),
-      db.team.count(),
-      db.rfq.count(),
-    ]);
-    return { events, vendors, teams, rfqs };
-  },
-  ["sidebar-counts"],
-  { revalidate: 60, tags: ["sidebar-counts"] }
-);
-
-const getRunsheetContext = unstable_cache(
-  async () => {
-    const now = new Date();
-    const [live, todayCount] = await Promise.all([
-      db.event.findFirst({ where: { status: "live" } }),
-      db.event.count({ where: { startsOn: { lte: now }, endsOn: { gte: now } } }),
-    ]);
-    return {
-      live: live
-        ? {
-            code: live.code ?? "",
-            name: live.name,
-            startsOn: live.startsOn.toISOString(),
-            endsOn: live.endsOn.toISOString(),
-            roomCount: live.confirmedAttendees,
-          }
-        : null,
-      todayCount,
-    };
-  },
-  ["runsheet-ctx"],
-  { revalidate: 30, tags: ["runsheet-ctx"] }
-);
+import { can, type Action, type SessionUser } from "@/lib/authz";
+import { whereEventVisible } from "@/lib/visibility";
 
 type Counts = { events: number; vendors: number; teams: number; rfqs: number };
 
-function buildSidebar(user: Awaited<ReturnType<typeof requireUser>>, counts: Counts): SidebarGroup[] {
+async function getSidebarCounts(user: SessionUser): Promise<Counts> {
+  const eventScope = whereEventVisible(user);
+  const [events, vendors, teams, rfqs] = await Promise.all([
+    db.event.count({ where: eventScope }),
+    db.vendor.count(),
+    db.team.count(),
+    db.rfq.count(),
+  ]);
+  return { events, vendors, teams, rfqs };
+}
+
+async function getRunsheetContext(user: SessionUser) {
+  const now = new Date();
+  const eventScope = whereEventVisible(user);
+  const [live, todayCount] = await Promise.all([
+    db.event.findFirst({
+      where: { AND: [{ status: "live" }, eventScope] },
+    }),
+    db.event.count({
+      where: { AND: [{ startsOn: { lte: now }, endsOn: { gte: now } }, eventScope] },
+    }),
+  ]);
+  return {
+    live: live
+      ? {
+          code: live.code ?? "",
+          name: live.name,
+          startsOn: live.startsOn.toISOString(),
+          endsOn: live.endsOn.toISOString(),
+          roomCount: live.confirmedAttendees,
+        }
+      : null,
+    todayCount,
+  };
+}
+
+function buildSidebar(user: SessionUser, counts: Counts): SidebarGroup[] {
   const gate = (a: Action) => can(user, a);
   const groups: SidebarGroup[] = [];
 
@@ -76,10 +74,10 @@ function buildSidebar(user: Awaited<ReturnType<typeof requireUser>>, counts: Cou
 }
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [user, counts, { live, todayCount }] = await Promise.all([
-    requireUser(),
-    getSidebarCounts(),
-    getRunsheetContext(),
+  const user = await requireUser();
+  const [counts, { live, todayCount }] = await Promise.all([
+    getSidebarCounts(user),
+    getRunsheetContext(user),
   ]);
 
   const liveEvent = live

@@ -5,6 +5,8 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import type { EventStatus } from "@prisma/client";
 import { requireUser } from "@/lib/auth";
+import { canSeeEvent } from "@/lib/visibility-server";
+import { can } from "@/lib/authz";
 
 const VALID: EventStatus[] = [
   "lead", "proposed", "confirmed", "in_production", "live", "wrap_up", "completed", "cancelled",
@@ -12,10 +14,19 @@ const VALID: EventStatus[] = [
 
 /** Move an event to a new pipeline column (kanban drop). */
 export async function updateEventStatus(id: number, next: EventStatus) {
-  await requireUser();
+  const me = await requireUser();
   if (!VALID.includes(next)) {
     return { ok: false as const, error: `Invalid status: ${next}` };
   }
+  if (!(await canSeeEvent(me, id))) return { ok: false as const, error: "Forbidden" };
+  // Only ceo/sales for early stages; ceo/producer for later. Simple gate here
+  // — the design's split of who can move which arrow lives in the matrix but
+  // is applied uniformly by role for now; refined per-transition in Phase C.
+  const earlyStages: EventStatus[] = ["lead", "proposed", "confirmed"];
+  const gate = earlyStages.includes(next)
+    ? can(me, "event.move_status.lead_to_confirmed")
+    : can(me, "event.move_status.confirmed_to_completed");
+  if (!gate) return { ok: false as const, error: "Forbidden" };
   try {
     await db.event.update({ where: { id }, data: { status: next } });
     revalidatePath("/events");
@@ -33,9 +44,11 @@ const noteSchema = z.object({
   note: z.string().trim().max(500),
 });
 export async function saveEventNote(input: z.input<typeof noteSchema>) {
-  await requireUser();
+  const me = await requireUser();
   const parsed = noteSchema.safeParse(input);
   if (!parsed.success) return { ok: false as const, error: parsed.error.issues[0]?.message ?? "Invalid" };
+  if (!(await canSeeEvent(me, parsed.data.eventId))) return { ok: false as const, error: "Forbidden" };
+  if (!can(me, "event.edit_brief")) return { ok: false as const, error: "Forbidden" };
   try {
     const evt = await db.event.update({
       where: { id: parsed.data.eventId },
@@ -60,10 +73,12 @@ const budgetLineSchema = z.object({
   notes: z.string().trim().max(400).optional(),
 });
 export async function addBudgetLine(input: z.input<typeof budgetLineSchema>) {
-  await requireUser();
+  const me = await requireUser();
   const parsed = budgetLineSchema.safeParse(input);
   if (!parsed.success) return { ok: false as const, error: parsed.error.issues[0]?.message ?? "Invalid" };
   const d = parsed.data;
+  if (!(await canSeeEvent(me, d.eventId))) return { ok: false as const, error: "Forbidden" };
+  if (!can(me, "budget.line.create")) return { ok: false as const, error: "Forbidden" };
   try {
     const evt = await db.event.findUnique({ where: { id: d.eventId }, select: { code: true } });
     await db.budgetLine.create({

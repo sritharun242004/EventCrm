@@ -10,16 +10,21 @@ import { Pill } from "@/components/ui/Pill";
 import { Meter } from "@/components/ui/Meter";
 import { Card } from "@/components/ui/Card";
 import { NoteEditor } from "./NoteEditor";
+import { redirect } from "next/navigation";
+import { requireUser } from "@/lib/auth";
+import { whereEventVisible } from "@/lib/visibility";
 
-export const revalidate = 30;
+export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ code: string }> };
 
 export default async function EventDetail({ params }: Props) {
+  const me = await requireUser();
   const { code } = await params;
 
-  const evt = await db.event.findUnique({
-    where: { code },
+  // Visibility check + fetch in one query — returns null if user cannot see it.
+  const evt = await db.event.findFirst({
+    where: { AND: [{ code }, whereEventVisible(me)] },
     include: {
       client: true,
       venue: true,
@@ -31,7 +36,12 @@ export default async function EventDetail({ params }: Props) {
       rfqs: { include: { quotes: { include: { vendor: true } } } },
     },
   });
-  if (!evt) notFound();
+  if (!evt) {
+    // Distinguish "does not exist" from "exists but you cannot see it".
+    const exists = await db.event.count({ where: { code } });
+    if (exists === 0) notFound();
+    redirect("/forbidden");
+  }
 
   const planned = sumPaise(evt.budgets, (b) => b.plannedCents);
   const actual = sumPaise(evt.budgets, (b) => b.actualCents);

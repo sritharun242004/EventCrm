@@ -5,18 +5,19 @@ import { Kpi, KpiRow } from "@/components/ui/Kpi";
 import { Card } from "@/components/ui/Card";
 import { Meter } from "@/components/ui/Meter";
 import { guardPage } from "@/lib/guard";
+import { whereEventVisible } from "@/lib/visibility";
 
 export const revalidate = 60;
 
 export default async function ReputationPage() {
-  await guardPage("view.reputation");
+  const me = await guardPage("view.reputation");
   const [reviews, eventsWithRep] = await Promise.all([
     db.eventReview.findMany({
       include: { event: true },
       orderBy: { reviewedOn: "desc" },
     }),
     db.event.findMany({
-      where: { reputationScore: { not: null } },
+      where: { AND: [{ reputationScore: { not: null } }, whereEventVisible(me)] },
       orderBy: { reputationScore: "desc" },
     }),
   ]);

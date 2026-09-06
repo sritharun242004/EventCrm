@@ -1,14 +1,15 @@
 import { db } from "@/lib/db";
 import { ProposalFactory } from "./ProposalFactory";
 import { guardPage } from "@/lib/guard";
+import { whereEventVisible } from "@/lib/visibility";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProposalsPage() {
-  await guardPage("view.proposals");
+  const me = await guardPage("view.proposals");
   const [events, offerings] = await Promise.all([
     db.event.findMany({
-      where: { status: "completed" },
+      where: { AND: [{ status: "completed" }, whereEventVisible(me)] },
       include: { client: true, venue: true, reviews: true },
       orderBy: [{ reputationScore: "desc" }, { startsOn: "desc" }],
       take: 8,

@@ -8,6 +8,10 @@ import type { SessionUser } from "@/lib/authz";
  *
  * The rule is a union: role-default set OR events they created OR events
  * they've been explicitly granted access to. CEO gets `{}` (all events).
+ *
+ * This file is pure — no side effects, no server-only imports — so the
+ * unit tests can exercise it directly under node:test. For side-effectful
+ * helpers like canSeeEvent(user, id) see @/lib/visibility-server.
  */
 export function whereEventVisible(user: SessionUser): Prisma.EventWhereInput {
   if (user.role === "ceo") return {};

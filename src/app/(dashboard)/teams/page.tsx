@@ -4,15 +4,16 @@ import { Meter } from "@/components/ui/Meter";
 import { Pill } from "@/components/ui/Pill";
 import { TeamActions } from "./TeamActions";
 import { guardPage } from "@/lib/guard";
+import { whereEventVisible } from "@/lib/visibility";
 
 export const revalidate = 60;
 
 export default async function TeamsPage() {
-  await guardPage("view.teams");
+  const me = await guardPage("view.teams");
   const [teams, members, events] = await Promise.all([
     db.team.findMany({ include: { members: true } }),
     db.teamMember.findMany({ include: { team: true } }),
-    db.event.findMany({ include: { leadTeam: true } }),
+    db.event.findMany({ where: whereEventVisible(me), include: { leadTeam: true } }),
   ]);
 
   const actionTeams = teams.map((t) => ({ id: t.id, name: t.name }));

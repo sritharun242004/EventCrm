@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Meter } from "@/components/ui/Meter";
 import { BudgetActions } from "./BudgetActions";
 import { guardPage } from "@/lib/guard";
+import { whereEventVisible } from "@/lib/visibility";
 
 export const revalidate = 30;
 
@@ -29,11 +30,11 @@ const TEMPLATE: Array<{ cat: string; perHead: number; note: string }> = [
 type Search = Promise<{ event?: string }>;
 
 export default async function BudgetsPage({ searchParams }: { searchParams: Search }) {
-  await guardPage("view.budgets");
+  const me = await guardPage("view.budgets");
   const sp = await searchParams;
 
   const candidates = await db.event.findMany({
-    where: { budgets: { some: {} } },
+    where: { AND: [{ budgets: { some: {} } }, whereEventVisible(me)] },
     include: { budgets: true, venue: true },
     orderBy: { startsOn: "asc" },
   });
