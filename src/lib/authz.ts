@@ -34,6 +34,7 @@ export type Action =
   | "view.events"
   | "view.calendar"
   | "view.tasks"
+  | "view.proposals"
   | "view.rfqs"
   | "view.vendors"
   | "view.budgets"
@@ -105,6 +106,8 @@ export function can(user: SessionUser, action: Action, resource?: Resource): boo
     case "view.calendar":
     case "view.tasks":
       return true;
+    case "view.proposals":
+      return r === "ceo" || r === "sales" || r === "producer";
     case "view.rfqs":
     case "view.vendors":
     case "view.teams":

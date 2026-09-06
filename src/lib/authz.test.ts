@@ -110,6 +110,12 @@ describe("can(user, action)", () => {
     }
   });
 
+  test("view.proposals: ceo + sales + producer", () => {
+    for (const r of roles) {
+      assert.equal(can(u(r), "view.proposals"), r === "ceo" || r === "sales" || r === "producer");
+    }
+  });
+
   test("view.rfqs/vendors/teams: ceo + producer", () => {
     for (const r of roles) {
       const expect = r === "ceo" || r === "producer";

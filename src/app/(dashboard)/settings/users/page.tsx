@@ -1,20 +1,11 @@
-import { getSessionUser } from "@/lib/session";
-import { requireRole } from "@/lib/authz";
+import { guardPage } from "@/lib/guard";
 import { db } from "@/lib/db";
 import { InviteDrawer } from "./InviteDrawer";
-import { deactivateUser, reactivateUser, changeUserRole } from "./actions";
-
-const ROLE_LABELS: Record<string, string> = {
-  ceo: "CEO / Owner",
-  sales: "Sales",
-  producer: "Producer",
-  coordinator: "Coordinator",
-  finance: "Finance",
-};
+import { RoleSelect } from "./RoleSelect";
+import { deactivateUser, reactivateUser } from "./actions";
 
 export default async function UsersPage() {
-  const me = await getSessionUser();
-  requireRole(me, "ceo");
+  const me = await guardPage("view.settings.users");
   const users = await db.user.findMany({ orderBy: [{ active: "desc" }, { createdAt: "asc" }] });
 
   return (
@@ -40,19 +31,7 @@ export default async function UsersPage() {
               <td className="py-2">{u.name}</td>
               <td className="text-slate-700">{u.email}</td>
               <td>
-                <form action={changeUserRole} className="inline">
-                  <input type="hidden" name="id" value={u.id} />
-                  <select
-                    name="role"
-                    defaultValue={u.role}
-                    className="rounded border px-2 py-1"
-                    onChange={(e) => e.currentTarget.form?.requestSubmit()}
-                  >
-                    {Object.entries(ROLE_LABELS).map(([v, label]) => (
-                      <option key={v} value={v}>{label}</option>
-                    ))}
-                  </select>
-                </form>
+                <RoleSelect userId={u.id} currentRole={u.role} disabled={u.id === me.id} />
               </td>
               <td className="text-slate-600">
                 {u.active ? "Active" : "Inactive"}

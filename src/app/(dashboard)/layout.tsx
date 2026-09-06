@@ -54,14 +54,12 @@ function buildSidebar(user: Awaited<ReturnType<typeof requireUser>>, counts: Cou
     gate("view.overview") && { href: "/overview", label: "Overview" },
     gate("view.events") && { href: "/events", label: "Events", count: counts.events },
     gate("view.calendar") && { href: "/calendar", label: "Calendar" },
-    gate("view.tasks") && { href: "/tasks", label: "Tasks" },
+    // /tasks lands in Phase C — sidebar entry re-added there.
   ].filter(Boolean) as SidebarGroup["items"];
   if (programme.length) groups.push({ group: "Programme", items: programme });
 
   const production: SidebarGroup["items"] = [];
-  // Proposal Factory stays visible to anyone who can create proposals — for
-  // Phase A that's the same set as who can create events.
-  if (gate("event.create")) production.push({ href: "/proposals", label: "Proposal Factory" });
+  if (gate("view.proposals")) production.push({ href: "/proposals", label: "Proposal Factory" });
   if (gate("view.vendors")) production.push({ href: "/vendors", label: "Vendors", count: counts.vendors });
   if (gate("view.budgets")) production.push({ href: "/budgets", label: "Budgets" });
   if (gate("view.rfqs")) production.push({ href: "/rfqs", label: "RFQs", count: counts.rfqs });
