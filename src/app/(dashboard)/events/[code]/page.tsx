@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/Card";
 import { NoteEditor } from "./NoteEditor";
 import { AccessDrawer } from "./AccessDrawer";
 import { TaskDrawer } from "./TaskDrawer";
+import { CommentThread } from "@/components/comments/CommentThread";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { whereEventVisible } from "@/lib/visibility";
@@ -66,6 +67,21 @@ export default async function EventDetail({ params }: Props) {
     name: g.user.name,
     role: g.user.role,
     grantedByName: g.grantedBy.name,
+  }));
+
+  const [eventComments] = await Promise.all([
+    db.comment.findMany({
+      where: { entityType: "event", entityId: evt.id },
+      include: { author: { select: { id: true, name: true, role: true } } },
+      orderBy: { createdAt: "asc" },
+    }),
+  ]);
+  const commentRows = eventComments.map((c) => ({
+    id: c.id,
+    body: c.body,
+    createdAt: c.createdAt.toISOString(),
+    author: c.author,
+    isMine: c.authorUserId === me.id,
   }));
 
   const [tasksRaw, taskCandidates] = await Promise.all([
@@ -304,6 +320,15 @@ export default async function EventDetail({ params }: Props) {
             </Link>
           ))
         )}
+      </Card>
+
+      <Card title="Discussion" sub={`${commentRows.length} comment${commentRows.length === 1 ? "" : "s"}`}>
+        <CommentThread
+          entityType="event"
+          entityId={evt.id}
+          comments={commentRows}
+          candidates={taskCandidates}
+        />
       </Card>
     </>
   );

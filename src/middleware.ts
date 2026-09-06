@@ -14,6 +14,7 @@ const PUBLIC: RegExp[] = [
   /^\/reset-password/,
   /^\/api\/auth/,
   /^\/api\/health/,
+  /^\/api\/notifications/, // auth check happens inside the route
   /^\/_next/,
   /^\/favicon\.ico/,
   /^\/apple-icon/,

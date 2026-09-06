@@ -2,6 +2,7 @@
 
 import { ThemeToggle } from "./ThemeToggle";
 import { MobileNav } from "./MobileNav";
+import { NotificationBell } from "./NotificationBell";
 import { logout } from "@/app/login/actions";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -68,6 +69,7 @@ export function Topbar({
         >
           {roleLabel}
         </span>
+        <NotificationBell />
         <ThemeToggle />
         <form action={logout}>
           <button

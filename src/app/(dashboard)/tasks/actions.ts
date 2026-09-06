@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { can } from "@/lib/authz";
 import { canSeeEvent } from "@/lib/visibility-server";
+import { notify } from "@/lib/comments";
 import type { TaskStatus, TaskPriority } from "@prisma/client";
 
 const STATUSES: TaskStatus[] = ["open", "in_progress", "blocked", "done", "cancelled"];
@@ -26,8 +27,8 @@ export async function createTask(formData: FormData): Promise<void> {
   if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Invalid.");
   const d = parsed.data;
   if (!(await canSeeEvent(me, d.eventId))) throw new Error("Forbidden.");
-  const evt = await db.event.findUnique({ where: { id: d.eventId }, select: { code: true } });
-  await db.task.create({
+  const evt = await db.event.findUnique({ where: { id: d.eventId }, select: { code: true, name: true } });
+  const created = await db.task.create({
     data: {
       eventId: d.eventId,
       title: d.title,
@@ -38,6 +39,15 @@ export async function createTask(formData: FormData): Promise<void> {
       dueOn: d.dueOn ? new Date(d.dueOn) : null,
     },
   });
+  if (created.assigneeUserId && created.assigneeUserId !== me.id) {
+    await notify({
+      userId: created.assigneeUserId,
+      kind: "task_assigned",
+      title: `${me.name} assigned you a task`,
+      body: `${d.title} · ${evt?.name ?? "event"}`,
+      linkUrl: evt?.code ? `/events/${evt.code}` : "/tasks",
+    });
+  }
   revalidatePath("/tasks");
   if (evt?.code) revalidatePath(`/events/${evt.code}`);
 }
@@ -63,10 +73,22 @@ export async function assignTask(formData: FormData): Promise<void> {
   const id = Number(formData.get("id"));
   const userId = formData.get("userId");
   const nextUserId = userId && String(userId).length ? Number(userId) : null;
-  const t = await db.task.findUnique({ where: { id }, select: { eventId: true, event: { select: { code: true } } } });
+  const t = await db.task.findUnique({
+    where: { id },
+    select: { eventId: true, title: true, assigneeUserId: true, event: { select: { code: true, name: true } } },
+  });
   if (!t) throw new Error("Not found.");
   if (!(await canSeeEvent(me, t.eventId))) throw new Error("Forbidden.");
   await db.task.update({ where: { id }, data: { assigneeUserId: nextUserId } });
+  if (nextUserId && nextUserId !== me.id && nextUserId !== t.assigneeUserId) {
+    await notify({
+      userId: nextUserId,
+      kind: "task_assigned",
+      title: `${me.name} assigned you a task`,
+      body: `${t.title} · ${t.event.name}`,
+      linkUrl: t.event.code ? `/events/${t.event.code}` : "/tasks",
+    });
+  }
   revalidatePath("/tasks");
   if (t.event.code) revalidatePath(`/events/${t.event.code}`);
 }
