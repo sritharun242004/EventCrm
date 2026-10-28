@@ -1,0 +1,1928 @@
+{
+  "ec2": [
+    {
+      "region": "ap-south-1",
+      "id": "i-0913f40e656c28514",
+      "name": "markbot-production",
+      "type": "t3.medium",
+      "state": "stopped",
+      "az": "ap-south-1a",
+      "public_ip": "3.111.164.89",
+      "private_ip": "172.31.35.38",
+      "launch_time": "2026-04-27 18:21:21+00:00",
+      "vpc": "vpc-0e9a390421751add8",
+      "project": "markbot-production",
+      "tags": {
+        "Name": "markbot-production"
+      }
+    },
+    {
+      "region": "us-east-1",
+      "id": "i-03b107010712ecc5f",
+      "name": "BotxStudio",
+      "type": "t3.small",
+      "state": "running",
+      "az": "us-east-1f",
+      "public_ip": "3.220.233.111",
+      "private_ip": "172.31.77.31",
+      "launch_time": "2026-04-21 07:06:14+00:00",
+      "vpc": "vpc-002657d8a67f625e4",
+      "project": "BotxStudio",
+      "tags": {
+        "Name": "BotxStudio"
+      }
+    }
+  ],
+  "ebs": [
+    {
+      "region": "ap-south-1",
+      "id": "vol-05bd1674bca46935d",
+      "size_gb": 20,
+      "type": "gp2",
+      "state": "in-use",
+      "attached_to": "i-0913f40e656c28514",
+      "project": "(untagged)"
+    },
+    {
+      "region": "us-east-1",
+      "id": "vol-0783a44bff4bf496c",
+      "size_gb": 20,
+      "type": "gp3",
+      "state": "in-use",
+      "attached_to": "i-03b107010712ecc5f",
+      "project": "(untagged)"
+    }
+  ],
+  "lambda": [
+    {
+      "region": "ap-south-1",
+      "name": "ifh-comingsoon",
+      "runtime": "nodejs20.x",
+      "mem": 128,
+      "timeout": 5,
+      "last_modified": "2026-07-27T07:40:00.000+0000",
+      "handler": "index.handler",
+      "project": "ifh-connects",
+      "tags": {
+        "ManagedBy": "terraform",
+        "Project": "ifh-connects",
+        "Stack": "comingsoon"
+      }
+    },
+    {
+      "region": "ap-south-1",
+      "name": "ifh-testplan",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-07-21T09:45:08.000+0000",
+      "handler": "index.handler",
+      "project": "ifh-connects",
+      "tags": {
+        "ManagedBy": "terraform",
+        "Project": "ifh-connects",
+        "Stack": "testplan"
+      }
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-settings",
+      "runtime": "nodejs20.x",
+      "mem": 128,
+      "timeout": 5,
+      "last_modified": "2026-08-18T10:30:51.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-settings",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-postee-add",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:31:05.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-postee-add",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-auth-callback",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 30,
+      "last_modified": "2026-08-18T10:30:32.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-auth-callback",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-postee-delete",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:31:00.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-postee-delete",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-postee-register",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:30:53.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-postee-register",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-analytics",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:49.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-analytics",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-postee-list",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:30:54.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-postee-list",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-transcribe",
+      "runtime": "nodejs20.x",
+      "mem": 512,
+      "timeout": 60,
+      "last_modified": "2026-08-18T10:30:24.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-transcribe",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-postee-me",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:31:07.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-postee-me",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-checkout-create-order",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 30,
+      "last_modified": "2026-08-18T10:30:34.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-checkout-create-order",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-update-order",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:45.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-update-order",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-razorpay-webhook",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 30,
+      "last_modified": "2026-08-18T10:30:37.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-razorpay-webhook",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-release-scheduled",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 30,
+      "last_modified": "2026-08-18T10:31:03.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-release-scheduled",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-translate",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 30,
+      "last_modified": "2026-08-18T10:30:22.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-translate",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-order-lookup",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:30:38.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-order-lookup",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-get-order",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:43.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-get-order",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-artists",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:31:12.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-artists",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-artist-portal",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:31:10.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-artist-portal",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-list-my-orders",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:30:40.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-list-my-orders",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-collectibles-buy",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:31:17.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-collectibles-buy",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-list-customers",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:48.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-list-customers",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-refund-order",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:46.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-refund-order",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-postee-reply",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:30:56.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-postee-reply",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-postee-reply-post",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:31:02.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-postee-reply-post",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-collectibles-list",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:31:15.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-collectibles-list",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-collectibles",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:31:13.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-collectibles",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-list-orders",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:41.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-list-orders",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-auth-start",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 30,
+      "last_modified": "2026-08-18T10:30:27.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-auth-start",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-postee-replies",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:59.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-postee-replies",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-db-ping",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:25.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-db-ping",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-auth-google",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:30:30.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-auth-google",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-admin-postees",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:57.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-admin-postees",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-auth-verify",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 15,
+      "last_modified": "2026-08-18T10:30:29.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-auth-verify",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "botstudiox-cognito-email",
+      "runtime": "nodejs20.x",
+      "mem": 128,
+      "timeout": 3,
+      "last_modified": "2026-07-10T07:54:46.812+0000",
+      "handler": "index.handler",
+      "project": "botstudiox-cognito-email",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-validate-coupon",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:30:35.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-validate-coupon",
+      "tags": {}
+    },
+    {
+      "region": "us-east-1",
+      "name": "sendapostcard-api-artist-auth",
+      "runtime": "nodejs20.x",
+      "mem": 256,
+      "timeout": 10,
+      "last_modified": "2026-08-18T10:31:08.000+0000",
+      "handler": "index.handler",
+      "project": "sendapostcard-api-artist-auth",
+      "tags": {}
+    }
+  ],
+  "rds": [
+    {
+      "region": "ap-south-1",
+      "id": "markbot-db",
+      "engine": "postgres",
+      "version": "15.17",
+      "class": "db.t3.micro",
+      "status": "available",
+      "storage_gb": 20,
+      "multi_az": false,
+      "endpoint": "markbot-db.cvywegyaom46.ap-south-1.rds.amazonaws.com",
+      "project": "markbot-db"
+    },
+    {
+      "region": "ap-south-1",
+      "id": "petee-demo-db",
+      "engine": "postgres",
+      "version": "16.14",
+      "class": "db.t4g.micro",
+      "status": "available",
+      "storage_gb": 20,
+      "multi_az": false,
+      "endpoint": "petee-demo-db.cvywegyaom46.ap-south-1.rds.amazonaws.com",
+      "project": "petee"
+    }
+  ],
+  "dynamodb": [
+    {
+      "region": "ap-south-1",
+      "name": "ifh-comingsoon-leads",
+      "status": "ACTIVE",
+      "items": 0,
+      "size_bytes": 0,
+      "billing": "PAY_PER_REQUEST",
+      "project": "ifh-connects"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "ifh-comingsoon-signups",
+      "status": "ACTIVE",
+      "items": 1,
+      "size_bytes": 50,
+      "billing": "PAY_PER_REQUEST",
+      "project": "ifh-connects"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "ifh-testplan",
+      "status": "ACTIVE",
+      "items": 53,
+      "size_bytes": 3398,
+      "billing": "PAY_PER_REQUEST",
+      "project": "ifh-connects"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "ifh-tflock",
+      "status": "ACTIVE",
+      "items": 5,
+      "size_bytes": 542,
+      "billing": "PAY_PER_REQUEST",
+      "project": "ifh-connects"
+    }
+  ],
+  "ecs": [
+    {
+      "region": "ap-south-1",
+      "cluster": "ifh-beta-cluster",
+      "status": "ACTIVE",
+      "services": 3,
+      "tasks_running": 0,
+      "container_instances": 0,
+      "project": "ifh-connects"
+    },
+    {
+      "region": "ap-south-1",
+      "cluster": "default",
+      "status": "ACTIVE",
+      "services": 1,
+      "tasks_running": 1,
+      "container_instances": 0,
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "cluster": "happycars-cluster-mumbai",
+      "status": "ACTIVE",
+      "services": 1,
+      "tasks_running": 0,
+      "container_instances": 0,
+      "project": "Infra-ECS-Cluster-happycars-cluster-mumbai-6ac5132a"
+    },
+    {
+      "region": "eu-north-1",
+      "cluster": "happycars-cluster",
+      "status": "ACTIVE",
+      "services": 0,
+      "tasks_running": 0,
+      "container_instances": 0,
+      "project": "Infra-ECS-Cluster-happycars-cluster-131138e7"
+    }
+  ],
+  "apigw": [
+    {
+      "region": "ap-south-1",
+      "kind": "HTTP",
+      "id": "1fm9m22ow0",
+      "name": "ifh-comingsoon",
+      "created": "2026-07-23 05:09:51+00:00",
+      "project": "ifh-connects"
+    },
+    {
+      "region": "ap-south-1",
+      "kind": "HTTP",
+      "id": "w2os2hq07f",
+      "name": "ifh-testplan",
+      "created": "2026-07-21 09:05:45+00:00",
+      "project": "ifh-connects"
+    },
+    {
+      "region": "us-east-1",
+      "kind": "HTTP",
+      "id": "vfdeydyhk4",
+      "name": "sendapostcard-api",
+      "created": "2026-07-04 17:10:13+00:00",
+      "project": "sendapostcard-api"
+    }
+  ],
+  "amplify": [
+    {
+      "region": "ap-south-1",
+      "name": "st-james-court",
+      "id": "do8ov2wm2byhq",
+      "repo": "https://github.com/sritharun242004/st-james-court-nextjs",
+      "platform": "WEB_COMPUTE",
+      "default_domain": "do8ov2wm2byhq.amplifyapp.com",
+      "created": "2026-05-21 17:48:13.684000+05:30",
+      "project": "st-james-court"
+    }
+  ],
+  "apprunner": [
+    {
+      "region": "us-east-1",
+      "name": "lms-web",
+      "arn": "arn:aws:apprunner:us-east-1:836471808669:service/lms-web/5f288294bab84e468bb8d782eca20036",
+      "status": "RUNNING",
+      "url": "cmpg7fpne9.us-east-1.awsapprunner.com",
+      "created": "2026-07-07 22:02:41+05:30",
+      "project": "lms-web"
+    },
+    {
+      "region": "us-east-1",
+      "name": "lms-realtime",
+      "arn": "arn:aws:apprunner:us-east-1:836471808669:service/lms-realtime/1c78e6bf26214a70bedf58761df95882",
+      "status": "RUNNING",
+      "url": "fsjgpnt5qp.us-east-1.awsapprunner.com",
+      "created": "2026-07-07 21:26:57+05:30",
+      "project": "lms-realtime"
+    }
+  ],
+  "cfn": [
+    {
+      "region": "ap-south-1",
+      "name": "ECS-Console-V2-Service-happycars-task-service-1svwqdsm-happycars-cluster-mumbai-5f581d5e",
+      "status": "CREATE_COMPLETE",
+      "created": "2026-01-20 16:07:44.234000+00:00",
+      "updated": "",
+      "project": "ECS-Console-V2-Service-happycars-task-service-1svwqdsm-happycars-cluster-mumbai-5f581d5e"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "Infra-ECS-Cluster-happycars-cluster-mumbai-6ac5132a",
+      "status": "CREATE_COMPLETE",
+      "created": "2026-01-20 15:57:35.414000+00:00",
+      "updated": "",
+      "project": "Infra-ECS-Cluster-happycars-cluster-mumbai-6ac5132a"
+    },
+    {
+      "region": "eu-north-1",
+      "name": "Infra-ECS-Cluster-happycars-cluster-131138e7",
+      "status": "CREATE_COMPLETE",
+      "created": "2026-01-17 16:27:00.004000+00:00",
+      "updated": "",
+      "project": "Infra-ECS-Cluster-happycars-cluster-131138e7"
+    }
+  ],
+  "elb": [
+    {
+      "region": "ap-south-1",
+      "name": "ecs-express-gateway-alb-52f89f8c",
+      "type": "application",
+      "scheme": "internet-facing",
+      "dns": "ecs-express-gateway-alb-52f89f8c-268842770.ap-south-1.elb.amazonaws.com",
+      "state": "active",
+      "vpc": "vpc-0e9a390421751add8",
+      "project": "petee"
+    }
+  ],
+  "secrets": [
+    {
+      "region": "ap-south-1",
+      "name": "happycars/db",
+      "last_changed": "2026-01-21 12:59:15.158000+05:30",
+      "last_accessed": "2026-01-22 05:30:00+05:30",
+      "project": "happycars/db"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "happycars/openAI",
+      "last_changed": "2026-01-21 13:00:54.897000+05:30",
+      "last_accessed": "2026-01-22 05:30:00+05:30",
+      "project": "happycars/openAI"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "rds-db-credentials/db-GDSMDI6FOYACBEES7GDV74Y6FY/virpanai_admin/1779039212912",
+      "last_changed": "2026-05-17 23:03:33.236000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "rds-db-credentials/db-GDSMDI6FOYACBEES7GDV74Y6FY/virpanai_admin/1779039212912"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "virpanai/rds/proxy-credentials",
+      "last_changed": "2026-05-22 00:48:08.945000+05:30",
+      "last_accessed": "",
+      "project": "virpanai/rds/proxy-credentials"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "ifh-beta/app",
+      "last_changed": "2026-08-05 00:33:36.343000+05:30",
+      "last_accessed": "2026-08-13 05:30:00+05:30",
+      "project": "ifh-connects"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "rds!db-8f78ef4d-d420-4781-a92f-0379cdf3bcd8",
+      "last_changed": "2026-08-14 10:39:19.551000+05:30",
+      "last_accessed": "2026-08-07 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/database-url",
+      "last_changed": "2026-08-07 18:22:22.597000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/direct-database-url",
+      "last_changed": "2026-08-07 18:22:26.702000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/app-db-role-password",
+      "last_changed": "2026-08-07 14:55:48.898000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/better-auth-secret",
+      "last_changed": "2026-08-07 14:55:52.642000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/server-actions-key",
+      "last_changed": "2026-08-07 14:55:55.387000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/razorpay-key-id",
+      "last_changed": "2026-08-07 14:55:58.663000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/razorpay-key-secret",
+      "last_changed": "2026-08-07 14:56:01.438000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/resend-api-key",
+      "last_changed": "2026-08-07 14:57:45.699000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/email-from",
+      "last_changed": "2026-08-07 15:24:48.751000+05:30",
+      "last_accessed": "2026-08-08 05:30:00+05:30",
+      "project": "petee"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/admin-bootstrap-email",
+      "last_changed": "2026-08-07 18:28:21.017000+05:30",
+      "last_accessed": "2026-08-07 05:30:00+05:30",
+      "project": "petee/admin-bootstrap-email"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "petee/admin-bootstrap-password",
+      "last_changed": "2026-08-07 18:28:37.566000+05:30",
+      "last_accessed": "2026-08-07 05:30:00+05:30",
+      "project": "petee/admin-bootstrap-password"
+    }
+  ],
+  "loggroups": [
+    {
+      "region": "ap-south-1",
+      "name": "/aws/ecs/containerinsights/ifh-beta-cluster/performance",
+      "retention_days": 1,
+      "stored_bytes": 0,
+      "project": "containerinsights"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "/aws/lambda/ifh-comingsoon",
+      "retention_days": null,
+      "stored_bytes": 945897,
+      "project": "ifh-comingsoon"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "/aws/lambda/ifh-testplan",
+      "retention_days": null,
+      "stored_bytes": 583468,
+      "project": "ifh-testplan"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "/aws/rds/proxy/proxy-1779039217760-virpanai-prod-db",
+      "retention_days": null,
+      "stored_bytes": 2456,
+      "project": "proxy"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "/ecs/happycars-task",
+      "retention_days": null,
+      "stored_bytes": 3073193,
+      "project": "/ecs/happycars-task"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "/ecs/ifh-beta-admin",
+      "retention_days": 14,
+      "stored_bytes": 29065,
+      "project": "/ecs/ifh-beta-admin"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "/ecs/ifh-beta-api",
+      "retention_days": 14,
+      "stored_bytes": 26397843,
+      "project": "/ecs/ifh-beta-api"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "/ecs/ifh-beta-web",
+      "retention_days": 14,
+      "stored_bytes": 46498,
+      "project": "/ecs/ifh-beta-web"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "/ecs/petee-demo",
+      "retention_days": 14,
+      "stored_bytes": 112272,
+      "project": "/ecs/petee-demo"
+    },
+    {
+      "region": "ap-south-1",
+      "name": "RDSOSMetrics",
+      "retention_days": 30,
+      "stored_bytes": 28997457,
+      "project": "RDSOSMetrics"
+    },
+    {
+      "region": "eu-north-1",
+      "name": "/ecs/happycars-task",
+      "retention_days": null,
+      "stored_bytes": 0,
+      "project": "/ecs/happycars-task"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/apprunner/lms-realtime/1c78e6bf26214a70bedf58761df95882/application",
+      "retention_days": null,
+      "stored_bytes": 132419,
+      "project": "lms-realtime"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/apprunner/lms-realtime/1c78e6bf26214a70bedf58761df95882/service",
+      "retention_days": null,
+      "stored_bytes": 99662,
+      "project": "lms-realtime"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/apprunner/lms-web/51347043f6db47c2af72094ee8cc9622/service",
+      "retention_days": null,
+      "stored_bytes": 1594,
+      "project": "lms-web"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/apprunner/lms-web/5f288294bab84e468bb8d782eca20036/application",
+      "retention_days": null,
+      "stored_bytes": 195339,
+      "project": "lms-web"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/apprunner/lms-web/5f288294bab84e468bb8d782eca20036/service",
+      "retention_days": null,
+      "stored_bytes": 96294,
+      "project": "lms-web"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/apprunner/lms-web/d44565fc1f46406fb4010cd00808a251/service",
+      "retention_days": null,
+      "stored_bytes": 1593,
+      "project": "lms-web"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/apprunner/lms-web/e02fc432ddc0438a9f039ade620b612c/service",
+      "retention_days": null,
+      "stored_bytes": 1596,
+      "project": "lms-web"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/botstudiox-cognito-email",
+      "retention_days": null,
+      "stored_bytes": 3863,
+      "project": "botstudiox-cognito-email"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-analytics",
+      "retention_days": null,
+      "stored_bytes": 6698,
+      "project": "sendapostcard-api-admin-analytics"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-artists",
+      "retention_days": null,
+      "stored_bytes": 83568,
+      "project": "sendapostcard-api-admin-artists"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-collectibles",
+      "retention_days": null,
+      "stored_bytes": 150448,
+      "project": "sendapostcard-api-admin-collectibles"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-get-order",
+      "retention_days": null,
+      "stored_bytes": 107079,
+      "project": "sendapostcard-api-admin-get-order"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-list-customers",
+      "retention_days": null,
+      "stored_bytes": 14277,
+      "project": "sendapostcard-api-admin-list-customers"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-list-orders",
+      "retention_days": null,
+      "stored_bytes": 143829,
+      "project": "sendapostcard-api-admin-list-orders"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-postee-add",
+      "retention_days": null,
+      "stored_bytes": 451,
+      "project": "sendapostcard-api-admin-postee-add"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-postee-delete",
+      "retention_days": null,
+      "stored_bytes": 2632,
+      "project": "sendapostcard-api-admin-postee-delete"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-postee-replies",
+      "retention_days": null,
+      "stored_bytes": 19890,
+      "project": "sendapostcard-api-admin-postee-replies"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-postee-reply-post",
+      "retention_days": null,
+      "stored_bytes": 1120,
+      "project": "sendapostcard-api-admin-postee-reply-post"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-postees",
+      "retention_days": null,
+      "stored_bytes": 17841,
+      "project": "sendapostcard-api-admin-postees"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-refund-order",
+      "retention_days": null,
+      "stored_bytes": 552,
+      "project": "sendapostcard-api-admin-refund-order"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-settings",
+      "retention_days": null,
+      "stored_bytes": 8952,
+      "project": "sendapostcard-api-admin-settings"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-admin-update-order",
+      "retention_days": null,
+      "stored_bytes": 8479,
+      "project": "sendapostcard-api-admin-update-order"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-artist-auth",
+      "retention_days": null,
+      "stored_bytes": 74012,
+      "project": "sendapostcard-api-artist-auth"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-artist-portal",
+      "retention_days": null,
+      "stored_bytes": 152089,
+      "project": "sendapostcard-api-artist-portal"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-auth-callback",
+      "retention_days": null,
+      "stored_bytes": 130388,
+      "project": "sendapostcard-api-auth-callback"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-auth-google",
+      "retention_days": null,
+      "stored_bytes": 124956,
+      "project": "sendapostcard-api-auth-google"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-auth-start",
+      "retention_days": null,
+      "stored_bytes": 105809,
+      "project": "sendapostcard-api-auth-start"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-auth-verify",
+      "retention_days": null,
+      "stored_bytes": 60308,
+      "project": "sendapostcard-api-auth-verify"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-checkout-create-order",
+      "retention_days": null,
+      "stored_bytes": 163198,
+      "project": "sendapostcard-api-checkout-create-order"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-collectibles-buy",
+      "retention_days": null,
+      "stored_bytes": 442,
+      "project": "sendapostcard-api-collectibles-buy"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-collectibles-list",
+      "retention_days": null,
+      "stored_bytes": 2713791,
+      "project": "sendapostcard-api-collectibles-list"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-db-ping",
+      "retention_days": null,
+      "stored_bytes": 5193,
+      "project": "sendapostcard-api-db-ping"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-list-my-orders",
+      "retention_days": null,
+      "stored_bytes": 269930,
+      "project": "sendapostcard-api-list-my-orders"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-order-lookup",
+      "retention_days": null,
+      "stored_bytes": 80081,
+      "project": "sendapostcard-api-order-lookup"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-postee-list",
+      "retention_days": null,
+      "stored_bytes": 550253,
+      "project": "sendapostcard-api-postee-list"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-postee-me",
+      "retention_days": null,
+      "stored_bytes": 1592897,
+      "project": "sendapostcard-api-postee-me"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-postee-register",
+      "retention_days": null,
+      "stored_bytes": 79985,
+      "project": "sendapostcard-api-postee-register"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-postee-reply",
+      "retention_days": null,
+      "stored_bytes": 6180,
+      "project": "sendapostcard-api-postee-reply"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-razorpay-webhook",
+      "retention_days": null,
+      "stored_bytes": 24455,
+      "project": "sendapostcard-api-razorpay-webhook"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-release-scheduled",
+      "retention_days": null,
+      "stored_bytes": 14114,
+      "project": "sendapostcard-api-release-scheduled"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-transcribe",
+      "retention_days": null,
+      "stored_bytes": 11344,
+      "project": "sendapostcard-api-transcribe"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-translate",
+      "retention_days": null,
+      "stored_bytes": 30007,
+      "project": "sendapostcard-api-translate"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-api-validate-coupon",
+      "retention_days": null,
+      "stored_bytes": 186023,
+      "project": "sendapostcard-api-validate-coupon"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-migrate-coupons",
+      "retention_days": null,
+      "stored_bytes": 3219,
+      "project": "sendapostcard-migrate-coupons"
+    },
+    {
+      "region": "us-east-1",
+      "name": "/aws/lambda/sendapostcard-migrate-tracking",
+      "retention_days": null,
+      "stored_bytes": 447,
+      "project": "sendapostcard-migrate-tracking"
+    }
+  ],
+  "s3": [
+    {
+      "name": "botxstudio",
+      "created": "2026-07-10 09:07:14+00:00",
+      "region": "us-east-1",
+      "versioning": "Enabled",
+      "encryption": "AES256",
+      "project": "botxstudio"
+    },
+    {
+      "name": "excelaiautomation",
+      "created": "2026-05-01 01:13:01+00:00",
+      "region": "us-east-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "excelaiautomation"
+    },
+    {
+      "name": "ifh-media-836471808669-ap-south-1",
+      "created": "2026-07-29 05:48:13+00:00",
+      "region": "ap-south-1",
+      "versioning": "Enabled",
+      "encryption": "AES256",
+      "project": "ifh-connects"
+    },
+    {
+      "name": "ifh-tfstate-836471808669-ap-south-1",
+      "created": "2026-07-18 08:49:22+00:00",
+      "region": "ap-south-1",
+      "versioning": "Enabled",
+      "encryption": "AES256",
+      "project": "ifh-connects"
+    },
+    {
+      "name": "petee-media-prod-836471808669",
+      "created": "2026-08-07 13:09:16+00:00",
+      "region": "ap-south-1",
+      "versioning": "Enabled",
+      "encryption": "AES256",
+      "project": "petee-media-prod-836471808669"
+    },
+    {
+      "name": "sendapostcard.in",
+      "created": "2026-07-04 17:30:45+00:00",
+      "region": "us-east-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "sendapostcard.in"
+    },
+    {
+      "name": "sessiontranslations",
+      "created": "2026-05-08 05:50:14+00:00",
+      "region": "us-east-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "sessiontranslations"
+    },
+    {
+      "name": "tamilisai-complaints",
+      "created": "2026-04-30 22:06:53+00:00",
+      "region": "us-east-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "tamilisai-complaints"
+    },
+    {
+      "name": "taxguard-invoices-12345",
+      "created": "2026-04-21 23:48:47+00:00",
+      "region": "ap-south-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "taxguard-invoices-12345"
+    },
+    {
+      "name": "textile-images-dev",
+      "created": "2026-05-01 14:11:16+00:00",
+      "region": "us-east-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "textile-images-dev"
+    },
+    {
+      "name": "the-bot-projects",
+      "created": "2026-04-17 19:25:53+00:00",
+      "region": "eu-north-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "the-bot-projects"
+    },
+    {
+      "name": "thebotcompany.in",
+      "created": "2026-04-30 23:19:20+00:00",
+      "region": "us-east-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "thebotcompany.in"
+    },
+    {
+      "name": "virpanai-prod",
+      "created": "2026-05-16 05:21:47+00:00",
+      "region": "ap-south-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "virpanai-prod"
+    },
+    {
+      "name": "wynza-erp-assets-836471808669-ap-south-1-an",
+      "created": "2026-04-17 15:54:07+00:00",
+      "region": "ap-south-1",
+      "versioning": "Disabled",
+      "encryption": "AES256",
+      "project": "wynza-erp-assets-836471808669-ap-south-1-an"
+    }
+  ],
+  "cloudfront": [
+    {
+      "id": "EF3ZH6EUPZ9TM",
+      "domain": "d2f9y5a10ak9q1.cloudfront.net",
+      "aliases": "thebotcompany.in",
+      "status": "Deployed",
+      "enabled": true,
+      "comment": "",
+      "project": "EF3ZH6EUPZ9TM"
+    },
+    {
+      "id": "EC6CGTJMRE2HS",
+      "domain": "d1lpta6uzuxo45.cloudfront.net",
+      "aliases": "www.sendapostcard.in,sendapostcard.in",
+      "status": "Deployed",
+      "enabled": true,
+      "comment": "sendapostcard.in \u2014 SPA + APIGW",
+      "project": "sendapostcard.in \u2014 SPA + APIGW"
+    },
+    {
+      "id": "EFT3Y8LL4Z7A5",
+      "domain": "d20ea9i4s0asfb.cloudfront.net",
+      "aliases": "",
+      "status": "Deployed",
+      "enabled": true,
+      "comment": "ifh property media",
+      "project": "ifh property media"
+    }
+  ],
+  "route53": [
+    {
+      "id": "Z09572992WCUPPU1YQT0P",
+      "name": "thebotcompany.in.",
+      "private": false,
+      "records": 34,
+      "project": "thebotcompany.in"
+    },
+    {
+      "id": "Z05027812DD55TVMMKH49",
+      "name": "jamescourtbeachresort.com.",
+      "private": false,
+      "records": 5,
+      "project": "jamescourtbeachresort.com"
+    },
+    {
+      "id": "Z02654933P96YJL0W294D",
+      "name": "stjamescourtbeachresort.com.",
+      "private": false,
+      "records": 7,
+      "project": "stjamescourtbeachresort.com"
+    },
+    {
+      "id": "Z089003514ERHUJ9TS4IJ",
+      "name": "sendapostcard.in.",
+      "private": false,
+      "records": 9,
+      "project": "sendapostcard.in"
+    }
+  ],
+  "iam": {
+    "users": [
+      {
+        "user": "aravindh-dev",
+        "created": "2026-04-17 15:06:31+00:00",
+        "last_used": "2026-08-17 15:49:06+00:00",
+        "arn": "arn:aws:iam::836471808669:user/aravindh-dev"
+      },
+      {
+        "user": "aws-admin-dev-balaji",
+        "created": "2026-01-16 19:14:48+00:00",
+        "last_used": "2026-02-19 15:58:32+00:00",
+        "arn": "arn:aws:iam::836471808669:user/aws-admin-dev-balaji"
+      },
+      {
+        "user": "aws-admin-dev-tharun",
+        "created": "2026-01-14 20:25:01+00:00",
+        "last_used": "2026-08-18 08:59:09+00:00",
+        "arn": "arn:aws:iam::836471808669:user/aws-admin-dev-tharun"
+      },
+      {
+        "user": "bharathimohan@thebotcompany.in",
+        "created": "2026-07-25 08:13:07+00:00",
+        "last_used": "2026-08-05 06:04:27+00:00",
+        "arn": "arn:aws:iam::836471808669:user/bharathimohan@thebotcompany.in"
+      },
+      {
+        "user": "excelaiautomation",
+        "created": "2026-01-04 10:51:15+00:00",
+        "last_used": "",
+        "arn": "arn:aws:iam::836471808669:user/excelaiautomation"
+      },
+      {
+        "user": "Lokesh-dev",
+        "created": "2026-06-15 09:33:44+00:00",
+        "last_used": "2026-06-15 09:37:15+00:00",
+        "arn": "arn:aws:iam::836471808669:user/Lokesh-dev"
+      },
+      {
+        "user": "madhan",
+        "created": "2026-01-17 09:40:50+00:00",
+        "last_used": "",
+        "arn": "arn:aws:iam::836471808669:user/madhan"
+      },
+      {
+        "user": "Sanjay-GSTproj",
+        "created": "2026-03-18 07:43:20+00:00",
+        "last_used": "2026-03-18 08:18:08+00:00",
+        "arn": "arn:aws:iam::836471808669:user/Sanjay-GSTproj"
+      },
+      {
+        "user": "textile-tryon-user",
+        "created": "2025-09-23 22:50:23+00:00",
+        "last_used": "",
+        "arn": "arn:aws:iam::836471808669:user/textile-tryon-user"
+      },
+      {
+        "user": "virpanai-app",
+        "created": "2026-05-16 05:33:15+00:00",
+        "last_used": "",
+        "arn": "arn:aws:iam::836471808669:user/virpanai-app"
+      },
+      {
+        "user": "wynza-erp-app",
+        "created": "2026-04-18 06:14:58+00:00",
+        "last_used": "",
+        "arn": "arn:aws:iam::836471808669:user/wynza-erp-app"
+      }
+    ],
+    "roles": [
+      {
+        "role": "AppRunnerECRAccessRole",
+        "created": "2026-07-07 15:49:04+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/AppRunnerECRAccessRole"
+      },
+      {
+        "role": "AWSServiceRoleForAmazonCognitoIdpEmailService",
+        "created": "2026-07-10 07:55:49+00:00",
+        "path": "/aws-service-role/email.cognito-idp.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/email.cognito-idp.amazonaws.com/AWSServiceRoleForAmazonCognitoIdpEmailService"
+      },
+      {
+        "role": "AWSServiceRoleForAPIGateway",
+        "created": "2026-07-04 17:10:13+00:00",
+        "path": "/aws-service-role/ops.apigateway.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/ops.apigateway.amazonaws.com/AWSServiceRoleForAPIGateway"
+      },
+      {
+        "role": "AWSServiceRoleForApplicationAutoScaling_ECSService",
+        "created": "2026-01-21 10:15:50+00:00",
+        "path": "/aws-service-role/ecs.application-autoscaling.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
+      },
+      {
+        "role": "AWSServiceRoleForAppRunner",
+        "created": "2026-07-07 15:56:33+00:00",
+        "path": "/aws-service-role/apprunner.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner"
+      },
+      {
+        "role": "AWSServiceRoleForAppRunnerNetworking",
+        "created": "2026-08-07 09:14:33+00:00",
+        "path": "/aws-service-role/networking.apprunner.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/networking.apprunner.amazonaws.com/AWSServiceRoleForAppRunnerNetworking"
+      },
+      {
+        "role": "AWSServiceRoleForComputeOptimizer",
+        "created": "2026-06-15 10:18:51+00:00",
+        "path": "/aws-service-role/compute-optimizer.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/compute-optimizer.amazonaws.com/AWSServiceRoleForComputeOptimizer"
+      },
+      {
+        "role": "AWSServiceRoleForComputeOptimizerAutomation",
+        "created": "2026-06-15 10:45:21+00:00",
+        "path": "/aws-service-role/aco-automation.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/aco-automation.amazonaws.com/AWSServiceRoleForComputeOptimizerAutomation"
+      },
+      {
+        "role": "AWSServiceRoleForCostOptimizationHub",
+        "created": "2026-06-15 09:41:28+00:00",
+        "path": "/aws-service-role/cost-optimization-hub.bcm.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/cost-optimization-hub.bcm.amazonaws.com/AWSServiceRoleForCostOptimizationHub"
+      },
+      {
+        "role": "AWSServiceRoleForECS",
+        "created": "2026-01-17 15:58:12+00:00",
+        "path": "/aws-service-role/ecs.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS"
+      },
+      {
+        "role": "AWSServiceRoleForElastiCache",
+        "created": "2026-07-18 08:51:21+00:00",
+        "path": "/aws-service-role/elasticache.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/elasticache.amazonaws.com/AWSServiceRoleForElastiCache"
+      },
+      {
+        "role": "AWSServiceRoleForElasticLoadBalancing",
+        "created": "2026-01-20 17:15:47+00:00",
+        "path": "/aws-service-role/elasticloadbalancing.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
+      },
+      {
+        "role": "AWSServiceRoleForOrganizations",
+        "created": "2025-09-23 22:40:06+00:00",
+        "path": "/aws-service-role/organizations.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/organizations.amazonaws.com/AWSServiceRoleForOrganizations"
+      },
+      {
+        "role": "AWSServiceRoleForRDS",
+        "created": "2026-04-27 13:05:47+00:00",
+        "path": "/aws-service-role/rds.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/rds.amazonaws.com/AWSServiceRoleForRDS"
+      },
+      {
+        "role": "AWSServiceRoleForResourceExplorer",
+        "created": "2025-10-20 13:28:50+00:00",
+        "path": "/aws-service-role/resource-explorer-2.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/resource-explorer-2.amazonaws.com/AWSServiceRoleForResourceExplorer"
+      },
+      {
+        "role": "AWSServiceRoleForSSO",
+        "created": "2025-09-23 22:40:08+00:00",
+        "path": "/aws-service-role/sso.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/sso.amazonaws.com/AWSServiceRoleForSSO"
+      },
+      {
+        "role": "AWSServiceRoleForSupport",
+        "created": "2025-09-08 10:10:28+00:00",
+        "path": "/aws-service-role/support.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/support.amazonaws.com/AWSServiceRoleForSupport"
+      },
+      {
+        "role": "AWSServiceRoleForTrustedAdvisor",
+        "created": "2025-09-08 10:10:28+00:00",
+        "path": "/aws-service-role/trustedadvisor.amazonaws.com/",
+        "arn": "arn:aws:iam::836471808669:role/aws-service-role/trustedadvisor.amazonaws.com/AWSServiceRoleForTrustedAdvisor"
+      },
+      {
+        "role": "botstudiox-cognito-email-role",
+        "created": "2026-07-10 07:54:34+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/botstudiox-cognito-email-role"
+      },
+      {
+        "role": "ecsTaskExecutionRole",
+        "created": "2026-01-20 14:52:20+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/ecsTaskExecutionRole"
+      },
+      {
+        "role": "ifh-beta-task",
+        "created": "2026-07-18 08:51:08+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/ifh-beta-task"
+      },
+      {
+        "role": "ifh-beta-task-exec",
+        "created": "2026-07-18 08:51:08+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/ifh-beta-task-exec"
+      },
+      {
+        "role": "ifh-cicd-deploy",
+        "created": "2026-07-18 08:49:20+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/ifh-cicd-deploy"
+      },
+      {
+        "role": "ifh-comingsoon-lambda",
+        "created": "2026-07-23 05:09:51+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/ifh-comingsoon-lambda"
+      },
+      {
+        "role": "ifh-testplan-lambda",
+        "created": "2026-07-21 09:01:29+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/ifh-testplan-lambda"
+      },
+      {
+        "role": "petee-apprunner-instance-role",
+        "created": "2026-08-07 09:18:10+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/petee-apprunner-instance-role"
+      },
+      {
+        "role": "petee-codebuild-role",
+        "created": "2026-08-07 09:37:10+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/petee-codebuild-role"
+      },
+      {
+        "role": "petee-ecs-execution-role",
+        "created": "2026-08-07 09:23:40+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/petee-ecs-execution-role"
+      },
+      {
+        "role": "petee-ecs-express-infrastructure-role",
+        "created": "2026-08-07 09:23:46+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/petee-ecs-express-infrastructure-role"
+      },
+      {
+        "role": "petee-ecs-task-role",
+        "created": "2026-08-07 09:23:34+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/petee-ecs-task-role"
+      },
+      {
+        "role": "petee-github-ecr-deploy",
+        "created": "2026-08-07 09:23:51+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/petee-github-ecr-deploy"
+      },
+      {
+        "role": "rds-monitoring-role",
+        "created": "2026-05-17 17:33:18+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/rds-monitoring-role"
+      },
+      {
+        "role": "rds-proxy-role-1779039213448",
+        "created": "2026-05-17 17:33:36+00:00",
+        "path": "/service-role/",
+        "arn": "arn:aws:iam::836471808669:role/service-role/rds-proxy-role-1779039213448"
+      },
+      {
+        "role": "sendapostcard-lambda-exec",
+        "created": "2026-07-04 17:01:35+00:00",
+        "path": "/",
+        "arn": "arn:aws:iam::836471808669:role/sendapostcard-lambda-exec"
+      }
+    ]
+  },
+  "cost": {
+    "start": "2026-07-19",
+    "end": "2026-08-18",
+    "by_service": [
+      {
+        "service": "AWS Amplify",
+        "amount": 0.2157554411,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS App Runner",
+        "amount": 8.9327372259,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Certificate Manager",
+        "amount": 0.0,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Glue",
+        "amount": 0.0,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Key Management Service",
+        "amount": 0.0,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Lambda",
+        "amount": 7.914e-07,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Secrets Manager",
+        "amount": 1.011919664,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS WAF",
+        "amount": 2.966724624,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon API Gateway",
+        "amount": 0.0082829,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon CloudFront",
+        "amount": 0.0028446528,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Cognito",
+        "amount": 0.0,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon DynamoDB",
+        "amount": 0.0008689663,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon EC2 Container Registry (ECR)",
+        "amount": 1.0068353873,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon ElastiCache",
+        "amount": 6.24,
+        "unit": "USD"
+      },
+      {
+        "service": "EC2 - Other",
+        "amount": 22.408414387,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Elastic Compute Cloud - Compute",
+        "amount": 20.4672,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Elastic Container Service",
+        "amount": 24.6565838608,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Elastic Load Balancing",
+        "amount": 7.4635339123,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Lightsail",
+        "amount": 2.09664,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Relational Database Service",
+        "amount": 41.6721430685,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Route 53",
+        "amount": 0.0148244,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Simple Email Service",
+        "amount": 0.04174,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Simple Storage Service",
+        "amount": 0.1089974726,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Virtual Private Cloud",
+        "amount": 12.490106965,
+        "unit": "USD"
+      },
+      {
+        "service": "AmazonCloudWatch",
+        "amount": 8.6435483964,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Amplify",
+        "amount": 2.2930746708,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS App Runner",
+        "amount": 14.4107088945,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Certificate Manager",
+        "amount": 0.0,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Cost Explorer",
+        "amount": 0.34,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Glue",
+        "amount": 0.0,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Key Management Service",
+        "amount": 0.0,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Lambda",
+        "amount": 3.0024e-06,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS Secrets Manager",
+        "amount": 2.8464369429,
+        "unit": "USD"
+      },
+      {
+        "service": "AWS WAF",
+        "amount": 2.7838731031,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon API Gateway",
+        "amount": 0.03823685,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon CloudFront",
+        "amount": 0.0224443403,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Cognito",
+        "amount": 0.14,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon DynamoDB",
+        "amount": 4.30525e-05,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon EC2 Container Registry (ECR)",
+        "amount": 3.5690128492,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon ElastiCache",
+        "amount": 6.02,
+        "unit": "USD"
+      },
+      {
+        "service": "EC2 - Other",
+        "amount": 23.4536878693,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Elastic Compute Cloud - Compute",
+        "amount": 10.2197213536,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Elastic Container Service",
+        "amount": 26.3242224324,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Elastic Load Balancing",
+        "amount": 13.2995902918,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Lightsail",
+        "amount": 2.73504,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Registrar",
+        "amount": 8.0,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Relational Database Service",
+        "amount": 16.3989528086,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Route 53",
+        "amount": 2.0219748,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Simple Email Service",
+        "amount": 0.07906,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Simple Storage Service",
+        "amount": 0.1891014884,
+        "unit": "USD"
+      },
+      {
+        "service": "Amazon Virtual Private Cloud",
+        "amount": 16.49558065,
+        "unit": "USD"
+      },
+      {
+        "service": "AmazonCloudWatch",
+        "amount": 7.4596774267,
+        "unit": "USD"
+      },
+      {
+        "service": "Tax",
+        "amount": 28.62,
+        "unit": "USD"
+      }
+    ],
+    "by_project": [
+      {
+        "project_tag": "Project$",
+        "amount": 160.4497021154
+      },
+      {
+        "project_tag": "Project$",
+        "amount": 187.7604428265
+      }
+    ]
+  },
+  "_errors": []
+}

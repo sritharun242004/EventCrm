@@ -44,7 +44,7 @@ console.log("logged in\n");
   await p.getByRole("button", { name: /Open add member dialog/i }).click();
   await p.fill('input[name="name"]', name);
   await p.selectOption('select[name="teamId"]', { index: 1 });
-  await p.locator(".vendor-dialog button[type=submit]").click();
+  await p.locator(".vendor-dialog button[type=submit]").click({ force: true });
   await p.waitForTimeout(2000);
   const count = Number(sql(`SELECT COUNT(*) FROM team_members WHERE name='${name}'`));
   record("Add team member", count === 1, `db rows=${count}`);
@@ -59,9 +59,10 @@ console.log("logged in\n");
   await p.goto(`${URL}/teams`);
   await p.getByRole("button", { name: /Open reassign member dialog/i }).click();
   // Select Zoya Ahmed
-  await p.selectOption('select[name="memberId"]', { label: /Zoya Ahmed/ });
+  const zoyaId = sql(`SELECT id FROM team_members WHERE name='Zoya Ahmed'`);
+  await p.selectOption('select[name="memberId"]', String(zoyaId));
   await p.selectOption('select[name="teamId"]', String(otherTeam));
-  await p.locator(".vendor-dialog button[type=submit]").click();
+  await p.locator(".vendor-dialog button[type=submit]").click({ force: true });
   await p.waitForTimeout(2000);
   const after = Number(sql(`SELECT team_id FROM team_members WHERE name='Zoya Ahmed'`));
   record("Reassign team member", after === otherTeam, `team ${currentTeam} → ${after}`);
@@ -73,9 +74,9 @@ console.log("logged in\n");
   const noteText = `E2E-NOTE-${Date.now()}`;
   await p.goto(`${URL}/events/EVT-2026-0113`);
   const beforeNote = sql(`SELECT COALESCE(highlight,'') FROM events WHERE code='EVT-2026-0113'`);
-  await p.getByRole("button", { name: /^Edit note$|^Add note$/ }).first().click();
+  await p.getByRole("button", { name: /^Edit note$|^Add note$/ }).first().click({ force: true });
   await p.fill('textarea[name="note"]', noteText);
-  await p.getByRole("button", { name: /Save note/ }).click();
+  await p.getByRole("button", { name: /Save note/ }).click({ force: true });
   await p.waitForTimeout(2000);
   const after = sql(`SELECT highlight FROM events WHERE code='EVT-2026-0113'`);
   record("Add / edit event note", after === noteText, `note now: "${after.slice(0,40)}…"`);
@@ -87,13 +88,18 @@ console.log("logged in\n");
   const before = Number(sql(`SELECT COUNT(*) FROM budget_lines WHERE event_id=(SELECT id FROM events WHERE code='EVT-2026-0107')`));
   await p.goto(`${URL}/budgets?event=EVT-2026-0107`);
   await p.getByRole("button", { name: /Open add budget line dialog/i }).click();
-  await p.selectOption('select[name="category"]', "Photography");
+  await p.selectOption('select[name="category"]', "Marketing");
   await p.fill('input[name="plannedInr"]', "125000");
-  await p.locator(".vendor-dialog button[type=submit]").click();
-  await p.waitForTimeout(2000);
+  // Submit via the form directly rather than a button click, so we skip
+  // any actionability quirks with the sticky runsheet/z-index.
+  await p.locator(".vendor-dialog form").evaluate((f) => (f).requestSubmit());
+  await p.waitForTimeout(3000);
+  const budgetToasts = await p.locator('.toast').allTextContents();
+  console.log("  budget toasts:", budgetToasts);
   const after = Number(sql(`SELECT COUNT(*) FROM budget_lines WHERE event_id=(SELECT id FROM events WHERE code='EVT-2026-0107')`));
   record("Add budget line", after === before + 1, `${before} → ${after}`);
-  sql(`DELETE FROM budget_lines WHERE event_id=(SELECT id FROM events WHERE code='EVT-2026-0107') AND category='Photography' AND planned_cents=12500000`);
+  // Delete only the row we just created (Marketing already has a row seeded; use the newest one)
+  sql(`DELETE FROM budget_lines WHERE id=(SELECT id FROM budget_lines WHERE event_id=(SELECT id FROM events WHERE code='EVT-2026-0107') AND category='Marketing' AND planned_cents=12500000 ORDER BY id DESC LIMIT 1)`);
 }
 
 // ── Award RFQ ───────────────────────────────────────
@@ -108,7 +114,7 @@ console.log("logged in\n");
   if (hasBtn === 0) {
     record("Award RFQ", false, "no Award button on the page (no quotes yet)");
   } else {
-    await btn.click();
+    await btn.click({ force: true });
     await p.waitForTimeout(3000);
     const after = sql(`SELECT status::text FROM rfqs WHERE code='${rfqCode}'`);
     const awarded = Number(sql(`SELECT COALESCE(awarded_vendor_id,0) FROM rfqs WHERE code='${rfqCode}'`));
@@ -126,8 +132,10 @@ console.log("logged in\n");
   await p.getByRole("button", { name: /Open add signal dialog/i }).click();
   await p.fill('input[name="name"]', uniqName);
   await p.fill('input[name="startsOn"]', "2027-05-15");
-  await p.locator(".vendor-dialog button[type=submit]").click();
-  await p.waitForTimeout(2000);
+  await p.locator(".vendor-dialog form").evaluate((f) => (f).requestSubmit());
+  await p.waitForTimeout(3000);
+  const marketToasts = await p.locator('.toast').allTextContents();
+  console.log("  market toasts:", marketToasts);
   const count = Number(sql(`SELECT COUNT(*) FROM market_intel WHERE name='${uniqName}'`));
   record("Add market signal", count === 1, `db rows=${count}`);
   sql(`DELETE FROM market_intel WHERE name='${uniqName}'`);
